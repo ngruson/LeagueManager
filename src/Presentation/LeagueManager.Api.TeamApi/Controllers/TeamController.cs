@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Teams.Commands.CreateTeam;
 using LeagueManager.Application.Teams.Queries.GetTeams;
+using LeagueManager.Application.Teams.Queries.GetTeamsByCountry;
 using MediatR;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +26,20 @@ namespace LeagueManager.Api.TeamApi.Controllers
             try
             {
                 var teams = await mediator.Send(new GetTeamsQuery());
+                return Ok(teams);
+            }
+            catch
+            {
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        [HttpGet("{country}")]
+        public async Task<IActionResult> GetTeamsByCountry(string country)
+        {
+            try
+            {
+                var teams = await mediator.Send(new GetTeamsByCountryQuery { Country = country });
                 return Ok(teams);
             }
             catch

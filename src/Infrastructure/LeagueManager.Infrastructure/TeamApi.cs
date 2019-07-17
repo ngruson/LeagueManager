@@ -2,6 +2,7 @@
 using LeagueManager.Application.Teams.Queries.GetTeams;
 using LeagueManager.Infrastructure.HttpHelpers;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -22,7 +23,11 @@ namespace LeagueManager.Infrastructure
         public async Task<IEnumerable<TeamDto>> GetTeams()
         {
             var response =  await httpRequestFactory.Get(apiSettings.TeamApiUrl);
-            return response.ContentAsType<IEnumerable<TeamDto>>();
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<IEnumerable<TeamDto>>();
+            throw new Exception("Teams could not be retrieved");
         }
+
+        
     }
 }

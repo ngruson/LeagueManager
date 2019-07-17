@@ -60,6 +60,7 @@ namespace LeagueManager.Api.TeamApi
                 .AddClasses()
                 .AsImplementedInterfaces());
             services.AddScoped<IImageFileLoader, ImageFileLoader>();
+            services.AddScoped<DbInitializer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

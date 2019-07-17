@@ -1,13 +1,9 @@
-﻿using LeagueManager.Domain.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace LeagueManager.Domain.Entities
 {
-    public class TeamLeague : ITeamLeague
+    public class TeamLeague : League
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public List<LeagueTeam> Teams { get; set;  } = new List<LeagueTeam>();
-        public List<LeagueRound> Rounds { get; set; } = new List<LeagueRound>();
+        public List<CompetingTeam> Teams { get; set; } = new List<CompetingTeam>();
     }
 }

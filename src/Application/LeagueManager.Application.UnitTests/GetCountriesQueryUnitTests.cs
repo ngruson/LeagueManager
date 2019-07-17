@@ -15,7 +15,7 @@ namespace LeagueManager.Application.UnitTests
     public class GetCountriesQueryUnitTests
     {
         [Fact]
-        public async void ReturnEmptyListWhenNoCountriesExist()
+        public async void Given_NoCountriesExist_When_GetCountriesIsCalled_Then_ReturnEmptyList()
         {
             // Arrange
             var countries = new List<Country>();
@@ -30,7 +30,7 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public async void ReturnOrderedListWhenCountriesExist()
+        public async void Given_CountriesExist_When_GetCountries_Then_ReturnOrderedList()
         {
             // Arrange
             var countries = new List<Country> {

@@ -1,5 +1,4 @@
-﻿using LeagueManager.Domain.Entities;
-using MediatR;
+﻿using MediatR;
 using System.Collections.Generic;
 
 namespace LeagueManager.Application.Leagues.Commands
@@ -7,6 +6,7 @@ namespace LeagueManager.Application.Leagues.Commands
     public class CreateTeamLeagueCommand : IRequest
     {
         public string Name { get; set; }
-        public List<LeagueTeam> Teams { get; set; }
+        public byte[] Logo { get; set; }
+        public List<string> Teams { get; set; }
     }
 }

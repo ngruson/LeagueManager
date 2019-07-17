@@ -1,6 +1,6 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Domain.Entities;
 using MediatR;
@@ -19,7 +19,7 @@ namespace LeagueManager.Application.Teams.Commands.CreateTeam
 
         public async Task<Unit> Handle(CreateTeamCommand request, CancellationToken cancellationToken)
         {
-            var team = context.Teams.SingleOrDefault(x => x.Name == request.Name);
+            var team = await context.Teams.SingleOrDefaultAsync(x => x.Name == request.Name);
             if (team != null)
                 throw new TeamAlreadyExistsException(request.Name);
 

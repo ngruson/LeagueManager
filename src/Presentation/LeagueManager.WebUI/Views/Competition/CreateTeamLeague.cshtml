@@ -1,0 +1,132 @@
+﻿@model LeagueManager.WebUI.ViewModels.TeamLeagueViewModel
+@{
+    ViewData["Title"] = "Create team league";
+}
+
+<h2>@ViewData["Title"]</h2>
+@using (Html.BeginForm("CreateTeamLeague", "Competition", FormMethod.Post, new { enctype="multipart/form-data"}))
+{    
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Name)
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    <label for="countryFilter">Country</label>
+                    @Html.DropDownList("countryFilter", new SelectList(Model.AllTeamsCountries), "--All countries--", new { @class = "form-control" })
+                </div>
+                <div class="'form-group">
+                    <label for="logo">Logo</label>
+                    <input asp-for="Logo" type="file" name="logo" class="form-control">
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.TeamsToAdd)
+                    @Html.ListBoxFor(m => m.TeamsToAdd, new SelectList(Model.AllTeams, "Name", "Name"), new { id = "teams-to-add", @class = "form-control", size = 10 })
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-group" style="padding-top: 240px">
+                    @Html.LabelFor(m => m.SelectedTeams)
+                    @Html.ListBoxFor(m => m.SelectedTeamIds, new SelectList(Model.SelectedTeams, "Name", "Name"), new { id = "selected-teams", @class = "form-control", size = 10 })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button type="button" class="btn btn-primary add-team">Add Team(s)</button>
+                <button type="button" class="btn btn-primary create-team" data-toggle="modal" data-target="#createTeamModal">Create Team</button>
+            </div>
+            <div class="col">
+                <button type="button" class="btn btn-primary remove-team">Remove Team(s)</button>
+            </div>
+        </div>
+        <div class="row" style="padding-top: 20px">
+            <button type="submit" class="btn btn-lg btn-success">Create Team League</button>
+            <div class="alert alert-success invisible" role="alert" id="create-league-alert-success"></div>
+            <div class="alert alert-danger invisible" role="alert" id="create-league-alert-danger"></div>
+        </div>
+    </div>
+}
+
+<!-- Modal -->
+<div class="modal fade" id="createTeamModal" tabindex="-1" role="dialog" aria-labelledby="createTeamModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTeamModalTitle">Create Team</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="team-name" class="col-form-label">Team name:</label>
+                    <input type="text" class="form-control" id="team-name">
+                </div>
+                <div class="form-group">
+                    <label for="team-country" class="col-form-label">Country name:</label>
+                    <select id="country-dropdown" name="country"></select>
+                </div>
+                <div class="alert alert-success invisible" role="alert">
+                    A simple success alert—check it out!
+                </div>
+                <div class="alert alert-danger invisible" role="alert"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary js-save-team">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            $('#countryFilter').change(function () {
+                if (this.value == "--All countries--") {
+                    getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl");
+                }
+                else {
+                    getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl" + "/" + this.value);
+                }
+            });
+
+            $('#teams-to-add').on('dblclick', function () {
+                moveSelectedItems($('#teams-to-add'), $('#selected-teams'));
+            });
+
+            $('.add-team').click(function () {
+                moveSelectedItems($('#teams-to-add'), $('#selected-teams'));
+            });
+
+            $('#selected-teams').on('dblclick', function () {
+                moveSelectedItems($('#selected-teams'), $('#teams-to-add'));
+            });
+
+            $('.remove-team').click(function () {
+                moveSelectedItems($('#selected-teams'), $('#teams-to-add'));
+            });
+
+            getCountries($('#country-dropdown'), "@Model.CountryApiUrl");
+            getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl");
+
+            $('.btn-success').click(function () {
+                $("#selected-teams option").prop("selected", true);
+            });
+
+            $('.js-save-team').click(function (e) {
+                createTeam(
+                    $('#team-name'),
+                    $('#country-dropdown option:selected'),
+                    $('#teams-to-add'),
+                    "@Model.TeamApiUrl"
+                );
+            });
+        });
+    </script>
+}

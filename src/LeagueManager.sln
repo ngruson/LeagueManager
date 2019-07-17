@@ -27,7 +27,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueManager.Application",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueManager.Application.UnitTests", "Application\LeagueManager.Application.UnitTests\LeagueManager.Application.UnitTests.csproj", "{4FD7DD3F-A39A-4003-A390-145AF61BFE90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueManager.Api.CountryApi", "Presentation\LeagueManager.Api.CountryApi\LeagueManager.Api.CountryApi.csproj", "{9119A2DF-926D-4F38-A8E8-0B1492702461}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueManager.Api.CountryApi", "Presentation\LeagueManager.Api.CountryApi\LeagueManager.Api.CountryApi.csproj", "{9119A2DF-926D-4F38-A8E8-0B1492702461}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueManager.Api.LeagueApi", "Presentation\LeagueManager.Api.LeagueApi\LeagueManager.Api.LeagueApi.csproj", "{25EC4DC3-C856-4F09-8B94-C5849400A65A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueManager.Api.TeamApi.UnitTests", "Presentation\LeagueManager.Api.TeamApi.UnitTests\LeagueManager.Api.TeamApi.UnitTests.csproj", "{78F22459-17C6-4F0C-ABB1-5579B172B063}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +71,14 @@ Global
 		{9119A2DF-926D-4F38-A8E8-0B1492702461}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9119A2DF-926D-4F38-A8E8-0B1492702461}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9119A2DF-926D-4F38-A8E8-0B1492702461}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25EC4DC3-C856-4F09-8B94-C5849400A65A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25EC4DC3-C856-4F09-8B94-C5849400A65A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25EC4DC3-C856-4F09-8B94-C5849400A65A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25EC4DC3-C856-4F09-8B94-C5849400A65A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78F22459-17C6-4F0C-ABB1-5579B172B063}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78F22459-17C6-4F0C-ABB1-5579B172B063}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78F22459-17C6-4F0C-ABB1-5579B172B063}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78F22459-17C6-4F0C-ABB1-5579B172B063}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -80,6 +92,8 @@ Global
 		{91061908-ED98-4FEA-B0B2-9F1BD3DF34A5} = {88001D7C-3CBC-4DE1-AA93-0E60C442A750}
 		{4FD7DD3F-A39A-4003-A390-145AF61BFE90} = {88001D7C-3CBC-4DE1-AA93-0E60C442A750}
 		{9119A2DF-926D-4F38-A8E8-0B1492702461} = {8CCD4FEA-63EC-4CAF-BAEE-779A92DF9662}
+		{25EC4DC3-C856-4F09-8B94-C5849400A65A} = {8CCD4FEA-63EC-4CAF-BAEE-779A92DF9662}
+		{78F22459-17C6-4F0C-ABB1-5579B172B063} = {8CCD4FEA-63EC-4CAF-BAEE-779A92DF9662}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {62347AEE-45AB-4A37-BD88-412BD6327427}

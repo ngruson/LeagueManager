@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LeagueManager.Application.Teams.Commands.CreateTeam
+namespace LeagueManager.Application.Exceptions
 {
     public class TeamAlreadyExistsException : Exception
     {

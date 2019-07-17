@@ -1,9 +1,11 @@
 using FluentAssertions;
+using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Teams.Commands.CreateTeam;
 using LeagueManager.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -17,7 +19,7 @@ namespace LeagueManager.Application.UnitTests
     public class CreateTeamCommandUnitTests
     {
         [Fact]
-        public async void ReturnSuccessWhenTeamDoesNotYetExist()
+        public async void Given_TeamDoesNotExist_When_CreateTeam_Then_TeamIsReturned()
         {
             // Arrange
             var teams = new List<Team>();
@@ -33,7 +35,7 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public void ThrowExceptionWhenTeamAlreadyExists()
+        public void Given_TeamDoesExists_When_CreateExistingTeam_Then_ThrowException()
         {
             // Arrange
             var teams = new List<Team> { new Team { Name = "Liverpool" } };
@@ -49,12 +51,7 @@ namespace LeagueManager.Application.UnitTests
 
         private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<Team> teams)
         {
-            var mockSet = new Mock<DbSet<Team>>();
-            mockSet.As<IQueryable<Team>>().Setup(m => m.Provider).Returns(teams.Provider);
-            mockSet.As<IQueryable<Team>>().Setup(m => m.Expression).Returns(teams.Expression);
-            mockSet.As<IQueryable<Team>>().Setup(m => m.ElementType).Returns(teams.ElementType);
-            mockSet.As<IQueryable<Team>>().Setup(m => m.GetEnumerator()).Returns(teams.GetEnumerator());
-
+            var mockSet = teams.BuildMockDbSet();
             var mockContext = new Mock<ILeagueManagerDbContext>();
             mockContext.Setup(c => c.Teams).Returns(mockSet.Object);
 

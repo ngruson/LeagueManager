@@ -9,7 +9,7 @@ namespace LeagueManager.Application.Interfaces
     public interface ILeagueManagerDbContext
     {
         DbSet<Country> Countries { get; set; }
-        DbSet<TeamLeague> Leagues { get; set; }
+        DbSet<Competition> Competitions { get; set; }
         DbSet<Player> Players { get; set; }
         DbSet<Team> Teams { get; set; }
 

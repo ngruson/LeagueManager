@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeagueManager.Application.Teams.Queries.GetTeams
 {
@@ -19,14 +19,12 @@ namespace LeagueManager.Application.Teams.Queries.GetTeams
 
         public async Task<IEnumerable<TeamDto>> Handle(GetTeamsQuery request, CancellationToken cancellationToken)
         {
-            List<Team> teams = null;
-            await Task.Run(() =>
-            {
-                teams = context.Teams.OrderBy(t => t.Name).ToList();
-            });
+           var teams = await context.Teams
+                .Include(team => team.Country)
+                .OrderBy(t => t.Name).ToListAsync();
                 
             if (teams != null)
-                return teams.Select(t => new TeamDto { Name = t.Name });
+                return teams.Select(t => new TeamDto { Name = t.Name, Country = t.Country?.Name });
 
             return null;
         }

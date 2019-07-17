@@ -49,10 +49,7 @@ namespace LeagueManager.Persistence.EntityFramework
 
             optionsBuilder.UseSqlServer(connectionString);
 
-            var newInstance = CreateNewInstance(optionsBuilder.Options);
-            newInstance.Database.EnsureCreated();
-
-            return newInstance;
+            return CreateNewInstance(optionsBuilder.Options);
         }
     }
 }

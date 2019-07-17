@@ -2,15 +2,12 @@
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Teams.Queries.GetTeams;
 using LeagueManager.Domain.Entities;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LeagueManager.Application.UnitTests
@@ -18,7 +15,7 @@ namespace LeagueManager.Application.UnitTests
     public class GetTeamsQueryUnitTests
     {
         [Fact]
-        public async void ReturnEmptyListWhenNoTeamsExist()
+        public async void Given_NoTeamsExist_When_GetTeams_Then_ReturnEmptyList()
         {
             // Arrange
             var teams = new List<Team>();
@@ -33,7 +30,7 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public async void ReturnOrderedListWhenTeamsExist()
+        public async void Given_TeamsExist_When_GetTeams_Then_ReturnOrderedList()
         {
             // Arrange
             var teams = new List<Team> {
@@ -57,15 +54,9 @@ namespace LeagueManager.Application.UnitTests
 
         private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<Team> teams)
         {
-            var mockSet = new Mock<DbSet<Team>>();
-            mockSet.As<IQueryable<Team>>().Setup(m => m.Provider).Returns(teams.Provider);
-            mockSet.As<IQueryable<Team>>().Setup(m => m.Expression).Returns(teams.Expression);
-            mockSet.As<IQueryable<Team>>().Setup(m => m.ElementType).Returns(teams.ElementType);
-            mockSet.As<IQueryable<Team>>().Setup(m => m.GetEnumerator()).Returns(teams.GetEnumerator());
-
+            var teamsDbSet = teams.BuildMockDbSet();
             var mockContext = new Mock<ILeagueManagerDbContext>();
-            mockContext.Setup(c => c.Teams).Returns(mockSet.Object);
-
+            mockContext.Setup(c => c.Teams).Returns(teamsDbSet.Object);
             return mockContext;
         }
     }
