@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Infrastructure;
+using LeagueManager.Infrastructure.Api;
 using LeagueManager.Infrastructure.HttpHelpers;
 using LeagueManager.WebUI.AutoMapper;
 using Microsoft.AspNetCore.Builder;
@@ -34,8 +35,9 @@ namespace LeagueManager.WebUI
             services.AddAutoMapper(typeof(WebUIProfile).Assembly);
             services.AddScoped<IHttpRequestFactory, HttpRequestFactory>();
             services.AddScoped<IHttpRequestBuilder, HttpRequestBuilder>();
+            services.AddScoped<ICountryApi, CountryApi>();
             services.AddScoped<ITeamApi, TeamApi>();
-            services.AddScoped<ILeagueApi, LeagueApi>();
+            services.AddScoped<ICompetitionApi, CompetitionApi>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

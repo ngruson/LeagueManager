@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Countries.Queries.GetCountries;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+using LeagueManager.Domain.Common;
+using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,14 @@ namespace LeagueManager.Application.UnitTests
 {
     public class GetCountriesQueryUnitTests
     {
+        private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<Country> countries)
+        {
+            var countriesDbSet = countries.BuildMockDbSet();
+            var mockContext = new Mock<ILeagueManagerDbContext>();
+            mockContext.Setup(c => c.Countries).Returns(countriesDbSet.Object);
+            return mockContext;
+        }
+
         [Fact]
         public async void Given_NoCountriesExist_When_GetCountriesIsCalled_Then_ReturnEmptyList()
         {
@@ -50,20 +58,6 @@ namespace LeagueManager.Application.UnitTests
                 .Select(t => new CountryDto { Name = t.Name });
             result.Count().Should().Be(3);
             result.SequenceEqual(orderedList);
-        }
-
-        private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<Country> countries)
-        {
-            var mockSet = new Mock<DbSet<Country>>();
-            mockSet.As<IQueryable<Country>>().Setup(m => m.Provider).Returns(countries.Provider);
-            mockSet.As<IQueryable<Country>>().Setup(m => m.Expression).Returns(countries.Expression);
-            mockSet.As<IQueryable<Country>>().Setup(m => m.ElementType).Returns(countries.ElementType);
-            mockSet.As<IQueryable<Country>>().Setup(m => m.GetEnumerator()).Returns(countries.GetEnumerator());
-
-            var mockContext = new Mock<ILeagueManagerDbContext>();
-            mockContext.Setup(c => c.Countries).Returns(mockSet.Object);
-
-            return mockContext;
         }
     }
 }

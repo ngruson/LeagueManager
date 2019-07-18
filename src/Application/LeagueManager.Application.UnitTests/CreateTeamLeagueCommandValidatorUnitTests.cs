@@ -1,8 +1,7 @@
-﻿using LeagueManager.Application.Leagues.Commands;
-using FluentValidation;
-using FluentValidation.TestHelper;
+﻿using FluentValidation.TestHelper;
 using Xunit;
 using System.Collections.Generic;
+using LeagueManager.Application.Competitions.Commands;
 
 namespace LeagueManager.Application.UnitTests
 {

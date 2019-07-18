@@ -1,6 +1,6 @@
-﻿using LeagueManager.Domain.Entities;
+﻿using LeagueManager.Domain.Common;
+using LeagueManager.Domain.Competitor;
 using Microsoft.Extensions.Configuration;
-using System;
 using System.Linq;
 
 namespace LeagueManager.Persistence.EntityFramework

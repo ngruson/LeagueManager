@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Teams.Queries.GetTeams;
-using LeagueManager.Domain.Entities;
+using LeagueManager.Domain.Competitor;
 using MockQueryable.Moq;
 using Moq;
 using System;

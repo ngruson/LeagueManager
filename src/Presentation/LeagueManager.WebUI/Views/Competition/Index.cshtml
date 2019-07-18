@@ -8,18 +8,18 @@
 
 <div class="container">
     <div class="row">
-        @foreach (var competition in Model)
-        {
-        <div class="col-3">
-            <div class="card" style="width: 20rem;">
-                <img src="..." class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
+        <div class="col-sm">
+            <div class="list-group">
+                @foreach (var competition in Model)
+                {
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <div class="list-group-item d-flex align-items-center">
+                            <img src="@competition.Logo" />
+                            <h4 class="mb-1">@competition.Name</h4>
+                        </div>
+                    </a>
+                }
             </div>
         </div>
-        }
     </div>
 </div>

@@ -1,15 +1,14 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Teams.Queries.GetTeamsByCountry;
-using LeagueManager.Domain.Entities;
+using LeagueManager.Domain.Common;
+using LeagueManager.Domain.Competitor;
 using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LeagueManager.Application.UnitTests

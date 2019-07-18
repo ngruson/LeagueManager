@@ -2,7 +2,8 @@
 using System.Threading.Tasks;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Domain.Entities;
+using LeagueManager.Domain.Common;
+using LeagueManager.Domain.Competitor;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

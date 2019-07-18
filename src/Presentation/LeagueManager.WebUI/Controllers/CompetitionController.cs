@@ -1,57 +1,58 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.Leagues.Commands;
-using LeagueManager.Domain.Entities;
-using LeagueManager.Infrastructure;
+using LeagueManager.Application.Competitions.Commands;
 using LeagueManager.WebUI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
+using LeagueManager.Domain.Competitor;
+using LeagueManager.Infrastructure.Api;
+using LeagueManager.Application.Competitions.Queries.GetCompetitions;
 
 namespace LeagueManager.WebUI.Controllers
 {
     public class CompetitionController : Controller
     {
         private readonly ApiSettings apiSettings;
+        private readonly ICountryApi countryApi;
         private readonly ITeamApi teamApi;
-        private readonly ILeagueApi leagueApi;
+        private readonly ICompetitionApi competitionApi;
         private readonly IMapper mapper;
 
         public CompetitionController(
             IOptions<ApiSettings> apiSettings,
+            ICountryApi countryApi,
             ITeamApi teamApi,
-            ILeagueApi leagueApi,
+            ICompetitionApi competitionApi,
             IMapper mapper)
         {
             this.apiSettings = apiSettings.Value;
+            this.countryApi = countryApi;
             this.teamApi = teamApi;
-            this.leagueApi = leagueApi;
+            this.competitionApi = competitionApi;
             this.mapper = mapper;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var competitions = new List<CompetitionViewModel>();
-            return View(competitions);
+            var competitions = await competitionApi.GetCompetitions(
+                new GetCompetitionsQuery()
+            );
+            var viewModel = mapper.Map<IEnumerable<CompetitionViewModel>>(competitions);
+
+            return View(viewModel);
         }
 
         public async Task<IActionResult> CreateTeamLeague()
         {
-            var teams = await teamApi.GetTeams();
-
             var viewModel = new TeamLeagueViewModel
             {
-                AllTeams = teams,
+                AllTeams = await teamApi.GetTeams(),
                 SelectedTeams = new List<Team>(),
                 TeamApiUrl = apiSettings.TeamApiUrl,
                 CountryApiUrl = apiSettings.CountryApiUrl,
-                AllTeamsCountries = teams
-                    .GroupBy(x => x.Country, (key, c) => c.FirstOrDefault().Country)
-                    .OrderBy(x => x)
+                Countries = await countryApi.GetCountries()
             };
 
             return View(viewModel);
@@ -60,17 +61,8 @@ namespace LeagueManager.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTeamLeague(TeamLeagueViewModel model)
         {
-            //Func<Task<byte[]>> logoFile = async () =>
-            //{
-            //    using (var memoryStream = new MemoryStream())
-            //    {
-            //        await model.Logo.CopyToAsync(memoryStream);
-            //        return memoryStream.ToArray();
-            //    }
-            //};
-
             var command = mapper.Map<CreateTeamLeagueCommand>(model);
-            await leagueApi.CreateTeamLeague(command);
+            await competitionApi.CreateTeamLeague(command);
             return RedirectToAction("Index");
         }
     }

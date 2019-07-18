@@ -1,7 +1,8 @@
 ﻿using FluentAssertions;
+using LeagueManager.Application.Competitions.Commands;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.Leagues.Commands;
-using LeagueManager.Domain.Entities;
+using LeagueManager.Domain.Competition;
+using LeagueManager.Domain.Competitor;
 using MediatR;
 using MockQueryable.Moq;
 using Moq;
@@ -18,13 +19,13 @@ namespace LeagueManager.Application.UnitTests
         public async void Given_TeamLeagueDoesNotExist_When_CreateTeamLeague_Then_TeamLeagueIsReturned()
         {
             // Arrange
-            var competitions = new List<Competition>();
+            var leagues = new List<TeamLeague>();
             var teams = new List<Team> {
                 new Team {  Name = "Team A"},
                 new Team { Name = "Team B"}
             };
             var contextMock = MockDbContext(
-                competitions.AsQueryable(), 
+                leagues.AsQueryable(), 
                 teams.AsQueryable());
             var handler = new CreateTeamLeagueCommandHandler(contextMock.Object);
 
@@ -41,13 +42,13 @@ namespace LeagueManager.Application.UnitTests
         }
 
         private Mock<ILeagueManagerDbContext> MockDbContext(
-            IQueryable<Competition> competitions,
+            IQueryable<TeamLeague> leagues,
             IQueryable<Team> teams)
         {
-            var competitionsDbSet = competitions.BuildMockDbSet();
+            var leaguesDbSet = leagues.BuildMockDbSet();
             var teamsDbSet = teams.BuildMockDbSet();
             var mockContext = new Mock<ILeagueManagerDbContext>();
-            mockContext.Setup(c => c.Competitions).Returns(competitionsDbSet.Object);
+            mockContext.Setup(c => c.TeamLeagues).Returns(leaguesDbSet.Object);
             mockContext.Setup(c => c.Teams).Returns(teamsDbSet.Object);
             return mockContext;
         }

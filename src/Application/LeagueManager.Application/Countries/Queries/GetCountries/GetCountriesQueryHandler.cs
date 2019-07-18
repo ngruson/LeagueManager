@@ -1,7 +1,6 @@
 ﻿using LeagueManager.Application.Interfaces;
-using LeagueManager.Domain.Entities;
 using MediatR;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,11 +19,7 @@ namespace LeagueManager.Application.Countries.Queries.GetCountries
 
         public async Task<IEnumerable<CountryDto>> Handle(GetCountriesQuery request, CancellationToken cancellationToken)
         {
-            List<Country> countries = null;
-            await Task.Run(() =>
-            {
-                countries = context.Countries.OrderBy(t => t.Name).ToList();
-            });
+            var countries = await context.Countries.OrderBy(t => t.Name).ToListAsync();
 
             if (countries != null)
                 return countries.Select(t => new CountryDto { Code = t.Code, Name = t.Name });

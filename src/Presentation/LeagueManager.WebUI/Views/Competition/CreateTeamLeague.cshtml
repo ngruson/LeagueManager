@@ -15,19 +15,23 @@
                 </div>
                 <div class="form-group">
                     <label for="countryFilter">Country</label>
-                    @Html.DropDownList("countryFilter", new SelectList(Model.AllTeamsCountries), "--All countries--", new { @class = "form-control" })
+                    @Html.DropDownListFor(m => m.Country, new SelectList(Model.Countries, "Name", "Name"), "--No country selected--", new { id = "country", @class = "form-control" })
                 </div>
                 <div class="'form-group">
                     <label for="logo">Logo</label>
                     <input asp-for="Logo" type="file" name="logo" class="form-control">
                 </div>
+            </div>
+        </div>
+        <div class="row py-5">
+            <div class="col">
                 <div class="form-group">
                     @Html.LabelFor(m => m.TeamsToAdd)
                     @Html.ListBoxFor(m => m.TeamsToAdd, new SelectList(Model.AllTeams, "Name", "Name"), new { id = "teams-to-add", @class = "form-control", size = 10 })
                 </div>
             </div>
             <div class="col">
-                <div class="form-group" style="padding-top: 240px">
+                <div class="form-group">
                     @Html.LabelFor(m => m.SelectedTeams)
                     @Html.ListBoxFor(m => m.SelectedTeamIds, new SelectList(Model.SelectedTeams, "Name", "Name"), new { id = "selected-teams", @class = "form-control", size = 10 })
                 </div>
@@ -42,10 +46,12 @@
                 <button type="button" class="btn btn-primary remove-team">Remove Team(s)</button>
             </div>
         </div>
-        <div class="row" style="padding-top: 20px">
-            <button type="submit" class="btn btn-lg btn-success">Create Team League</button>
-            <div class="alert alert-success invisible" role="alert" id="create-league-alert-success"></div>
-            <div class="alert alert-danger invisible" role="alert" id="create-league-alert-danger"></div>
+        <div class="row py-3">
+            <div class="col">
+                <button type="submit" class="btn btn-lg btn-success">Create Team League</button>
+                <div class="alert alert-success invisible" role="alert" id="create-league-alert-success"></div>
+                <div class="alert alert-danger invisible" role="alert" id="create-league-alert-danger"></div>
+            </div>
         </div>
     </div>
 }
@@ -87,12 +93,16 @@
     <script>
         $(document).ready(function () {
 
-            $('#countryFilter').change(function () {
-                if (this.value == "--All countries--") {
+            getCountries($('#country-dropdown'), "@Model.CountryApiUrl");
+            getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl");
+
+            $('#country').change(function () {
+                if (this.value == "--No country selected--") {
                     getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl");
                 }
                 else {
                     getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl" + "/" + this.value);
+                    $('#country-dropdown').val(this.value).change();
                 }
             });
 
@@ -111,9 +121,6 @@
             $('.remove-team').click(function () {
                 moveSelectedItems($('#selected-teams'), $('#teams-to-add'));
             });
-
-            getCountries($('#country-dropdown'), "@Model.CountryApiUrl");
-            getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl");
 
             $('.btn-success').click(function () {
                 $("#selected-teams option").prop("selected", true);
