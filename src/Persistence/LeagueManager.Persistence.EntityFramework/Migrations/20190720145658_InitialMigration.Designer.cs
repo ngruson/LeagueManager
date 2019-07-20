@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeagueManager.Persistence.EntityFramework.Migrations
 {
     [DbContext(typeof(LeagueManagerDbContext))]
-    [Migration("20190718134702_InitialMigration")]
+    [Migration("20190720145658_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,9 +50,13 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int?>("PointSystemId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
+
+                    b.HasIndex("PointSystemId");
 
                     b.ToTable("TeamLeagues");
                 });
@@ -118,6 +122,8 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("HomeAway");
+
                     b.Property<int?>("ScoreId");
 
                     b.Property<int?>("TeamId");
@@ -133,6 +139,23 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.HasIndex("TeamMatchId");
 
                     b.ToTable("TeamMatchEntry");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Points.PointSystem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Draw");
+
+                    b.Property<int>("Lost");
+
+                    b.Property<int>("Win");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PointSystem");
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Round.TeamLeagueRound", b =>
@@ -158,7 +181,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Value");
+                    b.Property<int?>("Value");
 
                     b.HasKey("Id");
 
@@ -170,6 +193,10 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.HasOne("LeagueManager.Domain.Common.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId");
+
+                    b.HasOne("LeagueManager.Domain.Points.PointSystem", "PointSystem")
+                        .WithMany()
+                        .HasForeignKey("PointSystemId");
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Competitor.Team", b =>

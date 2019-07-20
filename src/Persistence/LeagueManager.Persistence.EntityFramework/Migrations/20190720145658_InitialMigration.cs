@@ -29,7 +29,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Value = table.Column<int>(nullable: false)
+                    Value = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -37,24 +37,18 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TeamLeagues",
+                name: "PointSystem",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    CountryId = table.Column<int>(nullable: true),
-                    Logo = table.Column<byte[]>(nullable: true)
+                    Win = table.Column<int>(nullable: false),
+                    Draw = table.Column<int>(nullable: false),
+                    Lost = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TeamLeagues", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TeamLeagues_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_PointSystem", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,21 +73,29 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TeamLeagueRound",
+                name: "TeamLeagues",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: true),
-                    TeamLeagueId = table.Column<int>(nullable: true)
+                    CountryId = table.Column<int>(nullable: true),
+                    Logo = table.Column<byte[]>(nullable: true),
+                    PointSystemId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TeamLeagueRound", x => x.Id);
+                    table.PrimaryKey("PK_TeamLeagues", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TeamLeagueRound_TeamLeagues_TeamLeagueId",
-                        column: x => x.TeamLeagueId,
-                        principalTable: "TeamLeagues",
+                        name: "FK_TeamLeagues_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TeamLeagues_PointSystem_PointSystemId",
+                        column: x => x.PointSystemId,
+                        principalTable: "PointSystem",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -118,6 +120,26 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_TeamCompetitor_TeamLeagues_TeamLeagueId",
+                        column: x => x.TeamLeagueId,
+                        principalTable: "TeamLeagues",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TeamLeagueRound",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    TeamLeagueId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamLeagueRound", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TeamLeagueRound_TeamLeagues_TeamLeagueId",
                         column: x => x.TeamLeagueId,
                         principalTable: "TeamLeagues",
                         principalColumn: "Id",
@@ -151,6 +173,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TeamId = table.Column<int>(nullable: true),
+                    HomeAway = table.Column<int>(nullable: false),
                     ScoreId = table.Column<int>(nullable: true),
                     TeamMatchId = table.Column<int>(nullable: true)
                 },
@@ -196,6 +219,11 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 name: "IX_TeamLeagues_CountryId",
                 table: "TeamLeagues",
                 column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamLeagues_PointSystemId",
+                table: "TeamLeagues",
+                column: "PointSystemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TeamMatch_TeamLeagueRoundId",
@@ -248,6 +276,9 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
 
             migrationBuilder.DropTable(
                 name: "Countries");
+
+            migrationBuilder.DropTable(
+                name: "PointSystem");
         }
     }
 }

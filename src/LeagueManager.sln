@@ -35,9 +35,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueManager.Api.TeamApi",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueManager.Api.TeamApi.UnitTests", "Presentation\Api\LeagueManager.Api.TeamApi.UnitTests\LeagueManager.Api.TeamApi.UnitTests.csproj", "{EA50F2C1-6F4A-4BC0-8C5B-B56CD1B0C458}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueManager.Api.CountryApi.UnitTests", "Presentation\Api\LeagueManager.Api.CountryApi.UnitTests\LeagueManager.Api.CountryApi.UnitTests.csproj", "{4A3D7A79-DBFF-49B7-A383-79910273EA1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueManager.Api.CountryApi.UnitTests", "Presentation\Api\LeagueManager.Api.CountryApi.UnitTests\LeagueManager.Api.CountryApi.UnitTests.csproj", "{4A3D7A79-DBFF-49B7-A383-79910273EA1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueManager.Api.CompetitionApi.UnitTests", "Presentation\Api\LeagueManager.Api.CompetitionApi.UnitTests\LeagueManager.Api.CompetitionApi.UnitTests.csproj", "{D1B48F25-9057-41E5-A7F0-4D88D93A64C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeagueManager.Api.CompetitionApi.UnitTests", "Presentation\Api\LeagueManager.Api.CompetitionApi.UnitTests\LeagueManager.Api.CompetitionApi.UnitTests.csproj", "{D1B48F25-9057-41E5-A7F0-4D88D93A64C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeagueManager.Domain.UnitTests", "Domain\LeagueManager.Domain.UnitTests\LeagueManager.Domain.UnitTests.csproj", "{675349DB-6A5E-4F5B-BCFB-6CCA4788EFFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +95,10 @@ Global
 		{D1B48F25-9057-41E5-A7F0-4D88D93A64C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1B48F25-9057-41E5-A7F0-4D88D93A64C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1B48F25-9057-41E5-A7F0-4D88D93A64C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{675349DB-6A5E-4F5B-BCFB-6CCA4788EFFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{675349DB-6A5E-4F5B-BCFB-6CCA4788EFFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{675349DB-6A5E-4F5B-BCFB-6CCA4788EFFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{675349DB-6A5E-4F5B-BCFB-6CCA4788EFFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -111,6 +117,7 @@ Global
 		{EA50F2C1-6F4A-4BC0-8C5B-B56CD1B0C458} = {5D01DE46-8E08-4CBA-8B30-212C8840A4C8}
 		{4A3D7A79-DBFF-49B7-A383-79910273EA1E} = {5D01DE46-8E08-4CBA-8B30-212C8840A4C8}
 		{D1B48F25-9057-41E5-A7F0-4D88D93A64C3} = {5D01DE46-8E08-4CBA-8B30-212C8840A4C8}
+		{675349DB-6A5E-4F5B-BCFB-6CCA4788EFFB} = {3B941F49-8A88-4A67-BCCF-3009CB553409}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {62347AEE-45AB-4A37-BD88-412BD6327427}

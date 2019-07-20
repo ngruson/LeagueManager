@@ -18,9 +18,8 @@ namespace LeagueManager.Persistence.EntityFramework
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<TeamLeague>();
-            //modelBuilder.Entity<TeamMatch>();
-            //modelBuilder.Entity<IntegerScore>();
+            modelBuilder.Entity<TeamLeague>()
+                .Ignore(e => e.Table);
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(LeagueManagerDbContext).Assembly);
         }

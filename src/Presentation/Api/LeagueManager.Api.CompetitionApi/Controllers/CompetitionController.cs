@@ -30,7 +30,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var competitions = await mediator.Send(new GetCompetitionsQuery { Country = country });
                 return Ok(competitions);
             }
-            catch
+            catch (Exception ex)
             {
                 return BadRequest("Something went wrong!");
             }

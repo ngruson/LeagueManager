@@ -7,6 +7,7 @@ namespace LeagueManager.Domain.Match
     {
         public int Id { get; set; }
         public Team Team { get; set; }
+        public HomeAway HomeAway { get; set; }
         public IntegerScore Score { get; set; }
     }
 }
