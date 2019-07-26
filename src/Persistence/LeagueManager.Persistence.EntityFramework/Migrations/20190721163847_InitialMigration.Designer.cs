@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeagueManager.Persistence.EntityFramework.Migrations
 {
     [DbContext(typeof(LeagueManagerDbContext))]
-    [Migration("20190720145658_InitialMigration")]
+    [Migration("20190721163847_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -213,7 +213,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .HasForeignKey("TeamId");
 
                     b.HasOne("LeagueManager.Domain.Competition.TeamLeague")
-                        .WithMany("Teams")
+                        .WithMany("Competitors")
                         .HasForeignKey("TeamLeagueId");
                 });
 

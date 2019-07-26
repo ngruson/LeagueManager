@@ -211,7 +211,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .HasForeignKey("TeamId");
 
                     b.HasOne("LeagueManager.Domain.Competition.TeamLeague")
-                        .WithMany("Teams")
+                        .WithMany("Competitors")
                         .HasForeignKey("TeamLeagueId");
                 });
 

@@ -2,6 +2,6 @@
 {
     public interface IImageFileLoader
     {
-        byte[] LoadImage(string fileName);
+        byte[] LoadImage(string filePath);
     }
 }

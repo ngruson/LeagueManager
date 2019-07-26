@@ -1,17 +1,16 @@
-﻿using FluentAssertions;
-using LeagueManager.Application.Competitions.Queries.GetCompetition;
+﻿using AutoMapper;
+using FluentAssertions;
+using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Domain.Common;
 using LeagueManager.Domain.Competition;
+using LeagueManager.Domain.Competitor;
 using MockQueryable.Moq;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LeagueManager.Application.UnitTests
@@ -26,23 +25,92 @@ namespace LeagueManager.Application.UnitTests
             return mockContext;
         }
 
+        private IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(opts =>
+            {
+                opts.AddProfile<ApplicationProfile>();
+            });
+
+            return config.CreateMapper();
+        }
+
+        private List<TeamLeague> CreateTeamLeagues()
+        {
+            return new List<TeamLeague>
+            {
+                new TeamLeague
+                {
+                    Name = "Premier League 2018-2019",
+                    Country = new Country { Name = "England" },
+                    Competitors = CreateCompetitorsForEngland()
+                },
+                new TeamLeague
+                {
+                    Name = "Premier League 2019-2020",
+                    Country = new Country { Name = "England" },
+                    Competitors = CreateCompetitorsForEngland()
+                },
+                new TeamLeague
+                {
+                    Name = "Primera Division 2019-2020",
+                    Country = new Country { Name = "Spain" },
+                    Competitors = CreateCompetitorsForSpain()
+                }
+            };
+        }
+
+        private List<TeamCompetitor> CreateCompetitorsForEngland()
+        {
+            return new List<TeamCompetitor>
+            {
+                new TeamCompetitor
+                {
+                    Team = new Team
+                    {
+                        Name = "Liverpool"
+                    }
+                },
+                new TeamCompetitor
+                {
+                    Team = new Team
+                    {
+                        Name = "Manchester City"
+                    }
+                }
+            };
+        }
+
+        private List<TeamCompetitor> CreateCompetitorsForSpain()
+        {
+            return new List<TeamCompetitor>
+            {
+                new TeamCompetitor
+                {
+                    Team = new Team
+                    {
+                        Name = "FC Barcelona"
+                    }
+                },
+                new TeamCompetitor
+                {
+                    Team = new Team
+                    {
+                        Name = "Manchester City"
+                    }
+                }
+            };
+        }
+
         [Fact]
         public async void Given_TeamLeaguesExist_When_GetCompetitions_Then_TeamLeaguesAreReturned()
         {
             // Arrange
-            var leagues = new List<TeamLeague>
-            {
-                new TeamLeague
-                {
-                    Name = "Premier League"
-                },
-                new TeamLeague
-                {
-                    Name = "Primera Division"
-                }
-            };
+            var leagues = CreateTeamLeagues();
             var contextMock = MockDbContext(leagues.AsQueryable());
-            var handler = new GetCompetitionsQueryHandler(contextMock.Object);
+            var handler = new GetCompetitionsQueryHandler(
+                contextMock.Object,
+                CreateMapper());
 
             //Act
             var result = await handler.Handle(
@@ -50,7 +118,7 @@ namespace LeagueManager.Application.UnitTests
                 CancellationToken.None);
 
             //Assert
-            result.Count().Should().Be(2);
+            result.Count().Should().Be(3);
         }
 
         [Fact]
@@ -59,7 +127,9 @@ namespace LeagueManager.Application.UnitTests
             // Arrange
             var leagues = new List<TeamLeague>();
             var contextMock = MockDbContext(leagues.AsQueryable());
-            var handler = new GetCompetitionsQueryHandler(contextMock.Object);
+            var handler = new GetCompetitionsQueryHandler(
+                contextMock.Object,
+                CreateMapper());
 
             //Act
             var result = await handler.Handle(
@@ -74,34 +144,27 @@ namespace LeagueManager.Application.UnitTests
         public async void Given_CompetitionsWithCountryExist_When_GetCompetitionsByCountry_Then_CompetitionsAreReturned()
         {
             // Arrange
-            var leagues = new List<TeamLeague>
-            {
-                new TeamLeague
-                {
-                    Name = "Premier League 2018-2019",
-                    Country = new Country { Name = "England" }
-                },
-                new TeamLeague
-                {
-                    Name = "Premier League 2019-2020",
-                    Country = new Country { Name = "England" }
-                },
-                new TeamLeague
-                {
-                    Name = "Primera Division 2019-2020",
-                    Country = new Country { Name = "Spain" }
-                },
-            };
+            var leagues = CreateTeamLeagues();
             var contextMock = MockDbContext(leagues.AsQueryable());
-            var handler = new GetCompetitionsQueryHandler(contextMock.Object);
+            var handler = new GetCompetitionsQueryHandler(
+                contextMock.Object,
+                CreateMapper());
 
             //Act
             var result = await handler.Handle(
-                new GetCompetitionsQuery {  Country = "England" },
+                new GetCompetitionsQuery { Country = "England" },
                 CancellationToken.None);
 
             //Assert
             result.Count().Should().Be(2);
+            var list = result.ToList();
+            list[0].Name.Should().Be("Premier League 2018-2019");
+            list[0].Country.Should().Be("England");
+            list[0].Competitors.Count().Should().Be(2);
+
+            list[1].Name.Should().Be("Premier League 2019-2020");
+            list[1].Country.Should().Be("England");
+            list[1].Competitors.Count().Should().Be(2);
         }
     }
 }

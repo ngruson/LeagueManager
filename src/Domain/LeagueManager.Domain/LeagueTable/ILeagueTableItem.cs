@@ -5,7 +5,7 @@
         int Position { get; set; }
         int GamesPlayed { get; set; }
         int GamesWon { get; set; }
-        int GamesDrawed { get; set; }
+        int GamesDrawn { get; set; }
         int GamesLost { get; set; }
         int GoalsFor { get; set; }
         int GoalsAgainst { get; set; }

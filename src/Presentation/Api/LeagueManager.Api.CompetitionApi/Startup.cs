@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
+using LeagueManager.Application.AutoMapper;
+using AutoMapper;
 
 namespace LeagueManager.Api.CompetitionApi
 {
@@ -43,6 +45,7 @@ namespace LeagueManager.Api.CompetitionApi
 
             services.AddDbContext<ILeagueManagerDbContext, LeagueManagerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LeagueManager")));
+            services.AddAutoMapper(typeof(ApplicationProfile).Assembly);
 
             services.AddScoped<ServiceFactory>(p => p.GetService);
             services.Scan(scan => scan

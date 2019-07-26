@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 namespace LeagueManager.Domain.Competition
 {
-    public interface ITeamLeague : ILeague
+    public interface ITeamLeague : ILeague<TeamCompetitor, TeamLeagueRound>
     {
-        List<TeamCompetitor> Teams { get; set; }
-        List<TeamLeagueRound> Rounds { get; set; }
     }
 }

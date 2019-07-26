@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using LeagueManager.Application.Competitions.Commands;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
+using LeagueManager.Application.Competitions.Queries.GetTeamLeague;
 using LeagueManager.Application.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -30,7 +31,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var competitions = await mediator.Send(new GetCompetitionsQuery { Country = country });
                 return Ok(competitions);
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest("Something went wrong!");
             }
@@ -38,7 +39,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
 
         // GET api/competition/Premier League 2019-2020
         [HttpGet("{name}")]
-        public async Task<IActionResult> Get(string name)
+        public async Task<IActionResult> GetCompetition(string name)
         {
             try
             {
@@ -46,6 +47,21 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 return Ok(league);
             }
             catch
+            {
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        // GET api/competition/teamleague/Premier League 2019-2020
+        [HttpGet("teamleague/{name}")]
+        public async Task<IActionResult> GetTeamLeague(string name)
+        {
+            try
+            {
+                var league = await mediator.Send(new GetTeamLeagueQuery { Name = name });
+                return Ok(league);
+            }
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }

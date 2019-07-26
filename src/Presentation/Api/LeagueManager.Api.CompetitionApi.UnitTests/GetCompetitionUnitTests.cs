@@ -1,5 +1,6 @@
 using FluentAssertions;
 using LeagueManager.Api.CompetitionApi.Controllers;
+using LeagueManager.Application.Competitions.Queries.Dto;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             var controller = new CompetitionController(mockMediator.Object);
 
             //Act
-            var result = await controller.Get("Premier League");
+            var result = await controller.GetCompetition("Premier League");
 
             //Assert
             var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
@@ -42,7 +43,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             var controller = new CompetitionController(null);
 
             //Act
-            var result = await controller.Get(null);
+            var result = await controller.GetCompetition(null);
 
             //Assert
             result.Should().BeOfType<BadRequestObjectResult>();

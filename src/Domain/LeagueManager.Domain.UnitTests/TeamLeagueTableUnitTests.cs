@@ -19,12 +19,24 @@ namespace LeagueManager.Domain.UnitTests
             //Arrange
             var pointSystem = new PointSystem(3, 1, 0);
 
-            var teamLiverpool = new Team { Name = "Liverpool" };
-            var teamChelsea = new Team { Name = "Chelsea" };
-            var teamManCity = new Team { Name = "Manchester City" };
-            var teamTottenham = new Team { Name = "Tottenham Hotspur" };
-            var teams = new List<Team> { teamLiverpool, teamChelsea, teamManCity, teamTottenham };
-            teams = teams.OrderBy(t => t.Name).ToList();
+            var teamLiverpool = new TeamCompetitor
+            {
+                Team = new Team { Name = "Liverpool" }
+            };
+            var teamChelsea = new TeamCompetitor
+            {
+                Team = new Team { Name = "Chelsea" }
+            };
+            var teamManCity = new TeamCompetitor
+            {
+                Team = new Team { Name = "Manchester City" }
+            };
+            var teamTottenham = new TeamCompetitor
+            {
+                Team = new Team { Name = "Tottenham Hotspur" }
+            };
+            var teams = new List<TeamCompetitor> { teamLiverpool, teamChelsea, teamManCity, teamTottenham };
+            teams = teams.OrderBy(t => t.Team.Name).ToList();
 
             #region Rounds
             var rounds = new List<TeamLeagueRound>
@@ -40,13 +52,13 @@ namespace LeagueManager.Domain.UnitTests
                                 new TeamMatchEntry
                                 {
                                     HomeAway = HomeAway.Home,
-                                    Team = teamLiverpool,
+                                    Team = teamLiverpool.Team,
                                     Score = new IntegerScore { Value = 2 }
                                 },
                                 new TeamMatchEntry
                                 {
                                     HomeAway = HomeAway.Away,
-                                    Team = teamChelsea,
+                                    Team = teamChelsea.Team,
                                     Score = new IntegerScore { Value = 0 }
                                 }
                             }
@@ -58,13 +70,13 @@ namespace LeagueManager.Domain.UnitTests
                                 new TeamMatchEntry
                                 {
                                     HomeAway = HomeAway.Home,
-                                    Team = teamManCity,
+                                    Team = teamManCity.Team,
                                     Score = new IntegerScore { Value = 1 }
                                 },
                                 new TeamMatchEntry
                                 {
                                     HomeAway = HomeAway.Away,
-                                    Team = teamTottenham,
+                                    Team = teamTottenham.Team,
                                     Score = new IntegerScore { Value = 0 }
                                 }
                             }
@@ -82,13 +94,13 @@ namespace LeagueManager.Domain.UnitTests
                                 new TeamMatchEntry
                                 {
                                     HomeAway = HomeAway.Home,
-                                    Team = teamManCity,
+                                    Team = teamManCity.Team,
                                     Score = new IntegerScore { Value = 1 }
                                 },
                                 new TeamMatchEntry
                                 {
                                     HomeAway = HomeAway.Away,
-                                    Team = teamLiverpool,
+                                    Team = teamLiverpool.Team,
                                     Score = new IntegerScore { Value = 1 }
                                 }
                             }
@@ -100,13 +112,13 @@ namespace LeagueManager.Domain.UnitTests
                                 new TeamMatchEntry
                                 {
                                     HomeAway = HomeAway.Home,
-                                    Team = teamTottenham,
+                                    Team = teamTottenham.Team,
                                     Score = new IntegerScore { Value = 2 }
                                 },
                                 new TeamMatchEntry
                                 {
                                     HomeAway = HomeAway.Away,
-                                    Team = teamChelsea,
+                                    Team = teamChelsea.Team,
                                     Score = new IntegerScore { Value = 2 }
                                 }
                             }
@@ -123,9 +135,9 @@ namespace LeagueManager.Domain.UnitTests
             //Assert
             var position1 = table.Items[0];
             position1.Position.Should().Be(1);
-            position1.Team.Should().Be(teamLiverpool);
+            position1.Team.Should().Be(teamLiverpool.Team);
             position1.GamesWon.Should().Be(1);
-            position1.GamesDrawed.Should().Be(1);
+            position1.GamesDrawn.Should().Be(1);
             position1.GamesLost.Should().Be(0);
             position1.GoalsFor.Should().Be(3);
             position1.GoalsAgainst.Should().Be(1);
@@ -134,9 +146,9 @@ namespace LeagueManager.Domain.UnitTests
 
             var position2 = table.Items[1];
             position2.Position.Should().Be(2);
-            position2.Team.Should().Be(teamManCity);
+            position2.Team.Should().Be(teamManCity.Team);
             position2.GamesWon.Should().Be(1);
-            position2.GamesDrawed.Should().Be(1);
+            position2.GamesDrawn.Should().Be(1);
             position2.GamesLost.Should().Be(0);
             position2.GoalsFor.Should().Be(2);
             position2.GoalsAgainst.Should().Be(1);
@@ -145,9 +157,9 @@ namespace LeagueManager.Domain.UnitTests
 
             var position3 = table.Items[2];
             position3.Position.Should().Be(3);
-            position3.Team.Should().Be(teamTottenham);
+            position3.Team.Should().Be(teamTottenham.Team);
             position3.GamesWon.Should().Be(0);
-            position3.GamesDrawed.Should().Be(1);
+            position3.GamesDrawn.Should().Be(1);
             position3.GamesLost.Should().Be(1);
             position3.GoalsFor.Should().Be(2);
             position3.GoalsAgainst.Should().Be(3);
@@ -156,9 +168,9 @@ namespace LeagueManager.Domain.UnitTests
 
             var position4 = table.Items[3];
             position4.Position.Should().Be(4);
-            position4.Team.Should().Be(teamChelsea);
+            position4.Team.Should().Be(teamChelsea.Team);
             position4.GamesWon.Should().Be(0);
-            position4.GamesDrawed.Should().Be(1);
+            position4.GamesDrawn.Should().Be(1);
             position4.GamesLost.Should().Be(1);
             position4.GoalsFor.Should().Be(2);
             position4.GoalsAgainst.Should().Be(4);
@@ -172,12 +184,24 @@ namespace LeagueManager.Domain.UnitTests
             //Arrange
             var pointSystem = new PointSystem(3, 1, 0);
 
-            var teamLiverpool = new Team { Name = "Liverpool" };
-            var teamChelsea = new Team { Name = "Chelsea" };
-            var teamManCity = new Team { Name = "Manchester City" };
-            var teamTottenham = new Team { Name = "Tottenham Hotspur" };
-            var teams = new List<Team> { teamLiverpool, teamChelsea, teamManCity, teamTottenham };
-            teams = teams.OrderBy(t => t.Name).ToList();
+            var teamLiverpool = new TeamCompetitor
+            {
+                Team = new Team { Name = "Liverpool" }
+            };
+            var teamChelsea = new TeamCompetitor
+            {
+                Team = new Team { Name = "Chelsea" }
+            };
+            var teamManCity = new TeamCompetitor
+            {
+                Team = new Team { Name = "Manchester City" }
+            };
+            var teamTottenham = new TeamCompetitor
+            {
+                Team = new Team { Name = "Tottenham Hotspur" }
+            };
+            var teams = new List<TeamCompetitor> { teamLiverpool, teamChelsea, teamManCity, teamTottenham };
+            teams = teams.OrderBy(t => t.Team.Name).ToList();
 
             var rounds = new List<TeamLeagueRound>();
 
@@ -189,7 +213,7 @@ namespace LeagueManager.Domain.UnitTests
             table.Items.ForEach(i =>
             {
                 i.GamesWon.Should().Be(0);
-                i.GamesDrawed.Should().Be(0);
+                i.GamesDrawn.Should().Be(0);
                 i.GamesLost.Should().Be(0);
                 i.GoalsFor.Should().Be(0);
                 i.GoalsAgainst.Should().Be(0);
@@ -197,10 +221,10 @@ namespace LeagueManager.Domain.UnitTests
                 i.Points.Should().Be(0);
             });
 
-            table.Items[0].Team.Should().Be(teamChelsea);
-            table.Items[1].Team.Should().Be(teamLiverpool);
-            table.Items[2].Team.Should().Be(teamManCity);
-            table.Items[3].Team.Should().Be(teamTottenham);
+            table.Items[0].Team.Should().Be(teamChelsea.Team);
+            table.Items[1].Team.Should().Be(teamLiverpool.Team);
+            table.Items[2].Team.Should().Be(teamManCity.Team);
+            table.Items[3].Team.Should().Be(teamTottenham.Team);
         }
     }
 }

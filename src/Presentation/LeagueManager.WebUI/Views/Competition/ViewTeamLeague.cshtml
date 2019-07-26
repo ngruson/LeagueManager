@@ -1,0 +1,61 @@
+﻿@model LeagueManager.WebUI.ViewModels.ViewTeamLeagueViewModel
+@{
+    ViewData["Title"] = @Model.Name;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-table-tab" data-toggle="pill" href="#v-pills-table" role="tab" aria-controls="v-pills-table" aria-selected="true">Table</a>
+                <a class="nav-link" id="v-pills-fixtures-tab" data-toggle="pill" href="#v-pills-fixtures" role="tab" aria-controls="v-pills-fixtures" aria-selected="true">Fixtures</a>
+            </div>
+        </div>
+        <div class="col-9">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-table" role="tabpanel" aria-labelledby="v-pills-table-tab">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col">Team</th>
+                                <th scope="col">GP</th>
+                                <th scope="col">W</th>
+                                <th scope="col">D</th>
+                                <th scope="col">L</th>
+                                <th scope="col">GF</th>
+                                <th scope="col">GA</th>
+                                <th scope="col">GD</th>
+                                <th scope="col">P</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Table.Items)
+                            {
+                            <tr>
+                                <td>@item.Position</td>
+                                <td><img src="@item.Team.Logo" style="height:24px; width:24px" /></td>
+                                <td>@item.Team.Name</td>
+                                <td>@item.GamesPlayed</td>
+                                <td>@item.GamesWon</td>
+                                <td>@item.GamesDrawn</td>
+                                <td>@item.GamesLost</td>
+                                <td>@item.GoalsFor</td>
+                                <td>@item.GoalsAgainst</td>
+                                <td>@item.GoalDifference</td>
+                                <td>@item.Points</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade" id="v-pills-fixtures" role="tabpanel" aria-labelledby="v-pills-fixtures-tab">
+                    ...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

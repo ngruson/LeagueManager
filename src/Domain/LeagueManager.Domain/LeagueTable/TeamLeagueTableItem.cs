@@ -8,7 +8,7 @@ namespace LeagueManager.Domain.LeagueTable
         public Team Team { get; set; }
         public int GamesPlayed { get; set; }
         public int GamesWon { get; set; }
-        public int GamesDrawed { get; set; }
+        public int GamesDrawn { get; set; }
         public int GamesLost { get; set; }
         public int GoalsFor { get; set; }
         public int GoalsAgainst { get; set; }

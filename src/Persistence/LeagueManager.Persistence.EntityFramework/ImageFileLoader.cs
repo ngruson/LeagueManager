@@ -5,10 +5,11 @@ namespace LeagueManager.Persistence.EntityFramework
 {
     public class ImageFileLoader : IImageFileLoader
     {
-        public byte[] LoadImage(string fileName)
+        public byte[] LoadImage(string filePath)
         {
-            string path = $"{ Environment.CurrentDirectory }\\..\\..\\..\\..\\images\\country-flags\\png100px\\{ fileName }";
-            return File.ReadAllBytes(path);
+            string basePath = $"{ Environment.CurrentDirectory }\\..\\..\\..\\..\\images";
+            string imagePath = Path.Combine(basePath, filePath);
+            return File.ReadAllBytes(imagePath);
         }
     }
 }

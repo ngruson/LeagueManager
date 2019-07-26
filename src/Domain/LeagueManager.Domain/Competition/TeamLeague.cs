@@ -14,8 +14,13 @@ namespace LeagueManager.Domain.Competition
         public Country Country { get; set; }
         public byte[] Logo { get; set; }
         public PointSystem PointSystem { get; set; } = new PointSystem();
-        public List<TeamCompetitor> Teams { get; set; } = new List<TeamCompetitor>();
+        public List<TeamCompetitor> Competitors { get; set; } = new List<TeamCompetitor>();
         public List<TeamLeagueRound> Rounds { get; set; } = new List<TeamLeagueRound>();
-        public TeamLeagueTable Table { get; set; }
+        public TeamLeagueTable Table { get; private set; } = new TeamLeagueTable();
+
+        public void CalculateTable()
+        {
+            Table.CalculateTable(Competitors, Rounds, PointSystem);
+        }
     }
 }

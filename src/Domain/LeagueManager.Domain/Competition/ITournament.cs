@@ -1,6 +1,9 @@
-﻿namespace LeagueManager.Domain.Competition
+﻿using LeagueManager.Domain.Competitor;
+
+namespace LeagueManager.Domain.Competition
 {
-    public interface ITournament : ICompetition
+    public interface ITournament<TCompetitor> : ICompetition<TCompetitor>
+        where TCompetitor : ICompetitor
     {
     }
 }

@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace LeagueManager.WebUI.ViewModels
 {
-    public class TeamLeagueViewModel
+    public class CreateTeamLeagueViewModel
     {
         public string Name { get; set; }
         public string Country { get; set; }

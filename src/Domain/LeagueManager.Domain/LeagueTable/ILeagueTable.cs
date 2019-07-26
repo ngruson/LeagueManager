@@ -8,7 +8,7 @@ namespace LeagueManager.Domain.LeagueTable
     public interface ILeagueTable
     {
         void CalculateTable(
-            List<Team> teams,
+            List<TeamCompetitor> teams,
             List<TeamLeagueRound> rounds,
             PointSystem pointSystem);
     }

@@ -1,5 +1,6 @@
 using FluentAssertions;
 using LeagueManager.Api.CompetitionApi.Controllers;
+using LeagueManager.Application.Competitions.Queries.Dto;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

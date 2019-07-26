@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Competitions.Commands;
-using LeagueManager.Application.Competitions.Queries.GetCompetitions;
+using LeagueManager.Application.Competitions.Queries.Dto;
 using LeagueManager.WebUI.ViewModels;
 using System;
 using System.IO;
@@ -23,7 +23,7 @@ namespace LeagueManager.WebUI.AutoMapper
                 });
 
             
-            CreateMap<TeamLeagueViewModel, CreateTeamLeagueCommand>()
+            CreateMap<CreateTeamLeagueViewModel, CreateTeamLeagueCommand>()
                 .ForMember(m => m.Logo, opt => {
                     opt.Condition(src => src.Logo != null);
                     opt.MapFrom((src, dest) =>
@@ -36,6 +36,20 @@ namespace LeagueManager.WebUI.AutoMapper
                     });
                 })
                 .ForMember(m => m.Teams, opt => opt.MapFrom(src => src.SelectedTeamIds));
+
+            CreateMap<TeamLeagueDto, ViewTeamLeagueViewModel>();
+            CreateMap<TeamLeagueTableDto, TeamLeagueTableViewModel>();
+            CreateMap<TeamLeagueTableItemDto, TeamLeagueTableItemViewModel>();
+            CreateMap<TeamDto, TeamViewModel>()
+                .ForMember(m => m.Logo, opt =>
+                {
+                    opt.Condition(src => src.Logo != null);
+                    opt.MapFrom((src, dest) =>
+                    {
+                        var base64 = Convert.ToBase64String(src.Logo);
+                        return $"data:image/gif;base64,{base64}";
+                    });
+                });
         }
     }
 }

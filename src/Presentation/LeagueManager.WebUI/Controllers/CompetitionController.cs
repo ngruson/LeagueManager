@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LeagueManager.Domain.Competitor;
 using LeagueManager.Infrastructure.Api;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
+using LeagueManager.Application.Competitions.Queries.GetTeamLeague;
 
 namespace LeagueManager.WebUI.Controllers
 {
@@ -44,9 +45,23 @@ namespace LeagueManager.WebUI.Controllers
             return View(viewModel);
         }
 
+        [Route("{controller}/{leagueName}", Name = "ViewTeamLeague")]
+        public async Task<IActionResult> ViewTeamLeague(string leagueName)
+        {            
+            var teamLeague = await competitionApi.ViewTeamLeague(
+                new GetTeamLeagueQuery
+                {
+                    Name = leagueName
+                });
+
+            var viewModel = mapper.Map<ViewTeamLeagueViewModel>(teamLeague);
+
+            return View(viewModel);
+        }
+
         public async Task<IActionResult> CreateTeamLeague()
         {
-            var viewModel = new TeamLeagueViewModel
+            var viewModel = new CreateTeamLeagueViewModel
             {
                 AllTeams = await teamApi.GetTeams(),
                 SelectedTeams = new List<Team>(),
@@ -59,7 +74,7 @@ namespace LeagueManager.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTeamLeague(TeamLeagueViewModel model)
+        public async Task<IActionResult> CreateTeamLeague(CreateTeamLeagueViewModel model)
         {
             var command = mapper.Map<CreateTeamLeagueCommand>(model);
             await competitionApi.CreateTeamLeague(command);

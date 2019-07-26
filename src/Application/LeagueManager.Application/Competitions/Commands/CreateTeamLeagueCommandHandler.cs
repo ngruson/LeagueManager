@@ -42,7 +42,7 @@ namespace LeagueManager.Application.Competitions.Commands
                 if (team == null)
                     throw new TeamNotFoundException(teamName);
 
-                league.Teams.Add(new TeamCompetitor { Team = team });
+                league.Competitors.Add(new TeamCompetitor { Team = team });
             }
 
             context.TeamLeagues.Add(league);

@@ -7,6 +7,6 @@ namespace LeagueManager.Domain.Round
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<TeamMatch> Matches { get; set; }
+        public List<TeamMatch> Matches { get; set; } = new List<TeamMatch>();
     }
 }

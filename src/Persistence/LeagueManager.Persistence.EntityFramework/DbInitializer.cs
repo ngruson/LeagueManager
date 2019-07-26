@@ -1,6 +1,7 @@
 ﻿using LeagueManager.Domain.Common;
 using LeagueManager.Domain.Competitor;
 using Microsoft.Extensions.Configuration;
+using System.IO;
 using System.Linq;
 
 namespace LeagueManager.Persistence.EntityFramework
@@ -44,6 +45,8 @@ namespace LeagueManager.Persistence.EntityFramework
         //Got countries from https://datahub.io/core/country-codes
         private void SeedCountries(LeagueManagerDbContext context)
         {
+            string imagePath = "country-flags\\png100px";
+
             var countries = new Country[]
             {
                 new Country { Name = "Taiwan", Code = "TPE" },
@@ -200,7 +203,7 @@ namespace LeagueManager.Persistence.EntityFramework
                 new Country { Name = "Namibia", Code = "NAM" },
                 new Country { Name = "Nauru", Code = "NRU" },
                 new Country { Name = "Nepal", Code = "NEP" },
-                new Country { Name = "Netherlands", Code = "NED", Flag = imageFileLoader.LoadImage("nl.png") },
+                new Country { Name = "Netherlands", Code = "NED", Flag = imageFileLoader.LoadImage(Path.Combine(imagePath, "nl.png")) },
                 new Country { Name = "New Caledonia", Code = "NCL" },
                 new Country { Name = "New Zealand", Code = "NZL" },
                 new Country { Name = "Nicaragua", Code = "NCA" },
@@ -311,28 +314,29 @@ namespace LeagueManager.Persistence.EntityFramework
 
         private void SeedTeamsNL(LeagueManagerDbContext context)
         {
+            string imagePath = "teams\\nl";
             var country = context.Countries.SingleOrDefault(c => c.Name == "Netherlands");
 
             var teams = new Team[]
             {
-                new Team { Name = "ADO Den Haag", Country = country },
-                new Team { Name = "AZ", Country = country },
-                new Team { Name = "Ajax", Country = country },
-                new Team { Name = "FC Emmen", Country = country },
-                new Team { Name = "Feyenoord", Country = country },
-                new Team { Name = "Fortuna Sittard", Country = country },
-                new Team { Name = "FC Groningen", Country = country },
-                new Team { Name = "SC Heerenveen", Country = country },
-                new Team { Name = "Heracles Almelo", Country = country },
-                new Team { Name = "PEC Zwolle", Country = country },
-                new Team { Name = "PSV", Country = country },
-                new Team { Name = "RKC Waalwijk", Country = country },
-                new Team { Name = "Sparta Rotterdam", Country = country },
-                new Team { Name = "FC Twente", Country = country },
-                new Team { Name = "FC Utrecht", Country = country },
-                new Team { Name = "VVV Venlo", Country = country },
-                new Team { Name = "Vitesse", Country = country },
-                new Team { Name = "Willem II", Country = country },
+                new Team { Name = "ADO Den Haag", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "adodenhaag.png")) },
+                new Team { Name = "AZ", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "az.png")) },
+                new Team { Name = "Ajax", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "ajax.png")) },
+                new Team { Name = "FC Emmen", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "emmen.png")) },
+                new Team { Name = "Feyenoord", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "feyenoord.png")) },
+                new Team { Name = "Fortuna Sittard", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "fortunasittard.png")) },
+                new Team { Name = "FC Groningen", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "groningen.png")) },
+                new Team { Name = "SC Heerenveen", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "heerenveen.png")) },
+                new Team { Name = "Heracles Almelo", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "heraclesalmelo.png")) },
+                new Team { Name = "PEC Zwolle", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "peczwolle.png")) },
+                new Team { Name = "PSV", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "psv.png")) },
+                new Team { Name = "RKC Waalwijk", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "rkcwaalwijk.png")) },
+                new Team { Name = "Sparta Rotterdam", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "spartarotterdam.png")) },
+                new Team { Name = "FC Twente", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "twente.png")) },
+                new Team { Name = "FC Utrecht", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "utrecht.png")) },
+                new Team { Name = "VVV Venlo", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "vvv.png")) },
+                new Team { Name = "Vitesse", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "vitesse.png")) },
+                new Team { Name = "Willem II", Country = country, Logo = imageFileLoader.LoadImage(Path.Combine(imagePath, "willemii.png")) }
             };
 
             context.Teams.AddRange(teams);

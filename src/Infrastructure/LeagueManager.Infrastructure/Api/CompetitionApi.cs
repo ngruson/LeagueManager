@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using LeagueManager.Application.Competitions.Commands;
+using LeagueManager.Application.Competitions.Queries.Dto;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
+using LeagueManager.Application.Competitions.Queries.GetTeamLeague;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Infrastructure.Exceptions;
 using LeagueManager.Infrastructure.HttpHelpers;
@@ -34,6 +36,14 @@ namespace LeagueManager.Infrastructure.Api
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<IEnumerable<CompetitionDto>>();
             return new List<CompetitionDto>();
+        }
+
+        public async Task<TeamLeagueDto> ViewTeamLeague(GetTeamLeagueQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.Name}");
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<TeamLeagueDto>();
+            return null;
         }
     }
 }

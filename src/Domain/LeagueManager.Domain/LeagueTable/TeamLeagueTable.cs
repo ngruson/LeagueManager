@@ -12,29 +12,31 @@ namespace LeagueManager.Domain.LeagueTable
         public List<TeamLeagueTableItem> Items { get; set; } = new List<TeamLeagueTableItem>();
 
         public void CalculateTable(
-            List<Team> teams, 
+            List<TeamCompetitor> competitors, 
             List<TeamLeagueRound> rounds,
             PointSystem pointSystem)
         {
             Items.Clear();
 
-            teams.ForEach(t =>
-            {
-                var matches = GetMatchesForTeam(t, rounds);
-                var matchEntries = GetMatchEntriesForTeam(t, rounds);
-                var item = new TeamLeagueTableItem
-                {
-                    Team = t,
-                    GamesPlayed = matchEntries.Count(),
-                    GamesWon = matches.Count(m => m.Winner == t),
-                    GamesLost = matches.Count(m => m.Loser == t),
-                    GamesDrawed = matches.Count(m => m.IsDraw),
-                    GoalsFor = matches.Sum(m => m.GetGoalsFor(t)),
-                    GoalsAgainst = matches.Sum(m => m.GetGoalsAgainst(t)),
-                    Points = matches.Sum(m => m.GetPointsFor(t, pointSystem)),
-                };
-                Items.Add(item);
-            });
+            var teams = competitors.Select(t => t.Team).ToList();
+            competitors.Select(t => t.Team)
+                .ToList()
+                .ForEach(t =>
+                    {
+                        var matches = GetMatchesForTeam(t, rounds);
+                        var item = new TeamLeagueTableItem
+                        {
+                            Team = t,
+                            GamesPlayed = matches.Count(),
+                            GamesWon = matches.Count(m => m.Winner == t),
+                            GamesLost = matches.Count(m => m.Loser == t),
+                            GamesDrawn = matches.Count(m => m.IsDraw),
+                            GoalsFor = matches.Sum(m => m.GetGoalsFor(t)),
+                            GoalsAgainst = matches.Sum(m => m.GetGoalsAgainst(t)),
+                            Points = matches.Sum(m => m.GetPointsFor(t, pointSystem)),
+                        };
+                        Items.Add(item);
+                    });
 
             Items = Items.OrderByDescending(i => i.Points)
                 .ThenByDescending(i => i.GoalDifference)
@@ -42,11 +44,11 @@ namespace LeagueManager.Domain.LeagueTable
                 .ThenBy(i => i.Team.Name).ToList();
 
             int position = 0;
-            foreach (var item in Items)
+            Items.ForEach(i =>
             {
                 position++;
-                item.Position = position;
-            }
+                i.Position = position;
+            });
         }
 
         private List<TeamMatch> GetMatchesForTeam(
@@ -56,15 +58,6 @@ namespace LeagueManager.Domain.LeagueTable
             return rounds.SelectMany(r =>
                 r.Matches.Where(m =>
                     m.MatchEntries.Exists(me => me.Team.Name == team.Name))).ToList();
-        }
-
-        private List<TeamMatchEntry> GetMatchEntriesForTeam(
-            Team team, 
-            List<TeamLeagueRound> rounds)
-        {
-            return rounds.SelectMany(r =>
-                r.Matches.SelectMany(m =>
-                    m.MatchEntries.Where(me => me.Team.Name == team.Name))).ToList();
         }
     }
 }
