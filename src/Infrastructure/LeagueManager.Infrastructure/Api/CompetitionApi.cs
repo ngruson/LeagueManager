@@ -1,13 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using LeagueManager.Application.Competitions.Commands;
+using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Application.Competitions.Queries.Dto;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
-using LeagueManager.Application.Competitions.Queries.GetTeamLeague;
 using LeagueManager.Application.Interfaces;
+using LeagueManager.Application.TeamLeagues.Queries.Dto;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
 using LeagueManager.Infrastructure.Exceptions;
 using LeagueManager.Infrastructure.HttpHelpers;
 using Microsoft.Extensions.Options;
+using LeagueManager.Application.Competitions.Queries.GetCompetition;
 
 namespace LeagueManager.Infrastructure.Api
 {
@@ -38,11 +41,27 @@ namespace LeagueManager.Infrastructure.Api
             return new List<CompetitionDto>();
         }
 
-        public async Task<TeamLeagueDto> ViewTeamLeague(GetTeamLeagueQuery query)
+        public async Task<CompetitionDto> GetCompetition(GetCompetitionQuery query)
         {
-            var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.Name}");
+            var response = await httpRequestFactory.Get($"{apiSettings.CompetitionApiUrl}/{query.Name}");
             if (response.IsSuccessStatusCode)
-                return response.ContentAsType<TeamLeagueDto>();
+                return response.ContentAsType<CompetitionDto>();
+            return new CompetitionDto();
+        }
+
+        public async Task<TeamLeagueTableDto> GetTeamLeagueTable(GetTeamLeagueTableQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/table");
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<TeamLeagueTableDto>();
+            return null;
+        }
+
+        public async Task<IEnumerable<TeamLeagueRoundDto>> GetTeamLeagueRounds(GetTeamLeagueRoundsQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/rounds");
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<IEnumerable<TeamLeagueRoundDto>>();
             return null;
         }
     }

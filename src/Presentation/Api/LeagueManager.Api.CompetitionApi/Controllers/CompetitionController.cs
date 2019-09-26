@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
-using LeagueManager.Application.Competitions.Commands;
+using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
-using LeagueManager.Application.Competitions.Queries.GetTeamLeague;
 using LeagueManager.Application.Exceptions;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using LeagueManager.Application.TeamLeagueMatches.Commands;
+using LeagueManager.Api.CompetitionApi.Dto;
+using AutoMapper;
 
 namespace LeagueManager.Api.CompetitionApi.Controllers
 {
@@ -16,10 +20,14 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
     public class CompetitionController : ControllerBase
     {
         private readonly IMediator mediator;
+        private readonly IMapper mapper;
 
-        public CompetitionController(IMediator mediator)
+        public CompetitionController(
+            IMediator mediator,
+            IMapper mapper)
         {
             this.mediator = mediator;
+            this.mapper = mapper;
         }
 
         // GET api/competition?country={country}
@@ -32,6 +40,31 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 return Ok(competitions);
             }
             catch
+            {
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        // POST api/competition/teamleague
+        [HttpPost("teamleague")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> CreateTeamLeague([FromBody] CreateTeamLeagueCommand command)
+        {
+            try
+            {
+                await mediator.Send(command);
+                return Created($"/competition/{command.Name}", new { command.Name });
+            }
+            catch (CompetitionAlreadyExistsException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (TeamNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -52,33 +85,48 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
         }
 
-        // GET api/competition/teamleague/Premier League 2019-2020
-        [HttpGet("teamleague/{name}")]
-        public async Task<IActionResult> GetTeamLeague(string name)
+        // GET api/competition/teamleague/Premier League 2019-2020/table
+        [HttpGet("teamleague/{name}/table")]
+        public async Task<IActionResult> GetTeamLeagueTable(string name)
         {
             try
             {
-                var league = await mediator.Send(new GetTeamLeagueQuery { Name = name });
-                return Ok(league);
+                var table = await mediator.Send(new GetTeamLeagueTableQuery { LeagueName = name });
+                return Ok(table);
             }
-            catch (Exception)
+            catch
             {
                 return BadRequest("Something went wrong!");
             }
         }
 
-        // POST api/competition/teamleague
-        [HttpPost("teamleague")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> CreateTeamLeague([FromBody] CreateTeamLeagueCommand command)
+        // GET api/competition/teamleague/Premier League 2019-2020/rounds
+        [HttpGet("teamleague/{name}/rounds")]
+        public async Task<IActionResult> GetTeamLeagueRounds(string name)
         {
             try
             {
-                await mediator.Send(command);
-                return Created($"/competition/{command.Name}", new { command.Name });
+                var rounds = await mediator.Send(new GetTeamLeagueRoundsQuery { LeagueName = name });
+                return Ok(rounds);
             }
-            catch (CompetitionAlreadyExistsException ex)
+            catch
+            {
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        // PUT api/competition/teamleague/Premier League 2019-2020/match
+        [HttpPut("teamleague/{name}/match")]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> UpdateTeamLeagueMatch(string name, [FromBody] UpdateTeamLeagueMatchDto dto)
+        {
+            try
+            {
+                var command = mapper.Map<UpdateTeamLeagueMatchCommand>(dto, opt => opt.Items["leagueName"] = name);
+                await mediator.Send(command);
+                return Ok();
+            }
+            catch (MatchNotFoundException ex)
             {
                 return BadRequest(ex.Message);
             }

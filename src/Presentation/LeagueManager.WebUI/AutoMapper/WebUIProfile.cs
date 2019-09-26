@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using LeagueManager.Application.Competitions.Commands;
+using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Application.Competitions.Queries.Dto;
+using LeagueManager.Application.TeamLeagues.Queries.Dto;
 using LeagueManager.WebUI.ViewModels;
 using System;
 using System.IO;
@@ -50,6 +51,9 @@ namespace LeagueManager.WebUI.AutoMapper
                         return $"data:image/gif;base64,{base64}";
                     });
                 });
+            CreateMap<TeamLeagueRoundDto, TeamLeagueRoundViewModel>();
+            CreateMap<TeamMatchDto, TeamMatchViewModel>();
+            CreateMap<TeamMatchEntryDto, TeamMatchEntryViewModel>();
         }
     }
 }

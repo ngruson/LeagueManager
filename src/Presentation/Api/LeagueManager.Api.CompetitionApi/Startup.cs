@@ -1,6 +1,6 @@
 ﻿using FluentValidation.AspNetCore;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.Competitions.Commands;
+using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Persistence.EntityFramework;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +14,8 @@ using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
 using LeagueManager.Application.AutoMapper;
 using AutoMapper;
+using System.Reflection;
+using LeagueManager.Api.CompetitionApi.AutoMapper;
 
 namespace LeagueManager.Api.CompetitionApi
 {
@@ -45,7 +47,10 @@ namespace LeagueManager.Api.CompetitionApi
 
             services.AddDbContext<ILeagueManagerDbContext, LeagueManagerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LeagueManager")));
-            services.AddAutoMapper(typeof(ApplicationProfile).Assembly);
+            services.AddAutoMapper(new Assembly[] {
+                typeof(ApplicationProfile).Assembly,
+                typeof(CompetitionApiProfile).Assembly
+            });
 
             services.AddScoped<ServiceFactory>(p => p.GetService);
             services.Scan(scan => scan

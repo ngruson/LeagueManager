@@ -35,25 +35,77 @@
                         <tbody>
                             @foreach (var item in Model.Table.Items)
                             {
-                            <tr>
-                                <td>@item.Position</td>
-                                <td><img src="@item.Team.Logo" style="height:24px; width:24px" /></td>
-                                <td>@item.Team.Name</td>
-                                <td>@item.GamesPlayed</td>
-                                <td>@item.GamesWon</td>
-                                <td>@item.GamesDrawn</td>
-                                <td>@item.GamesLost</td>
-                                <td>@item.GoalsFor</td>
-                                <td>@item.GoalsAgainst</td>
-                                <td>@item.GoalDifference</td>
-                                <td>@item.Points</td>
-                            </tr>
+                                <tr>
+                                    <td>@item.Position</td>
+                                    <td><img src="@item.Team.Logo" style="height:24px; width:24px" /></td>
+                                    <td>@item.Team.Name</td>
+                                    <td>@item.GamesPlayed</td>
+                                    <td>@item.GamesWon</td>
+                                    <td>@item.GamesDrawn</td>
+                                    <td>@item.GamesLost</td>
+                                    <td>@item.GoalsFor</td>
+                                    <td>@item.GoalsAgainst</td>
+                                    <td>@item.GoalDifference</td>
+                                    <td>@item.Points</td>
+                                </tr>
                             }
                         </tbody>
                     </table>
                 </div>
                 <div class="tab-pane fade" id="v-pills-fixtures" role="tabpanel" aria-labelledby="v-pills-fixtures-tab">
-                    ...
+                    @foreach (var round in Model.Rounds)
+                    {
+                        <div>
+                            <h3>@round.Name</h3>
+                            <a href="@Url.RouteUrl("EditTeamLeagueRounds", new { leagueName = Model.Name })" class="btn btn-secondary" role="button" style="margin-bottom: 20px">Edit</a>
+                        </div>
+
+                        <div class="fixture-full-width">
+                            <ul class="fixture-match-overview-list">
+                                @foreach (var match in round.Matches)
+                                {
+                                    <li class="fixture-match-overview-item fixture-striped-list-item">
+                                        <div class="fixture">
+                                            <div class="fixture-row">
+                                                <div class="fixture-col fixture-col-namelarge">
+                                                    @if (match.HomeTeam == null)
+                                                    {
+                                                        <div class="fixture-team-name fixture-team-name--home">
+                                                            Home team not set
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div class="fixture-col fixture-col-status">
+                                                    <div class="fixture-status">Time not set</div>
+                                                </div>
+                                                <div class="fixture-col fixture-col-score">
+                                                    <div class="fixture-score fixture-score--home">
+                                                        -
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="fixture-row">
+                                                <div class="fixture-col fixture-col-namelarge">
+                                                    @if (match.AwayTeam == null)
+                                                    {
+                                                        <div class="fixture-team-name fixture-team-name--away">
+                                                            Away team not set
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div class="fixture-col"></div>
+                                                <div class="fixture-col fixture-col-score">
+                                                    <div class="fixture-score fixture-score--away">
+                                                        -
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
                 </div>
             </div>
         </div>

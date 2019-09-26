@@ -57,7 +57,11 @@ namespace LeagueManager.Domain.LeagueTable
         {
             return rounds.SelectMany(r =>
                 r.Matches.Where(m =>
-                    m.MatchEntries.Exists(me => me.Team.Name == team.Name))).ToList();
+                    m.MatchEntries.Exists(me => 
+                        me.Team != null && 
+                        me.Team.Name == team.Name &&
+                        me.Score != null)))
+                .ToList();
         }
     }
 }

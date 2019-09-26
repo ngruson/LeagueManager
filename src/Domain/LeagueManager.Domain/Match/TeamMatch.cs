@@ -9,6 +9,7 @@ namespace LeagueManager.Domain.Match
     public class TeamMatch : ITeamMatch
     {
         public int Id { get; set; }
+        public Guid Guid { get; set; }
         public DateTime? StartTime { get; set; }
         public List<TeamMatchEntry> MatchEntries { get; set; } = new List<TeamMatchEntry>();
 
@@ -21,10 +22,13 @@ namespace LeagueManager.Domain.Match
                 var away = MatchEntries.SingleOrDefault(me =>
                     me.HomeAway == HomeAway.Away);
 
-                if (home.Score.Value > away.Score.Value)
-                    return home.Team;
-                else if (home.Score.Value < away.Score.Value)
-                    return away.Team;
+                if ((home.Score != null) && (away.Score != null))
+                {
+                    if (home.Score.Value > away.Score.Value)
+                        return home.Team;
+                    else if (home.Score.Value < away.Score.Value)
+                        return away.Team;
+                }
 
                 return null;
             }
@@ -39,10 +43,13 @@ namespace LeagueManager.Domain.Match
                 var away = MatchEntries.SingleOrDefault(me =>
                     me.HomeAway == HomeAway.Away);
 
-                if (home.Score.Value < away.Score.Value)
-                    return home.Team;
-                else if (home.Score.Value > away.Score.Value)
-                    return away.Team;
+                if ((home.Score != null) && (away.Score != null))
+                {
+                    if (home.Score.Value < away.Score.Value)
+                        return home.Team;
+                    else if (home.Score.Value > away.Score.Value)
+                        return away.Team;
+                }
 
                 return null;
             }
@@ -57,9 +64,12 @@ namespace LeagueManager.Domain.Match
                 var away = MatchEntries.SingleOrDefault(me =>
                     me.HomeAway == HomeAway.Away);
 
-                if ((home.Score.Value.HasValue) && (away.Score.Value.HasValue))
+                if ((home.Score != null) && (away.Score != null))
                 {
-                    return home.Score.Value == away.Score.Value;
+                    if ((home.Score.Value.HasValue) && (away.Score.Value.HasValue))
+                    {
+                        return home.Score.Value == away.Score.Value;
+                    }
                 }
 
                 return false;

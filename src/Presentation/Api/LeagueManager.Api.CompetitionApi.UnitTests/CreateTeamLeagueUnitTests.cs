@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using LeagueManager.Api.CompetitionApi.Controllers;
-using LeagueManager.Application.Competitions.Commands;
+using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Application.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -8,17 +8,32 @@ using Moq;
 using System;
 using System.Threading;
 using Xunit;
+using AutoMapper;
+using LeagueManager.Api.CompetitionApi.AutoMapper;
 
 namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
     public class CreateTeamLeagueUnitTests
     {
+        private IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(opts =>
+            {
+                opts.AddProfile<CompetitionApiProfile>();
+            });
+
+            return config.CreateMapper();
+        }
+
         [Fact]
         public async void Given_TeamLeagueDoesNotExist_When_CreateTeamLeague_Then_ReturnSuccess()
         {
             //Arrange
             var mockMediator = new Mock<IMediator>();
-            var controller = new CompetitionController(mockMediator.Object);
+            var controller = new CompetitionController(
+                mockMediator.Object,
+                CreateMapper());
+
             var command = new CreateTeamLeagueCommand
             {
                 Name = "Premier League",
@@ -43,7 +58,10 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                 ))
                 .Throws(new CompetitionAlreadyExistsException("Premier League"));
             
-            var controller = new CompetitionController(mockMediator.Object);
+            var controller = new CompetitionController(
+                mockMediator.Object,
+                CreateMapper());
+
             var command = new CreateTeamLeagueCommand
             {
                 Name = "Premier League",
@@ -69,7 +87,10 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                 ))
                 .Throws(new TeamNotFoundException("Liverpool"));
 
-            var controller = new CompetitionController(mockMediator.Object);
+            var controller = new CompetitionController(
+                mockMediator.Object,
+                CreateMapper());
+
             var command = new CreateTeamLeagueCommand();
 
             //Act
@@ -91,7 +112,9 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                 ))
                 .Throws(new Exception());
 
-            var controller = new CompetitionController(mockMediator.Object);
+            var controller = new CompetitionController(
+                mockMediator.Object,
+                CreateMapper());
             var command = new CreateTeamLeagueCommand();
 
             //Act

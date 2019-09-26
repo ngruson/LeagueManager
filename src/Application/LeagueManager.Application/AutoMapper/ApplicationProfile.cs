@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Competitions.Queries.Dto;
+using LeagueManager.Application.TeamLeagues.Queries.Dto;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.LeagueTable;
+using LeagueManager.Domain.Match;
 using LeagueManager.Domain.Round;
 using System.Linq;
 
@@ -33,6 +35,8 @@ namespace LeagueManager.Application.AutoMapper
             CreateMap<TeamLeagueTable, TeamLeagueTableDto>();
             CreateMap<TeamLeagueTableItem, TeamLeagueTableItemDto>();
             CreateMap<Team, TeamDto>();
+            CreateMap<TeamMatch, TeamMatchDto>();
+            CreateMap<TeamMatchEntry, TeamMatchEntryDto>();
         }
     }
 }

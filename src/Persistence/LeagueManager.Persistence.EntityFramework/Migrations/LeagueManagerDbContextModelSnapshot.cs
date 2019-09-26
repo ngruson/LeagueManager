@@ -103,6 +103,8 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<Guid>("Guid");
+
                     b.Property<DateTime?>("StartTime");
 
                     b.Property<int?>("TeamLeagueRoundId");

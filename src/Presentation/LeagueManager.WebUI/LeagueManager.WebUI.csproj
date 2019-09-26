@@ -16,11 +16,6 @@
 
 
   <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
-
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Application\LeagueManager.Application\LeagueManager.Application.csproj" />
     <ProjectReference Include="..\..\Domain\LeagueManager.Domain\LeagueManager.Domain.csproj" />
     <ProjectReference Include="..\..\Infrastructure\LeagueManager.Infrastructure\LeagueManager.Infrastructure.csproj" />

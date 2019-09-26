@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using LeagueManager.Application.Competitions.Commands;
+using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
@@ -15,15 +15,23 @@ namespace LeagueManager.Application.UnitTests
 {
     public class CreateTeamLeagueCommandUnitTests
     {
+        private List<Team> CreateTeams()
+        {
+            return new List<Team> {
+                new Team {  Name = "Team A"},
+                new Team { Name = "Team B"},
+                new Team { Name = "Team C"},
+                new Team { Name = "Team D"}
+            };
+        }
+
         [Fact]
         public async void Given_TeamLeagueDoesNotExist_When_CreateTeamLeague_Then_TeamLeagueIsReturned()
         {
             // Arrange
             var leagues = new List<TeamLeague>();
-            var teams = new List<Team> {
-                new Team {  Name = "Team A"},
-                new Team { Name = "Team B"}
-            };
+            var teams = CreateTeams();
+
             var contextMock = MockDbContext(
                 leagues.AsQueryable(), 
                 teams.AsQueryable());
@@ -32,7 +40,7 @@ namespace LeagueManager.Application.UnitTests
             //Act
             var request = new CreateTeamLeagueCommand {
                 Name = "SomeCompetition",
-                Teams = new List<string> {  "Team A", "Team B"}
+                Teams = teams.Select(t => t.Name).ToList()
             };
             var result = await handler.Handle(request, CancellationToken.None);
 

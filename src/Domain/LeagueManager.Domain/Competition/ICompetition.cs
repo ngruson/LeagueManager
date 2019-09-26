@@ -10,7 +10,8 @@ namespace LeagueManager.Domain.Competition
         string Name { get; set; }
         Country Country { get; set; }
         byte[] Logo { get; set; }
-
         List<TCompetitor> Competitors { get; set; }
+
+        void CreateRounds();
     }
 }

@@ -1,4 +1,6 @@
+using AutoMapper;
 using FluentAssertions;
+using LeagueManager.Api.CompetitionApi.AutoMapper;
 using LeagueManager.Api.CompetitionApi.Controllers;
 using LeagueManager.Application.Competitions.Queries.Dto;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
@@ -12,6 +14,16 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
     public class GetCompetitionUnitTests
     {
+        private IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(opts =>
+            {
+                opts.AddProfile<CompetitionApiProfile>();
+            });
+
+            return config.CreateMapper();
+        }
+
         [Fact]
         public async void Given_CompetitionsExist_When_GetCompetition_Then_ReturnCompetition()
         {
@@ -25,7 +37,9 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     new CompetitionDto { Name = "Premier League", Country = "England" }
                 );
 
-            var controller = new CompetitionController(mockMediator.Object);
+            var controller = new CompetitionController(
+                mockMediator.Object,
+                CreateMapper());
 
             //Act
             var result = await controller.GetCompetition("Premier League");
@@ -40,7 +54,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
         public async void Given_Exception_When_GetCompetition_Then_ReturnBadRequest()
         {
             //Arrange
-            var controller = new CompetitionController(null);
+            var controller = new CompetitionController(null, null);
 
             //Act
             var result = await controller.GetCompetition(null);
