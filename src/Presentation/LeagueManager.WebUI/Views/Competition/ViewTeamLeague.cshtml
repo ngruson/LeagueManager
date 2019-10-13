@@ -53,61 +53,85 @@
                     </table>
                 </div>
                 <div class="tab-pane fade" id="v-pills-fixtures" role="tabpanel" aria-labelledby="v-pills-fixtures-tab">
-                    @foreach (var round in Model.Rounds)
-                    {
-                        <div>
-                            <h3>@round.Name</h3>
-                            <a href="@Url.RouteUrl("EditTeamLeagueRounds", new { leagueName = Model.Name })" class="btn btn-secondary" role="button" style="margin-bottom: 20px">Edit</a>
+                    <div class="form-group row">
+                        <label for="rounds" class="col-sm-2 col-form-label">Round:</label>
+                        <div class="col-sm-10">
+                            @Html.DropDownListFor(m => m.SelectedRound, new SelectList(Model.Rounds, "Name", "Name"), new { id = "rounds-dropdown", @class = "form-control" })
                         </div>
-
-                        <div class="fixture-full-width">
-                            <ul class="fixture-match-overview-list">
-                                @foreach (var match in round.Matches)
-                                {
-                                    <li class="fixture-match-overview-item fixture-striped-list-item">
-                                        <div class="fixture">
-                                            <div class="fixture-row">
-                                                <div class="fixture-col fixture-col-namelarge">
-                                                    @if (match.HomeTeam == null)
-                                                    {
-                                                        <div class="fixture-team-name fixture-team-name--home">
-                                                            Home team not set
-                                                        </div>
-                                                    }
-                                                </div>
-                                                <div class="fixture-col fixture-col-status">
-                                                    <div class="fixture-status">Time not set</div>
-                                                </div>
-                                                <div class="fixture-col fixture-col-score">
-                                                    <div class="fixture-score fixture-score--home">
-                                                        -
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="fixture-row">
-                                                <div class="fixture-col fixture-col-namelarge">
-                                                    @if (match.AwayTeam == null)
-                                                    {
-                                                        <div class="fixture-team-name fixture-team-name--away">
-                                                            Away team not set
-                                                        </div>
-                                                    }
-                                                </div>
-                                                <div class="fixture-col"></div>
-                                                <div class="fixture-col fixture-col-score">
-                                                    <div class="fixture-score fixture-score--away">
-                                                        -
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    }
+                    </div>
+                    <div id="fixtures">
+                        @await Html.PartialAsync("ViewFixtures", Model)
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+@section scripts
+{
+    <script>
+        function editFixture() {
+            $(".js-edit-fixture").click(function (e) {
+                var guid = $(e.target).attr("data-match-guid");
+                var url = "@Url.Action("EditFixture", new { leagueName = "js-leaguename", guid = "js-guid" })"
+                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-guid", guid);
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (result) {
+                        $('#fixture-' + guid).html(result);
+                        saveFixture();
+                    }
+                });                
+            });
+        }
+
+        function saveFixture() {
+            $(".js-save-match").click(async function (e) {
+                var guid = $(e.target).attr("data-match-guid");
+                var homeTeam = $('#home-team-' + guid).val();
+                var awayTeam = $('#away-team-' + guid).val();
+                var url = "@Url.Action("UpdateTeamLeagueMatch",
+                    new
+                    {
+                        leagueName = "js-leaguename",
+                        guid = "js-guid"
+                    })"
+                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-guid", guid);
+
+                var result = await updateTeamLeagueMatch(
+                    url,
+                    homeTeam,
+                    awayTeam,
+                    null
+                );
+                $('#fixture-' + guid).html(result);
+                editFixture();
+            });
+        }
+
+        $(document).ready(function () {
+            $("#rounds-dropdown").change(function () {
+                var round = $('#rounds-dropdown').val();
+                var url = "@Url.Action("ViewFixtures", new { leagueName = "js-leaguename", round = "js-round" })"
+                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-round", round);
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (result) {
+                        $('#fixtures').html(result);
+                        editFixture();
+                    }
+                });
+            });
+
+            editFixture();
+        });
+    </script>
+}

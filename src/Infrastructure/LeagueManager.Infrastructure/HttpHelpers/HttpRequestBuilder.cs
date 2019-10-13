@@ -86,7 +86,7 @@ namespace LeagueManager.Infrastructure.HttpHelpers
 
             var client = new HttpClient
             {
-                Timeout = timeout
+                //Timeout = timeout
             };
 
             return await client.SendAsync(request);

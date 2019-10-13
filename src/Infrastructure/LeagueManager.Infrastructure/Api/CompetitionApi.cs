@@ -11,6 +11,8 @@ using LeagueManager.Infrastructure.Exceptions;
 using LeagueManager.Infrastructure.HttpHelpers;
 using Microsoft.Extensions.Options;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
+using LeagueManager.Application.TeamLeagueMatches.Commands;
 
 namespace LeagueManager.Infrastructure.Api
 {
@@ -51,7 +53,8 @@ namespace LeagueManager.Infrastructure.Api
 
         public async Task<TeamLeagueTableDto> GetTeamLeagueTable(GetTeamLeagueTableQuery query)
         {
-            var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/table");
+            string requestUri = $"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/table";
+            var response = await httpRequestFactory.Get(requestUri);
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<TeamLeagueTableDto>();
             return null;
@@ -62,6 +65,26 @@ namespace LeagueManager.Infrastructure.Api
             var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/rounds");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<IEnumerable<TeamLeagueRoundDto>>();
+            return null;
+        }
+
+        public async Task<TeamMatchDto> GetTeamLeagueMatch(GetTeamLeagueMatchQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/match/{query.Guid}");
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<TeamMatchDto>();
+            return null;
+        }
+
+        public async Task<TeamMatchDto> UpdateTeamLeagueMatch(UpdateTeamLeagueMatchCommand command)
+        {
+            var response = await httpRequestFactory.Put(
+                $"{apiSettings.TeamLeagueApiUrl}/{command.LeagueName}/match/{command.Guid}",
+                command
+            );
+
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<TeamMatchDto>();
             return null;
         }
     }

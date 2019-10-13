@@ -15,7 +15,9 @@ namespace LeagueManager.Api.CompetitionApi.AutoMapper
         {
             CreateMap<UpdateTeamLeagueMatchDto, UpdateTeamLeagueMatchCommand>()
                 .ForMember(m => m.LeagueName, opt => opt.MapFrom((src, dest, destMember, context) =>
-                    context.Items["leagueName"]));
+                    context.Items["leagueName"]))
+                .ForMember(m => m.Guid, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    context.Items["guid"]));
         }
     }
 }

@@ -1,0 +1,53 @@
+﻿@model LeagueManager.WebUI.ViewModels.TeamMatchViewModel
+
+<div class="fixture-row">
+    <div class="fixture-col fixture-col-namelarge">
+        @if (Model.HomeTeam != null)
+        {
+            <div class="fixture-team-name fixture-team-name--home">
+                @Model.HomeTeam.Name
+            </div>
+        }
+        else
+        {
+            <div class="fixture-team-name fixture-team-name--home">
+                Home team not set
+            </div>
+        }
+    </div>
+    <div class="fixture-col fixture-col-status">
+        <div class="fixture-status">Time not set</div>
+    </div>
+    <div class="fixture-col fixture-col-score">
+        <div class="fixture-score fixture-score--home">
+            -
+        </div>
+    </div>
+</div>
+<div class="fixture-row">
+    <div class="fixture-col fixture-col-namelarge">
+        @if (Model.AwayTeam == null)
+        {
+            <div class="fixture-team-name fixture-team-name--away">
+                Away team not set
+            </div>
+        }
+        else
+        {
+            <div class="fixture-team-name fixture-team-name--away">
+                @Model.AwayTeam.Name
+            </div>
+        }
+    </div>
+    <div class="fixture-col"></div>
+    <div class="fixture-col fixture-col-score">
+        <div class="fixture-score fixture-score--away">
+            -
+        </div>
+    </div>
+</div>
+<div class="fixture-row">
+    <div class="fixture-col">
+        <button data-match-guid="@Model.Guid" class="btn btn-secondary js-edit-fixture">Edit</button>
+    </div>
+</div>

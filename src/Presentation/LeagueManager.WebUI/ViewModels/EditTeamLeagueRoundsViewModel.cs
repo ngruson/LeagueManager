@@ -9,5 +9,6 @@ namespace LeagueManager.WebUI.ViewModels
         public IEnumerable<TeamViewModel> Teams { get; set; }
         public IEnumerable<TeamLeagueRoundViewModel> Rounds { get; set; }
         public string SelectedRound { get; set; }
+        public string CompetitionApiUrl { get; internal set; }
     }
 }

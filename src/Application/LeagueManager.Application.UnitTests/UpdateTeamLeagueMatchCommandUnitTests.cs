@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using AutoMapper;
+using FluentAssertions;
+using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagueMatches.Commands;
@@ -30,6 +32,16 @@ namespace LeagueManager.Application.UnitTests
             mockContext.Setup(c => c.TeamLeagues).Returns(teamLeaguesDbSet.Object);
             mockContext.Setup(c => c.Teams).Returns(teamsDbSet.Object);
             return mockContext;
+        }
+
+        private IMapper CreateMapper()
+        {
+            var config = new MapperConfiguration(opts =>
+            {
+                opts.AddProfile<ApplicationProfile>();
+            });
+
+            return config.CreateMapper();
         }
 
         private List<Team> CreateTeams()
@@ -88,7 +100,9 @@ namespace LeagueManager.Application.UnitTests
             var contextMock = MockDbContext(
                 teamLeagues.AsQueryable(),
                 teams.AsQueryable());
-            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object);
+            var handler = new UpdateTeamLeagueMatchCommandHandler(
+                contextMock.Object,
+                CreateMapper());
 
             //Act
             var request = new UpdateTeamLeagueMatchCommand
@@ -116,7 +130,8 @@ namespace LeagueManager.Application.UnitTests
             var contextMock = MockDbContext(
                 teamLeagues.AsQueryable(),
                 teams.AsQueryable());
-            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object);
+            var handler = new UpdateTeamLeagueMatchCommandHandler(
+                contextMock.Object, CreateMapper());
 
             //Act
             var request = new UpdateTeamLeagueMatchCommand
@@ -145,7 +160,7 @@ namespace LeagueManager.Application.UnitTests
             var contextMock = MockDbContext(
                 teamLeagues.AsQueryable(),
                 teams.AsQueryable());
-            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object);
+            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object, CreateMapper());
 
             //Act
             var request = new UpdateTeamLeagueMatchCommand
@@ -174,7 +189,7 @@ namespace LeagueManager.Application.UnitTests
             var contextMock = MockDbContext(
                 teamLeagues.AsQueryable(),
                 teams.AsQueryable());
-            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object);
+            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object, CreateMapper());
 
             //Act
             var request = new UpdateTeamLeagueMatchCommand

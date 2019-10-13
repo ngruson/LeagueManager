@@ -13,6 +13,11 @@ using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
 using System.Linq;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
+using System;
+using LeagueManager.Application.TeamLeagueMatches.Commands;
+using LeagueManager.WebUI.Dto;
+using System.Net;
 
 namespace LeagueManager.WebUI.Controllers
 {
@@ -88,10 +93,85 @@ namespace LeagueManager.WebUI.Controllers
             {
                 Name = leagueName,
                 Table = mapper.Map<TeamLeagueTableViewModel>(table),
-                Rounds = mapper.Map<IEnumerable<TeamLeagueRoundViewModel>>(rounds)
+                Rounds = mapper.Map<IEnumerable<TeamLeagueRoundViewModel>>(rounds),
             };
 
+            viewModel.SelectedRound = viewModel.Rounds.ToList()[0].Name;
             return View(viewModel);
+        }
+
+        [Route("{controller}/{leagueName}/fixtures", Name = "ViewFixtures")]
+        public async Task<IActionResult> ViewFixtures(string leagueName, string round)
+        {
+            var rounds = await competitionApi.GetTeamLeagueRounds(
+                new GetTeamLeagueRoundsQuery
+                {
+                    LeagueName = leagueName
+                });
+
+            var viewModel = new ViewTeamLeagueViewModel
+            {
+                Name = leagueName,
+                Rounds = mapper.Map<IEnumerable<TeamLeagueRoundViewModel>>(rounds),
+                SelectedRound = round
+            };
+
+            return PartialView(viewModel);
+        }
+
+        [Route("{controller}/{leagueName}/viewfixture/{guid}")]
+        public async Task<IActionResult> ViewFixture(string leagueName, string guid)
+        {
+            var match = await competitionApi.GetTeamLeagueMatch(
+                new GetTeamLeagueMatchQuery
+                {
+                    LeagueName = leagueName,
+                    Guid = new Guid(guid)
+                }
+            );
+
+            var viewModel = mapper.Map<TeamMatchViewModel>(match);
+            return PartialView(viewModel);
+        }
+
+        [Route("{controller}/{leagueName}/editfixture/{guid}")]
+        public async Task<IActionResult> EditFixture(string leagueName, string guid)
+        {
+            var teamLeague = await competitionApi.GetCompetition(
+                new GetCompetitionQuery
+                {
+                    Name = leagueName
+                });
+            ViewData["Teams"] = teamLeague.Competitors
+                .Select(c => new TeamViewModel { Name = c })
+                .OrderBy(t => t.Name);
+
+            var match = await competitionApi.GetTeamLeagueMatch(
+                new GetTeamLeagueMatchQuery
+                {
+                    LeagueName = leagueName,
+                    Guid = new Guid(guid)
+                }
+            );
+
+            var viewModel = mapper.Map<TeamMatchViewModel>(match);
+            return PartialView(viewModel);
+        }
+
+        [HttpPut("{controller}/{leagueName}/match/{guid}")]
+        public async Task<IActionResult> UpdateTeamLeagueMatch(string leagueName, string guid, UpdateTeamLeagueMatchDto dto)
+        {
+            var match = await competitionApi.UpdateTeamLeagueMatch(
+                new UpdateTeamLeagueMatchCommand
+                {
+                    LeagueName = WebUtility.HtmlDecode(leagueName),
+                    Guid = new Guid(guid),
+                    HomeTeam = dto.HomeTeam,
+                    AwayTeam = dto.AwayTeam,
+                    StartTime = dto.StartTime
+                });
+
+            return PartialView("ViewFixture", mapper.Map<TeamMatchViewModel>(match));
         }
 
         [Route("{controller}/{leagueName}/rounds", Name = "EditTeamLeagueRounds")]
@@ -112,7 +192,8 @@ namespace LeagueManager.WebUI.Controllers
             {
                 Name = leagueName,
                 Teams = teamLeague.Competitors.Select(c => new TeamViewModel {  Name = c }),
-                Rounds = mapper.Map<IEnumerable<TeamLeagueRoundViewModel>>(rounds)
+                Rounds = mapper.Map<IEnumerable<TeamLeagueRoundViewModel>>(rounds),
+                CompetitionApiUrl = apiSettings.CompetitionApiUrl
             };
             viewModel.SelectedRound = round ?? viewModel.Rounds.ToList()[0].Name;
 

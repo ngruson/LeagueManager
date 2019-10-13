@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using LeagueManager.Application.TeamLeagueMatches.Commands;
 using LeagueManager.Api.CompetitionApi.Dto;
 using AutoMapper;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
+using LeagueManager.Application.TeamLeagues.Queries.Dto;
 
 namespace LeagueManager.Api.CompetitionApi.Controllers
 {
@@ -115,16 +117,39 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
         }
 
-        // PUT api/competition/teamleague/Premier League 2019-2020/match
-        [HttpPut("teamleague/{name}/match")]
-        [ProducesDefaultResponseType]
-        public async Task<IActionResult> UpdateTeamLeagueMatch(string name, [FromBody] UpdateTeamLeagueMatchDto dto)
+        // GET api/competition/teamleague/Premier League 2019-2020/match/guid
+        [HttpGet("teamleague/{name}/match/{guid}")]
+        public async Task<IActionResult> GetTeamLeagueMatch(string name, string guid)
         {
             try
             {
-                var command = mapper.Map<UpdateTeamLeagueMatchCommand>(dto, opt => opt.Items["leagueName"] = name);
-                await mediator.Send(command);
-                return Ok();
+                var match = await mediator.Send(new GetTeamLeagueMatchQuery {
+                    LeagueName = name,
+                    Guid = new Guid(guid)
+                });
+                return Ok(match);
+            }
+            catch
+            {
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        // PUT api/competition/teamleague/Premier League 2019-2020/match
+        [HttpPut("teamleague/{name}/match/{guid}")]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> UpdateTeamLeagueMatch(string name, string guid, [FromBody]UpdateTeamLeagueMatchDto dto)
+        {
+            try
+            {
+                var command = mapper.Map<UpdateTeamLeagueMatchCommand>(dto, opt =>
+                    {
+                        opt.Items["leagueName"] = name;
+                        opt.Items["guid"] = guid;
+                    });
+                    
+                var match = await mediator.Send(command);
+                return Ok(match);
             }
             catch (MatchNotFoundException ex)
             {

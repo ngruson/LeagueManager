@@ -1,4 +1,5 @@
 ﻿@model LeagueManager.WebUI.ViewModels.EditTeamLeagueRoundsViewModel
+
 @using LeagueManager.WebUI.Helper
 @{
     ViewData["Title"] = @Model.Name;
@@ -29,7 +30,7 @@
                                         <div class="fixture-col fixture-col-namelarge">
                                             <div class="form-group">
                                                 @Html.LabelFor(m => match.HomeTeam, "Home team")
-                                                @Html.DropDownListFor(m => match.HomeTeam.Name, new SelectList(Model.Teams, "Name", "Name"), "--No team selected--", new { id = $"home-team-{match.Guid}", @class = "form-control"})
+                                                @Html.DropDownListFor(m => match.HomeTeam.Name, new SelectList(Model.Teams, "Name", "Name"), "--No team selected--", new { id = $"home-team-{match.Guid}", @class = "form-control" })
                                             </div>
                                         </div>
                                         <div class="fixture-col fixture-col-status">
@@ -56,6 +57,8 @@
                                         </div>
                                         <div class="fixture-col">
                                             <button data-match-guid="@match.Guid" class="btn btn-primary js-save-match">Save match</button>
+                                            <div class="alert alert-success invisible" role="alert" id="alert-success-@match.Guid"></div>
+                                            <div class="alert alert-danger invisible" role="alert" id="alert-danger-@match.Guid"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -81,13 +84,16 @@
 
             $(".js-save-match").click(function (e) {
                 var guid = $(e.target).attr("data-match-guid");
-                $.post("")
-                    .done(function () {
-                        // Notify user that match was succesfully saved
-                    })
-                    .fail(function () {
-                        // Notify user that match was not succesfully saved
-                    });
+                var homeTeam = $('#home-team-' + guid).val();
+                var awayTeam = $('#away-team-' + guid).val();
+
+                updateTeamLeagueMatch(
+                    "@Model.CompetitionApiUrl",
+                    guid,
+                    homeTeam,
+                    awayTeam,
+                    null
+                );
             });
         });
     </script>

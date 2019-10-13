@@ -1,0 +1,24 @@
+﻿@model LeagueManager.WebUI.ViewModels.ViewTeamLeagueViewModel
+
+@foreach (var round in Model.Rounds)
+{
+    if (round.Name == Model.SelectedRound)
+    {
+        <div>
+            <h3>@round.Name</h3>
+        </div>
+
+        <div class="fixture-full-width">
+            <ul class="fixture-match-overview-list">
+                @foreach (var match in round.Matches)
+                {
+                    <li class="fixture-match-overview-item fixture-striped-list-item">
+                        <div class="fixture" id="fixture-@match.Guid">
+                            @await Html.PartialAsync("ViewFixture", match)
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+}

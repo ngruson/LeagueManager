@@ -70,8 +70,8 @@ function createTeam(team, country, listBox, url) {
             $(team).val('');
         },
         error: function (jqXHR) {
-            $('.modal .alert-danger').text(jqXHR.responseText);
-            $('.modal .alert-danger').removeClass('invisible');
+            $('.alert-danger').text(jqXHR.responseText);
+            $('.alert-danger').removeClass('invisible');
         }
     });
 }
@@ -115,4 +115,19 @@ function getRounds(dropdown, arr) {
     }
 
     dropdown.prop('selectedIndex', 0);
+}
+
+async function updateTeamLeagueMatch(url, homeTeam, awayTeam, startTime) {
+    var req = {
+        homeTeam: homeTeam,
+        awayTeam: awayTeam,
+        startTime: startTime
+    };
+
+    var result = await $.ajax({
+        type: "PUT",
+        url: url,
+        data: req
+    });
+    return result;
 }

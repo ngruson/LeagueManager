@@ -2,21 +2,22 @@
 using FluentAssertions;
 using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
 using LeagueManager.Domain.Competition;
-using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.Match;
 using LeagueManager.Domain.Round;
 using MockQueryable.Moq;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using Xunit;
 
 namespace LeagueManager.Application.UnitTests
 {
-    public class GetTeamLeagueRoundsUnitTests
+    public class GetTeamLeagueMatchUnitTests
     {
         private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<TeamLeague> leagues)
         {
@@ -41,14 +42,8 @@ namespace LeagueManager.Application.UnitTests
             return new TeamLeague
             {
                 Name = name,
-                Competitors = CreateCompetitors(),
                 Rounds = new List<TeamLeagueRound>
                 {
-                    new TeamLeagueRound
-                    {
-                        Name = "Round 2",
-                        Matches = CreateMatches()
-                    },
                     new TeamLeagueRound
                     {
                         Name = "Round 1",
@@ -64,6 +59,7 @@ namespace LeagueManager.Application.UnitTests
             {
                 new TeamMatch
                 {
+                    Guid = new Guid("77E49557-62F0-4FE5-8A96-52251F108FE3"),
                     MatchEntries = new List<TeamMatchEntry>
                     {
                         new TeamMatchEntry
@@ -79,90 +75,52 @@ namespace LeagueManager.Application.UnitTests
             };
         }
 
-        private List<TeamCompetitor> CreateCompetitors()
-        {
-            return new List<TeamCompetitor>
-            {
-                new TeamCompetitor
-                {
-                    Team = new Team
-                    {
-                        Name = "Liverpool"
-                    }
-                },
-                new TeamCompetitor
-                {
-                    Team = new Team
-                    {
-                        Name = "Manchester City"
-                    }
-                },
-                new TeamCompetitor
-                {
-                    Team = new Team
-                    {
-                        Name = "Chelsea"
-                    }
-                },
-                new TeamCompetitor
-                {
-                    Team = new Team
-                    {
-                        Name = "Tottenham Hotspur"
-                    }
-                }
-            };
-        }
-
         [Fact]
-        public async void Given_NoTeamLeaguesExist_When_GetTeamLeagueRounds_Then_ReturnNull()
+        public async void Given_MatchDoesNotExist_When_GetTeamLeagueMatch_Then_ReturnNull()
         {
             // Arrange
-            var leagues = new List<TeamLeague>();
+            var leagues = new List<TeamLeague> {
+                CreateTeamLeagueWithRoundsAndMatches("Premier League"),
+            };
             var contextMock = MockDbContext(leagues.AsQueryable());
-            var handler = new GetTeamLeagueRoundsQueryHandler(
+            var handler = new GetTeamLeagueMatchQueryHandler(
                 contextMock.Object, CreateMapper());
 
             //Act
-            var result = await handler.Handle(new GetTeamLeagueRoundsQuery { LeagueName = "Premier League" }, CancellationToken.None);
+            var request = new GetTeamLeagueMatchQuery
+            {
+                LeagueName = "Premier League",
+                Guid = new Guid("77E49557-62F0-4FE5-8A96-52251F108FE4")
+            };
+            var result = await handler.Handle(request, CancellationToken.None);
 
             //Assert
             result.Should().BeNull();
         }
 
         [Fact]
-        public async void Given_TeamLeagueExist_When_GetTeamLeagueRounds_Then_ReturnRounds()
+        public async void Given_MatchDoesExist_When_GetTeamLeagueMatch_Then_ReturnMatch()
         {
             // Arrange
             var leagues = new List<TeamLeague> {
                 CreateTeamLeagueWithRoundsAndMatches("Premier League"),
-                CreateTeamLeagueWithRoundsAndMatches("Primera Division")
             };
-
             var contextMock = MockDbContext(leagues.AsQueryable());
-            var handler = new GetTeamLeagueRoundsQueryHandler(
+            var handler = new GetTeamLeagueMatchQueryHandler(
                 contextMock.Object, CreateMapper());
 
             //Act
-            var result = await handler.Handle(new GetTeamLeagueRoundsQuery { LeagueName = "Premier League" }, CancellationToken.None);
+            var guid = new Guid("77E49557-62F0-4FE5-8A96-52251F108FE3");
+            var request = new GetTeamLeagueMatchQuery
+            {
+                LeagueName = "Premier League",
+                Guid = guid
+            };
+            var result = await handler.Handle(request, CancellationToken.None);
 
             //Assert
             result.Should().NotBeNull();
-            result.Count().Should().Be(2);
-            result.Should().BeInAscendingOrder(x => x.Name);
-            result.ToList().ForEach(r =>
-            {
-                r.Matches.Should().NotBeNull();
-                r.Matches.ToList().ForEach(m =>
-                {
-                    m.MatchEntries.SingleOrDefault(me =>
-                            me.HomeAway == TeamLeagues.Queries.Dto.HomeAway.Home)
-                        .Should().NotBeNull();
-                    m.MatchEntries.SingleOrDefault(me =>
-                        me.HomeAway == TeamLeagues.Queries.Dto.HomeAway.Away)
-                    .Should().NotBeNull();
-                });
-            });
+            result.Guid.Should().Be(guid);
         }
     }
 }

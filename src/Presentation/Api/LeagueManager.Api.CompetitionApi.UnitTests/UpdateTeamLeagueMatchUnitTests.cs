@@ -37,7 +37,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             var dto = new UpdateTeamLeagueMatchDto();
 
             //Act
-            var result = await controller.UpdateTeamLeagueMatch("TeamLeague", dto);
+            var result = await controller.UpdateTeamLeagueMatch("TeamLeague", Guid.NewGuid().ToString(), dto);
 
             //Assert
             result.Should().BeOfType<OkResult>();
@@ -61,7 +61,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             var dto = new UpdateTeamLeagueMatchDto();
 
             //Act
-            var result = await controller.UpdateTeamLeagueMatch("TeamLeague", dto);
+            var result = await controller.UpdateTeamLeagueMatch("TeamLeague", Guid.NewGuid().ToString(), dto);
 
             //Assert
             var error = result.Should().BeOfType<BadRequestObjectResult>().Subject;
@@ -89,7 +89,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             };
 
             //Act
-            var result = await controller.UpdateTeamLeagueMatch("TeamLeague", dto);
+            var result = await controller.UpdateTeamLeagueMatch("TeamLeague", Guid.NewGuid().ToString(), dto);
 
             //Assert
             var error = result.Should().BeOfType<BadRequestObjectResult>().Subject;

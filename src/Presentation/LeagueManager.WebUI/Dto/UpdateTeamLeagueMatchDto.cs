@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LeagueManager.Api.CompetitionApi.Dto
+namespace LeagueManager.WebUI.Dto
 {
     public class UpdateTeamLeagueMatchDto
     {
