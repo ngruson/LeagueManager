@@ -18,6 +18,7 @@ using System;
 using LeagueManager.Application.TeamLeagueMatches.Commands;
 using LeagueManager.WebUI.Dto;
 using System.Net;
+using LeagueManager.Infrastructure;
 
 namespace LeagueManager.WebUI.Controllers
 {
@@ -168,7 +169,7 @@ namespace LeagueManager.WebUI.Controllers
                     Guid = new Guid(guid),
                     HomeTeam = dto.HomeTeam,
                     AwayTeam = dto.AwayTeam,
-                    StartTime = dto.StartTime
+                    StartTime = DateTimeFormatter.Format(dto.StartTime)
                 });
 
             return PartialView("ViewFixture", mapper.Map<TeamMatchViewModel>(match));

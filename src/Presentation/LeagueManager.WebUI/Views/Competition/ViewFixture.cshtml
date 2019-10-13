@@ -1,7 +1,22 @@
 ﻿@model LeagueManager.WebUI.ViewModels.TeamMatchViewModel
 
-<div class="fixture-row">
-    <div class="fixture-col fixture-col-namelarge">
+@if (Model.StartTime.HasValue)
+{
+    <div class="row">
+        <div class="col">
+            @Model.StartTime.Value.ToShortDateString()
+        </div>        
+    </div>
+}
+<div class="row mt-2">
+    @if ((Model.HomeTeam != null) && (!string.IsNullOrEmpty(Model.HomeTeam.Logo)))
+    {
+        <div class="col-1">
+            <img src="@Model.HomeTeam.Logo" style="height:24px; width:24px" />
+        </div>
+    }
+    <div class="col-5">
+
         @if (Model.HomeTeam != null)
         {
             <div class="fixture-team-name fixture-team-name--home">
@@ -15,17 +30,23 @@
             </div>
         }
     </div>
-    <div class="fixture-col fixture-col-status">
-        <div class="fixture-status">Time not set</div>
-    </div>
-    <div class="fixture-col fixture-col-score">
-        <div class="fixture-score fixture-score--home">
-            -
+    @if ((Model.HomeTeam != null) && (Model.AwayTeam != null))
+    {
+        <div class="col-6 fixture-col-score">
+            <div class="fixture-score fixture-score--home">
+                -
+            </div>
         </div>
-    </div>
+    }
 </div>
-<div class="fixture-row">
-    <div class="fixture-col fixture-col-namelarge">
+<div class="row">
+    @if ((Model.AwayTeam != null) && (!string.IsNullOrEmpty(Model.AwayTeam.Logo)))
+    {
+        <div class="col-1">
+            <img src="@Model.AwayTeam.Logo" style="height:24px; width:24px" />
+        </div>
+    }
+    <div class="col-5">
         @if (Model.AwayTeam == null)
         {
             <div class="fixture-team-name fixture-team-name--away">
@@ -39,15 +60,17 @@
             </div>
         }
     </div>
-    <div class="fixture-col"></div>
-    <div class="fixture-col fixture-col-score">
-        <div class="fixture-score fixture-score--away">
-            -
+    @if ((Model.HomeTeam != null) && (Model.AwayTeam != null))
+    {
+        <div class="col-6 fixture-col-score">
+            <div class="fixture-score fixture-score--away">
+                -
+            </div>
         </div>
+    }
     </div>
-</div>
-<div class="fixture-row">
-    <div class="fixture-col">
+<div class="row mt-2">
+    <div class="col">
         <button data-match-guid="@Model.Guid" class="btn btn-secondary js-edit-fixture">Edit</button>
     </div>
 </div>

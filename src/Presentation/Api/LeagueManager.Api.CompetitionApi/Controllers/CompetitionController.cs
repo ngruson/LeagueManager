@@ -14,6 +14,7 @@ using LeagueManager.Api.CompetitionApi.Dto;
 using AutoMapper;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagues.Queries.Dto;
+using LeagueManager.Infrastructure;
 
 namespace LeagueManager.Api.CompetitionApi.Controllers
 {
@@ -142,6 +143,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         {
             try
             {
+                dto.StartTime = DateTimeFormatter.Format(dto.StartTime);
                 var command = mapper.Map<UpdateTeamLeagueMatchCommand>(dto, opt =>
                     {
                         opt.Items["leagueName"] = name;
@@ -159,7 +161,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return BadRequest("Something went wrong!");
             }

@@ -37,13 +37,32 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands
 
             var homeMatchEntry = match.MatchEntries.SingleOrDefault(
                 me => me.HomeAway == Domain.Match.HomeAway.Home);
-            var homeTeam = await context.Teams.SingleOrDefaultAsync(t => t.Name == request.HomeTeam, cancellationToken);
-            homeMatchEntry.Team = homeTeam ?? throw new TeamNotFoundException(request.HomeTeam);
+            if (!string.IsNullOrEmpty(request.HomeTeam))
+            {
+                var homeTeam = await context.Teams.SingleOrDefaultAsync(t => t.Name == request.HomeTeam, cancellationToken);
+                homeMatchEntry.Team = homeTeam ?? throw new TeamNotFoundException(request.HomeTeam);
+            }
+            else
+            {
+                homeMatchEntry.Team = null;
+                homeMatchEntry.TeamId = null;
+            }
+                
+
 
             var awayMatchEntry = match.MatchEntries.SingleOrDefault(
                 me => me.HomeAway == Domain.Match.HomeAway.Away);
-            var awayTeam = await context.Teams.SingleOrDefaultAsync(t => t.Name == request.AwayTeam, cancellationToken);
-            awayMatchEntry.Team = awayTeam ?? throw new TeamNotFoundException(request.AwayTeam);
+            if (!string.IsNullOrEmpty(request.AwayTeam))
+            {
+                var awayTeam = await context.Teams.SingleOrDefaultAsync(t => t.Name == request.AwayTeam, cancellationToken);
+                awayMatchEntry.Team = awayTeam ?? throw new TeamNotFoundException(request.AwayTeam);
+            }
+            else
+            {
+                awayMatchEntry.Team = null;
+                awayMatchEntry.TeamId = null;
+            }
+                
 
             match.StartTime = request.StartTime;
 

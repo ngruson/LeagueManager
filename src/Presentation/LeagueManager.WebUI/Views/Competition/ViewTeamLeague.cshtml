@@ -70,6 +70,10 @@
 
 @section scripts
 {
+    <!-- Bootstrap Date-Picker Plugin -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
+
     <script>
         function editFixture() {
             $(".js-edit-fixture").click(function (e) {
@@ -84,8 +88,18 @@
                     success: function (result) {
                         $('#fixture-' + guid).html(result);
                         saveFixture();
+
+                        var date_input = $('input[id="date-' + guid + '"]');
+                        var container = $('#fixtures').parent();
+                        var options={
+                            format: 'mm/dd/yyyy',
+                            container: container,
+                            todayHighlight: true,
+                            autoclose: true,
+                          };
+                          date_input.datepicker(options);
                     }
-                });                
+                });
             });
         }
 
@@ -94,6 +108,7 @@
                 var guid = $(e.target).attr("data-match-guid");
                 var homeTeam = $('#home-team-' + guid).val();
                 var awayTeam = $('#away-team-' + guid).val();
+                var date = $('#date-' + guid).val();
                 var url = "@Url.Action("UpdateTeamLeagueMatch",
                     new
                     {
@@ -107,7 +122,7 @@
                     url,
                     homeTeam,
                     awayTeam,
-                    null
+                    date
                 );
                 $('#fixture-' + guid).html(result);
                 editFixture();

@@ -4,40 +4,41 @@
     var teams = ViewData["Teams"] as IEnumerable<LeagueManager.WebUI.ViewModels.TeamViewModel>;
 }
 
-    <div class="fixture-row">
-        <div class="fixture-col fixture-col-namelarge">
-            <div class="form-group">
-                @Html.LabelFor(m => m.HomeTeam, "Home team")
-                @Html.DropDownListFor(m => m.HomeTeam.Name, new SelectList(teams, "Name", "Name"), "--No team selected--", new { id = $"home-team-{Model.Guid}", @class = "form-control" })
-            </div>
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            @Html.LabelFor(m => m.HomeTeam, "Home team")
+            @Html.DropDownListFor(m => m.HomeTeam.Name, new SelectList(teams, "Name", "Name"), "--No team selected--", new { id = $"home-team-{Model.Guid}", @class = "form-control" })
         </div>
-        <div class="fixture-col">
-            <div class="form-group fixture-col-status">
-                <label>Date</label>
-                <div class="fixture-status">Time not set</div>
-            </div>
-        </div>
-        <div class="fixture-col fixture-col-score">
-            <div class="fixture-score fixture-score--home">
-                -
-            </div>
+    </div>    
+    <div class="col">
+        <div class="fixture-score fixture-score--home">
+            -
         </div>
     </div>
-    <div class="fixture-row">
-        <div class="fixture-col fixture-col-namelarge">
-            <div class="form-group">
-                @Html.LabelFor(m => m.AwayTeam, "Away team")
-                @Html.DropDownListFor(m => m.AwayTeam.Name, new SelectList(teams, "Name", "Name"), "--No team selected--", new { id = $"away-team-{Model.Guid}", @class = "form-control" })
-            </div>
-        </div>
-        <div class="fixture-col fixture-col-status">
-        </div>
-        <div class="fixture-col fixture-col-score">
-            <div class="fixture-score fixture-score--away">
-                -
-            </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            @Html.LabelFor(m => m.AwayTeam, "Away team")
+            @Html.DropDownListFor(m => m.AwayTeam.Name, new SelectList(teams, "Name", "Name"), "--No team selected--", new { id = $"away-team-{Model.Guid}", @class = "form-control" })
         </div>
     </div>
+    <div class="col">
+        <div class="fixture-score fixture-score--away">
+            -
+        </div>
+    </div>
+</div>
+<div class="fixture-row">
+    <div class="fixture-col">
+        <div class="form-group fixture-col-status">
+            @Html.LabelFor(m => m.StartTime, "Date")
+            @*<input class="form-control" id="date-@Model.Guid" placeholder="MM/DD/YYY" type="text" />*@
+            @Html.TextBoxFor(m => m.StartTime, "{0:MM/dd/yyyy}", new {  id = $"date-{Model.Guid}", @class="form-control", placeholder = "MM/DD/YYY" })
+        </div>
+    </div>
+</div>
 <div class="fixture-row">
     <div class="fixture-col">
         <button data-match-guid="@Model.Guid" class="btn btn-primary js-save-match">Save</button>

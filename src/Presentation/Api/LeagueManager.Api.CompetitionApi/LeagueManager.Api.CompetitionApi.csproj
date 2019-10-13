@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Application\LeagueManager.Application\LeagueManager.Application.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\LeagueManager.Infrastructure\LeagueManager.Infrastructure.csproj" />
     <ProjectReference Include="..\..\..\Persistence\LeagueManager.Persistence.EntityFramework\LeagueManager.Persistence.EntityFramework.csproj" />
   </ItemGroup>
 
