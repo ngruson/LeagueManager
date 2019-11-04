@@ -1,0 +1,38 @@
+﻿@model LeagueManager.WebUI.ViewModels.TeamMatchViewModel
+
+@{
+    var teams = ViewData["Teams"] as IEnumerable<LeagueManager.WebUI.ViewModels.TeamViewModel>;
+}
+
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Home.Team, "Home team")
+            @Html.DropDownListFor(m => m.Home.Team.Name, new SelectList(teams, "Name", "Name"), "--No team selected--", new { id = $"home-team-{Model.Guid}", @class = "form-control w-50" })
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Away.Team, "Away team")
+            @Html.DropDownListFor(m => m.Away.Team.Name, new SelectList(teams, "Name", "Name"), "--No team selected--", new { id = $"away-team-{Model.Guid}", @class = "form-control w-50" })
+        </div>
+    </div>
+</div>
+<div class="match-row">
+    <div class="match-col">
+        <div class="form-group match-col-status">
+            @Html.LabelFor(m => m.StartTime, "Date")
+            @Html.TextBoxFor(m => m.StartTime, "{0:dd/MM/yyyy}", new {  id = $"date-{Model.Guid}", @class="form-control", placeholder = "dd/mm/yyyy" })
+        </div>
+    </div>
+</div>
+<div class="match-row">
+    <div class="match-col">
+        <button data-match-guid="@Model.Guid" class="btn btn-primary js-save-match">Save</button>
+        <button data-match-guid="@Model.Guid" class="btn btn-secondary js-cancel-edit-match">Cancel</button>
+        <div class="alert alert-success invisible" role="alert" id="alert-success-@Model.Guid"></div>
+        <div class="alert alert-danger invisible" role="alert" id="alert-danger-@Model.Guid"></div>
+    </div>
+</div>
