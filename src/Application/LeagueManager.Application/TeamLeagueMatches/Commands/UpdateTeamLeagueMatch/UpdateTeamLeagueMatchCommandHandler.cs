@@ -8,7 +8,7 @@ using LeagueManager.Application.TeamLeagues.Queries.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeagueManager.Application.TeamLeagueMatches.Commands
+namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 {
     public class UpdateTeamLeagueMatchCommandHandler : IRequestHandler<UpdateTeamLeagueMatchCommand, TeamMatchDto>
     {
@@ -47,8 +47,6 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands
                 homeMatchEntry.Team = null;
                 homeMatchEntry.TeamId = null;
             }
-                
-
 
             var awayMatchEntry = match.MatchEntries.SingleOrDefault(
                 me => me.HomeAway == Domain.Match.HomeAway.Away);

@@ -10,57 +10,23 @@
         <div class="col-3">
             <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                 <a class="nav-link active" id="v-pills-table-tab" data-toggle="pill" href="#v-pills-table" role="tab" aria-controls="v-pills-table" aria-selected="true">Table</a>
-                <a class="nav-link" id="v-pills-fixtures-tab" data-toggle="pill" href="#v-pills-fixtures" role="tab" aria-controls="v-pills-fixtures" aria-selected="true">Fixtures</a>
+                <a class="nav-link" id="v-pills-matches-tab" data-toggle="pill" href="#v-pills-matches" role="tab" aria-controls="v-pills-matches" aria-selected="true">Matches</a>
             </div>
         </div>
         <div class="col-9">
             <div class="tab-content" id="v-pills-tabContent">
                 <div class="tab-pane fade show active" id="v-pills-table" role="tabpanel" aria-labelledby="v-pills-table-tab">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
-                                <th scope="col">Team</th>
-                                <th scope="col">GP</th>
-                                <th scope="col">W</th>
-                                <th scope="col">D</th>
-                                <th scope="col">L</th>
-                                <th scope="col">GF</th>
-                                <th scope="col">GA</th>
-                                <th scope="col">GD</th>
-                                <th scope="col">P</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model.Table.Items)
-                            {
-                                <tr>
-                                    <td>@item.Position</td>
-                                    <td><img src="@item.Team.Logo" style="height:24px; width:24px" /></td>
-                                    <td>@item.Team.Name</td>
-                                    <td>@item.GamesPlayed</td>
-                                    <td>@item.GamesWon</td>
-                                    <td>@item.GamesDrawn</td>
-                                    <td>@item.GamesLost</td>
-                                    <td>@item.GoalsFor</td>
-                                    <td>@item.GoalsAgainst</td>
-                                    <td>@item.GoalDifference</td>
-                                    <td>@item.Points</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                    @await Html.PartialAsync("ViewTeamLeagueTable", Model.Table)
                 </div>
-                <div class="tab-pane fade" id="v-pills-fixtures" role="tabpanel" aria-labelledby="v-pills-fixtures-tab">
+                <div class="tab-pane fade" id="v-pills-matches" role="tabpanel" aria-labelledby="v-pills-matches-tab">
                     <div class="form-group row">
                         <label for="rounds" class="col-sm-2 col-form-label">Round:</label>
                         <div class="col-sm-10">
                             @Html.DropDownListFor(m => m.SelectedRound, new SelectList(Model.Rounds, "Name", "Name"), new { id = "rounds-dropdown", @class = "form-control" })
                         </div>
                     </div>
-                    <div id="fixtures">
-                        @await Html.PartialAsync("ViewFixtures", Model)
+                    <div id="matches">
+                        @await Html.PartialAsync("ViewMatches", Model)
                     </div>
                 </div>
             </div>
@@ -75,10 +41,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/css/bootstrap-datepicker3.css" />
 
     <script>
-        function editFixture() {
-            $(".js-edit-fixture").click(function (e) {
+        function editMatch() {
+            $(".js-edit-match").click(function (e) {
                 var guid = $(e.target).attr("data-match-guid");
-                var url = "@Url.Action("EditFixture", new { leagueName = "js-leaguename", guid = "js-guid" })"
+                var url = "@Url.Action("EditMatch", new { leagueName = "js-leaguename", guid = "js-guid" })"
                     .replace("js-leaguename", "@Model.Name")
                     .replace("js-guid", guid);
 
@@ -86,13 +52,14 @@
                     type: 'GET',
                     url: url,
                     success: function (result) {
-                        $('#fixture-' + guid).html(result);
-                        saveFixture();
+                        $('#match-' + guid).html(result);
+                        saveMatch();
+                        cancelEditMatch();
 
                         var date_input = $('input[id="date-' + guid + '"]');
-                        var container = $('#fixtures').parent();
+                        var container = $('#matches').parent();
                         var options={
-                            format: 'mm/dd/yyyy',
+                            format: 'dd/mm/yyyy',
                             container: container,
                             todayHighlight: true,
                             autoclose: true,
@@ -103,7 +70,26 @@
             });
         }
 
-        function saveFixture() {
+        function setScore() {
+            $(".js-set-score").click(function (e) {
+                var guid = $(e.target).attr("data-match-guid");
+                var url = "@Url.Action("SetScore", new { leagueName = "js-leaguename", guid = "js-guid" })"
+                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-guid", guid);
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (result) {
+                        $('#match-' + guid).html(result);
+                        saveScore();
+                        cancelEditScore();
+                    }
+                });
+            });
+        }
+
+        function saveMatch() {
             $(".js-save-match").click(async function (e) {
                 var guid = $(e.target).attr("data-match-guid");
                 var homeTeam = $('#home-team-' + guid).val();
@@ -124,15 +110,94 @@
                     awayTeam,
                     date
                 );
-                $('#fixture-' + guid).html(result);
-                editFixture();
+                $('#match-' + guid).html(result);
+                editMatch();
             });
+        }
+
+        function saveScore() {
+            $(".js-save-score").click(async function (e) {
+                var guid = $(e.target).attr("data-match-guid");
+                var homeTeam = $('#home-team-' + guid).text().trim();
+                var homeScore = $('#home-score-' + guid).val();
+                var awayTeam = $('#away-team-' + guid).text().trim();
+                var awayScore = $('#away-score-' + guid).val();
+                var url = "@Url.Action("UpdateTeamLeagueMatchScore",
+                    new
+                    {
+                        leagueName = "js-leaguename",
+                        guid = "js-guid"
+                    })"
+                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-guid", guid);
+
+                var result = await updateTeamLeagueMatchScore(
+                    url,
+                    homeTeam,
+                    homeScore,
+                    awayTeam,
+                    awayScore
+                );
+                $('#match-' + guid).html(result);
+                editMatch();
+                setScore();
+                updateTable();
+            });
+        }
+
+        function cancelEditMatch() {
+            $(".js-cancel-edit-match").click(async function (e) {
+                var guid = $(e.target).attr("data-match-guid");
+                var url = "@Url.Action("ViewMatch", new { leagueName = "js-leaguename", guid = "js-guid" })"
+                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-guid", guid);
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (result) {
+                        $('#match-' + guid).html(result);
+                        editMatch();
+                    }
+                });
+            });
+        }
+
+        function cancelEditScore() {
+            $(".js-cancel-edit-score").click(async function (e) {
+                var guid = $(e.target).attr("data-match-guid");
+                var url = "@Url.Action("ViewMatch", new { leagueName = "js-leaguename", guid = "js-guid" })"
+                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-guid", guid);
+
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (result) {
+                        $('#match-' + guid).html(result);
+                        editMatch();
+                    }
+                });
+            });
+        }
+
+        function updateTable() {
+            var url = "@Url.Action("ViewTeamLeagueTable", new { leagueName = "js-leaguename" })"
+                .replace("js-leaguename", "@Model.Name");
+
+            $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (result) {
+                        $('#v-pills-table').html(result);
+                    }
+                });
         }
 
         $(document).ready(function () {
             $("#rounds-dropdown").change(function () {
                 var round = $('#rounds-dropdown').val();
-                var url = "@Url.Action("ViewFixtures", new { leagueName = "js-leaguename", round = "js-round" })"
+                var url = "@Url.Action("ViewMatches", new { leagueName = "js-leaguename", round = "js-round" })"
                     .replace("js-leaguename", "@Model.Name")
                     .replace("js-round", round);
 
@@ -140,13 +205,15 @@
                     type: 'GET',
                     url: url,
                     success: function (result) {
-                        $('#fixtures').html(result);
-                        editFixture();
+                        $('#matches').html(result);
+                        editMatch();
+                        setScore();
                     }
                 });
             });
 
-            editFixture();
+            editMatch();
+            setScore();
         });
     </script>
 }

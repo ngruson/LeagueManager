@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace LeagueManager.Application.TeamLeagueMatches.Commands
+namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 {
     public class UpdateTeamLeagueMatchCommandValidator : AbstractValidator<UpdateTeamLeagueMatchCommand>
     {

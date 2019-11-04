@@ -11,26 +11,42 @@ namespace LeagueManager.WebUI.ViewModels
         public DateTime? StartTime { get; set; }
         public List<TeamMatchEntryViewModel> MatchEntries { get; set; }
 
-        public TeamViewModel HomeTeam
+        public TeamMatchEntryViewModel Home
         {
             get
             {
-                var me = MatchEntries.SingleOrDefault(m => m.HomeAway == HomeAway.Home);
-                if (me != null)
-                    return me.Team;
-                return null;
+                return MatchEntries.SingleOrDefault(m => m.HomeAway == HomeAway.Home);
             }
         }
 
-        public TeamViewModel AwayTeam
+        public TeamMatchEntryViewModel Away
         {
             get
             {
-                var me = MatchEntries.SingleOrDefault(m => m.HomeAway == HomeAway.Away);
-                if (me != null)
-                    return me.Team;
-                return null;
+                return MatchEntries.SingleOrDefault(m => m.HomeAway == HomeAway.Away);
             }
         }
+
+        //public TeamViewModel HomeTeam
+        //{
+        //    get
+        //    {
+        //        var me = MatchEntries.SingleOrDefault(m => m.HomeAway == HomeAway.Home);
+        //        if (me != null)
+        //            return me.Team;
+        //        return null;
+        //    }
+        //}
+
+        //public TeamViewModel AwayTeam
+        //{
+        //    get
+        //    {
+        //        var me = MatchEntries.SingleOrDefault(m => m.HomeAway == HomeAway.Away);
+        //        if (me != null)
+        //            return me.Team;
+        //        return null;
+        //    }
+        //}
     }
 }

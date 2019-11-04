@@ -1,6 +1,5 @@
 ﻿using FluentValidation.TestHelper;
-using LeagueManager.Application.TeamLeagueMatches.Commands;
-using System.Collections.Generic;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
 using Xunit;
 
 namespace LeagueManager.Application.UnitTests

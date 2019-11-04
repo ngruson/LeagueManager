@@ -30,6 +30,7 @@ namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable
                 .Include(t => t.Rounds)
                     .ThenInclude(r => r.Matches)
                         .ThenInclude(m => m.MatchEntries)
+                            .ThenInclude(me => me.Score)
                 .SingleOrDefaultAsync(l => l.Name == request.LeagueName, cancellationToken);
 
             if (teamLeague == null)

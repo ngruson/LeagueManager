@@ -2,7 +2,7 @@
 using MediatR;
 using System;
 
-namespace LeagueManager.Application.TeamLeagueMatches.Commands
+namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 {
     public class UpdateTeamLeagueMatchCommand : IRequest<TeamMatchDto>
     {

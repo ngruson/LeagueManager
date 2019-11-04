@@ -54,6 +54,7 @@ namespace LeagueManager.WebUI.AutoMapper
             CreateMap<TeamLeagueRoundDto, TeamLeagueRoundViewModel>();
             CreateMap<TeamMatchDto, TeamMatchViewModel>();
             CreateMap<TeamMatchEntryDto, TeamMatchEntryViewModel>();
+            CreateMap<IntegerScoreDto, IntegerScoreViewModel>();
         }
     }
 }

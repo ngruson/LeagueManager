@@ -3,12 +3,12 @@ using FluentAssertions;
 using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagueMatches.Commands;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
+using LeagueManager.Application.TeamLeagues.Queries.Dto;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.Match;
 using LeagueManager.Domain.Round;
-using MediatR;
 using MockQueryable.Moq;
 using Moq;
 using System;
@@ -74,11 +74,11 @@ namespace LeagueManager.Application.UnitTests
                                     {
                                         new TeamMatchEntry
                                         {
-                                            HomeAway = HomeAway.Home
+                                            HomeAway = Domain.Match.HomeAway.Home
                                         },
                                         new TeamMatchEntry
                                         {
-                                            HomeAway = HomeAway.Away
+                                            HomeAway = Domain.Match.HomeAway.Away
                                         }
                                     }
                                 }
@@ -115,7 +115,7 @@ namespace LeagueManager.Application.UnitTests
             var result = await handler.Handle(request, CancellationToken.None);
 
             //Assert
-            result.Should().Be(Unit.Value);
+            result. Should().BeOfType(typeof(TeamMatchDto));
             contextMock.Verify(mock => mock.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
         }
 

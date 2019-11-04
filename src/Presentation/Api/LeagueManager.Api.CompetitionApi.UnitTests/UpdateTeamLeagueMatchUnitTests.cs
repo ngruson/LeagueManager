@@ -4,7 +4,7 @@ using LeagueManager.Api.CompetitionApi.AutoMapper;
 using LeagueManager.Api.CompetitionApi.Controllers;
 using LeagueManager.Api.CompetitionApi.Dto;
 using LeagueManager.Application.Exceptions;
-using LeagueManager.Application.TeamLeagueMatches.Commands;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -40,7 +40,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             var result = await controller.UpdateTeamLeagueMatch("TeamLeague", Guid.NewGuid().ToString(), dto);
 
             //Assert
-            result.Should().BeOfType<OkResult>();
+            result.Should().BeOfType<OkObjectResult>();
         }
 
         [Fact]

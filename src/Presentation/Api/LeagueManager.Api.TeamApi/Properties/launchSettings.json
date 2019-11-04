@@ -3,7 +3,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iis": {
-      "applicationUrl": "https://clt-ngruson/LeagueManager.Api.TeamApi",
+      "applicationUrl": "https://DESKTOP-3PDT884/LeagueManager.Api.TeamApi",
       "sslPort": 0
     },
     "iisExpress": {

@@ -8,13 +8,13 @@
             <h3>@round.Name</h3>
         </div>
 
-        <div class="fixture-full-width">
-            <ul class="fixture-match-overview-list">
+        <div class="match-full-width">
+            <ul class="match-overview-list">
                 @foreach (var match in round.Matches)
                 {
-                    <li class="fixture-match-overview-item fixture-striped-list-item">
-                        <div class="fixture" id="fixture-@match.Guid">
-                            @await Html.PartialAsync("ViewFixture", match)
+                    <li class="match-overview-item match-striped-list-item">
+                        <div class="match" id="match-@match.Guid">
+                            @await Html.PartialAsync("ViewMatch", match)
                         </div>
                     </li>
                 }

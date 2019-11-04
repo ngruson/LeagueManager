@@ -31,6 +31,7 @@ namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch
                 .Include(t => t.Rounds)
                     .ThenInclude(r => r.Matches)
                         .ThenInclude(m => m.MatchEntries)
+                            .ThenInclude(m => m.Score)
                 .SingleOrDefaultAsync(l => l.Name == request.LeagueName, cancellationToken);
 
             if (teamLeague != null)

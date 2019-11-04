@@ -1,0 +1,36 @@
+﻿@model LeagueManager.WebUI.ViewModels.TeamLeagueTableViewModel
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col">Team</th>
+                <th scope="col">GP</th>
+                <th scope="col">W</th>
+                <th scope="col">D</th>
+                <th scope="col">L</th>
+                <th scope="col">GF</th>
+                <th scope="col">GA</th>
+                <th scope="col">GD</th>
+                <th scope="col">P</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.Position</td>
+                    <td><img src="@item.Team.Logo" style="height:24px; width:24px" /></td>
+                    <td>@item.Team.Name</td>
+                    <td>@item.GamesPlayed</td>
+                    <td>@item.GamesWon</td>
+                    <td>@item.GamesDrawn</td>
+                    <td>@item.GamesLost</td>
+                    <td>@item.GoalsFor</td>
+                    <td>@item.GoalsAgainst</td>
+                    <td>@item.GoalDifference</td>
+                    <td>@item.Points</td>
+                </tr>
+            }
+        </tbody>
+    </table>

@@ -12,7 +12,8 @@ using LeagueManager.Infrastructure.HttpHelpers;
 using Microsoft.Extensions.Options;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
-using LeagueManager.Application.TeamLeagueMatches.Commands;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
 
 namespace LeagueManager.Infrastructure.Api
 {
@@ -80,6 +81,18 @@ namespace LeagueManager.Infrastructure.Api
         {
             var response = await httpRequestFactory.Put(
                 $"{apiSettings.TeamLeagueApiUrl}/{command.LeagueName}/match/{command.Guid}",
+                command
+            );
+
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<TeamMatchDto>();
+            return null;
+        }
+
+        public async Task<TeamMatchDto> UpdateTeamLeagueMatchScore(UpdateTeamLeagueMatchScoreCommand command)
+        {
+            var response = await httpRequestFactory.Put(
+                $"{apiSettings.TeamLeagueApiUrl}/{command.LeagueName}/match/{command.Guid}/score",
                 command
             );
 

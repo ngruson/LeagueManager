@@ -8,7 +8,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
-using LeagueManager.Application.TeamLeagueMatches.Commands;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
 
 namespace LeagueManager.Application.Interfaces
 {
@@ -21,5 +22,6 @@ namespace LeagueManager.Application.Interfaces
         Task<IEnumerable<TeamLeagueRoundDto>> GetTeamLeagueRounds(GetTeamLeagueRoundsQuery query);
         Task<TeamMatchDto> GetTeamLeagueMatch(GetTeamLeagueMatchQuery query);
         Task<TeamMatchDto> UpdateTeamLeagueMatch(UpdateTeamLeagueMatchCommand command);
+        Task<TeamMatchDto> UpdateTeamLeagueMatchScore(UpdateTeamLeagueMatchScoreCommand command);
     }
 }

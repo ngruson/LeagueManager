@@ -1,4 +1,5 @@
 ﻿using LeagueManager.Application.Interfaces;
+using LeagueManager.Persistence.EntityFramework;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -20,9 +21,9 @@ namespace LeagueManager.Api.CountryApi
                 {
                     var context = scope.ServiceProvider.GetService<ILeagueManagerDbContext>();
 
-                    var concreteContext = (DbContext)context;
-                    concreteContext.Database.EnsureCreated();
-                    concreteContext.Database.Migrate();
+                    var concreteContext = (LeagueManagerDbContext)context;
+                    var initializer = scope.ServiceProvider.GetService<DbInitializer>();
+                    initializer.Initialize(concreteContext);
                 }
                 catch (Exception ex)
                 {

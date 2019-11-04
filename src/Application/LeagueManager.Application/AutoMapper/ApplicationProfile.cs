@@ -6,6 +6,7 @@ using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.LeagueTable;
 using LeagueManager.Domain.Match;
 using LeagueManager.Domain.Round;
+using LeagueManager.Domain.Score;
 using System.Linq;
 
 namespace LeagueManager.Application.AutoMapper
@@ -37,6 +38,7 @@ namespace LeagueManager.Application.AutoMapper
             CreateMap<Team, TeamDto>();
             CreateMap<TeamMatch, TeamMatchDto>();
             CreateMap<TeamMatchEntry, TeamMatchEntryDto>();
+            CreateMap<IntegerScore, IntegerScoreDto>();
         }
     }
 }

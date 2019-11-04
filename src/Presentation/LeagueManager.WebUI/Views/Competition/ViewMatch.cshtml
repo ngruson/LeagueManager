@@ -1,0 +1,79 @@
+﻿@model LeagueManager.WebUI.ViewModels.TeamMatchViewModel
+
+@if (Model.StartTime.HasValue)
+{
+    <div class="row">
+        <div class="col">
+            @Model.StartTime.Value.ToShortDateString()
+        </div>        
+    </div>
+}
+<div class="row mt-2">
+    @if ((Model.Home.Team != null) && (!string.IsNullOrEmpty(Model.Home.Team.Logo)))
+    {
+        <div class="col-1">
+            <img src="@Model.Home.Team.Logo" style="height:24px; width:24px" />
+        </div>
+    }
+    <div class="col-5">
+
+        @if (Model.Home.Team != null)
+        {
+            <div class="match-team-name match-team-name--home">
+                @Model.Home.Team.Name
+            </div>
+        }
+        else
+        {
+            <div class="match-team-name match-team-name--home">
+                Home team not set
+            </div>
+        }
+    </div>
+    <div class="col-6 match-col-score">
+        <div class="match-score match-score--home">
+            <p>@(Model.Home.Score != null ? @Model.Home.Score.Value.ToString() : "-")</p>
+        </div >
+    </div>
+</div>
+<div class="row">
+    @if ((Model.Away.Team != null) && (!string.IsNullOrEmpty(Model.Away.Team.Logo)))
+    {
+        <div class="col-1">
+            <img src="@Model.Away.Team.Logo" style="height:24px; width:24px" />
+        </div>
+    }
+    <div class="col-5">
+        @if (Model.Away.Team == null)
+        {
+            <div class="match-team-name match-team-name--away">
+                Away team not set
+            </div>
+        }
+        else
+        {
+            <div class="match-team-name match-team-name--away">
+                @Model.Away.Team.Name
+            </div>
+        }
+    </div>
+    <div class="col-6 match-col-score">
+        <div class="match-score match-score--away">
+            <p>@(Model.Away.Score != null ? @Model.Away.Score.Value.ToString() : "-")</p>
+        </div>
+    </div>
+ </div>
+<div class="row mt-2">
+    <div class="col">
+        <button data-match-guid="@Model.Guid" class="btn btn-primary js-edit-match">Edit</button>
+        @if ((Model.Home.Team == null) || (Model.Away.Team == null))
+        {
+            <button data-match-guid="@Model.Guid" class="btn btn-secondary disabled">Set score</button>
+        }
+        else
+        {
+            <button data-match-guid="@Model.Guid" class="btn btn-secondary js-set-score">Set score</button>
+        }
+
+    </div>
+</div>

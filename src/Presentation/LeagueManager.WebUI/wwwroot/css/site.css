@@ -63,30 +63,30 @@ body {
 
 /* Fixtures
 -------------------------------------------------- */
-.fixture-full-width {
+.match-full-width {
     display: block;
 }
 
-.fixture-match-overview-list {
+.match-overview-list {
     margin: 0 0 24px;
     padding: 0;
     list-style-type: none;
 }
 
-.fixture-match-overview-item {
+.match-overview-item {
     position: relative;
     padding: 6px 12px 6px 3px;
 }
 
-.fixture-striped-list-item:nth-child(odd) {
+.match-striped-list-item:nth-child(odd) {
     background-color: #f0f0f0;
 }
 
-.fixture-bordered-list-item {
+.match-bordered-list-item {
     border-left: 3px solid transparent;
 }
 
-.fixture {
+.match {
     margin: 0;
     display: table;
     border-spacing: 6px;
@@ -94,62 +94,62 @@ body {
     width: 100%;
 }
 
-.fixture-row {
+.match-row {
     display: table-row;
 }
 
-.fixture-col {
+.match-col {
     display: table-cell;
     vertical-align: middle;
 }
 
-.fixture-col-namelarge {
+.match-col-namelarge {
     width: 50.0%;
 }
 
-.fixture-col-status {
+.match-col-status {
     vertical-align: bottom;
     width: 17.5%;
 }
 
-.fixture-team-name--home {
+.match-team-name--home {
     vertical-align: bottom;
 }
 
-.fixture-team-name--away {
+.match-team-name--away {
     vertical-align: top;
 }
 
-.fixture-team-name {
+.match-team-name {
     padding-left: 33px;
 }
 
-.fixture-status, .fixture-team-name {
+.match-status, .match-team-name {
     position: relative;
 }
 
-.fixture-status {
+.match-status {
     height: 24px;
     margin-bottom: -15px;
     text-transform: uppercase;
     font-weight: 700;
 }
 
-.fixture-col-score {
+.match-col-score {
     width: 10%;
     text-align: center;
 }
 
-.fixture-score {
+.match-score {
     line-height: 1.5;
     font-weight: 700;
 }
 
-.fixture-score--home {
+.match-score--home {
     vertical-align: bottom;
 }
 
-.fixture-score--away {
+.match-score--away {
     vertical-align: top;
 }
 

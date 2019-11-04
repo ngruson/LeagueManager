@@ -131,3 +131,33 @@ async function updateTeamLeagueMatch(url, homeTeam, awayTeam, startTime) {
     });
     return result;
 }
+
+async function updateTeamLeagueMatchScore(url, homeTeam, homeScore, awayTeam, awayScore) {
+    var req = {
+        homeMatchEntry: {
+            team: {
+                name: homeTeam
+            },
+            homeAway: "Home",
+            score: {
+                value: homeScore
+            }
+        },
+        awayMatchEntry: {
+            team: {
+                name: awayTeam
+            },
+            homeAway: "Away",
+            score: {
+                value: awayScore
+            }
+        }
+    };
+
+    var result = await $.ajax({
+        type: "PUT",
+        url: url,
+        data: req
+    });
+    return result;
+}

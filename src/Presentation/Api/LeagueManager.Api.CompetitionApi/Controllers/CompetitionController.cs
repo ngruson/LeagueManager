@@ -9,12 +9,11 @@ using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using LeagueManager.Application.TeamLeagueMatches.Commands;
 using LeagueManager.Api.CompetitionApi.Dto;
 using AutoMapper;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
-using LeagueManager.Application.TeamLeagues.Queries.Dto;
-using LeagueManager.Infrastructure;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
 
 namespace LeagueManager.Api.CompetitionApi.Controllers
 {
@@ -42,7 +41,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var competitions = await mediator.Send(new GetCompetitionsQuery { Country = country });
                 return Ok(competitions);
             }
-            catch
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -143,13 +142,42 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         {
             try
             {
-                dto.StartTime = DateTimeFormatter.Format(dto.StartTime);
                 var command = mapper.Map<UpdateTeamLeagueMatchCommand>(dto, opt =>
                     {
                         opt.Items["leagueName"] = name;
                         opt.Items["guid"] = guid;
                     });
                     
+                var match = await mediator.Send(command);
+                return Ok(match);
+            }
+            catch (MatchNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (TeamNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        // PUT api/competition/teamleague/Premier League 2019-2020/match/{guid}/score
+        [HttpPut("teamleague/{name}/match/{guid}/score")]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> UpdateTeamLeagueMatchScore(string name, string guid, [FromBody]UpdateScoreDto dto)
+        {
+            try
+            {
+                var command = mapper.Map<UpdateTeamLeagueMatchScoreCommand>(dto, opt =>
+                {
+                    opt.Items["leagueName"] = name;
+                    opt.Items["guid"] = guid;
+                });
+
                 var match = await mediator.Send(command);
                 return Ok(match);
             }
