@@ -1,4 +1,5 @@
-﻿using LeagueManager.Application.Countries.Queries.GetCountries;
+﻿using LeagueManager.Application.Config;
+using LeagueManager.Application.Countries.Queries.GetCountries;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Infrastructure.HttpHelpers;
@@ -20,9 +21,20 @@ namespace LeagueManager.Infrastructure.Api
             this.apiSettings = options.Value;
         }
 
+        public async Task<bool> Configure(DbConfig dbConfig, string accessToken)
+        {
+            var response = await httpRequestFactory.Put(
+                $"{apiSettings.CountryApiUrl}/configuration",
+                dbConfig,
+                accessToken
+            );
+
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<IEnumerable<CountryDto>> GetCountries()
         {
-            var response = await httpRequestFactory.Get(apiSettings.CountryApiUrl);
+            var response = await httpRequestFactory.Get($"{apiSettings.CountryApiUrl}/country");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<IEnumerable<CountryDto>>();
             throw new CountriesNotFoundException();

@@ -5,6 +5,7 @@ using LeagueManager.Application.TeamLeagues.Queries.Dto;
 using LeagueManager.WebUI.ViewModels;
 using System;
 using System.IO;
+using LeagueManager.Application.Config;
 
 namespace LeagueManager.WebUI.AutoMapper
 {
@@ -12,6 +13,8 @@ namespace LeagueManager.WebUI.AutoMapper
     {
         public WebUIProfile()
         {
+            CreateMap<GettingStartedViewModel, DbConfig>();
+
             CreateMap<CompetitionDto, CompetitionViewModel>()
                 .ForMember(m => m.Logo, opt =>
                 {

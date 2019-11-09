@@ -1,6 +1,7 @@
 ﻿using FluentValidation.AspNetCore;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagues.Commands;
+using LeagueManager.Infrastructure.WritableOptions;
 using LeagueManager.Persistence.EntityFramework;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +17,12 @@ using LeagueManager.Application.AutoMapper;
 using AutoMapper;
 using System.Reflection;
 using LeagueManager.Api.CompetitionApi.AutoMapper;
+using LeagueManager.Infrastructure.Configuration;
+using LeagueManager.Api.Shared;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Text;
 
 namespace LeagueManager.Api.CompetitionApi
 {
@@ -31,13 +38,32 @@ namespace LeagueManager.Api.CompetitionApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtBearerOptions =>
+            {
+                jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsSecretSoDoNotTell")),
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.FromMinutes(5)
+                };
+            });
+            
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(options =>
                 {
                     options.SerializerSettings.Formatting = Formatting.Indented;
                 })
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateTeamLeagueCommandValidator>());
+                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateTeamLeagueCommandValidator>())
+                .AddApplicationPart(typeof(ConfigurationController).Assembly).AddControllersAsServices();
 
             services.AddSwaggerGen(c =>
             {
@@ -60,6 +86,8 @@ namespace LeagueManager.Api.CompetitionApi
 
             services.AddScoped<IImageFileLoader, ImageFileLoader>();
             services.AddScoped<DbInitializer>();
+            services.ConfigureWritable<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
+            services.AddScoped<IDbConfigurator, DbConfigurator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,6 +104,7 @@ namespace LeagueManager.Api.CompetitionApi
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseMvc();
 
             app.UseSwagger(c =>

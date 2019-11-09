@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Infrastructure;
 using LeagueManager.Infrastructure.Api;
+using LeagueManager.Infrastructure.Configuration;
 using LeagueManager.Infrastructure.HttpHelpers;
+using LeagueManager.Infrastructure.WritableOptions;
 using LeagueManager.WebUI.AutoMapper;
+using LeagueManager.WebUI.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +33,7 @@ namespace LeagueManager.WebUI
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.ConfigureWritable<InitSettings>(Configuration.GetSection("InitSettings"));
             services.Configure<ApiSettings>(Configuration.GetSection("ApiSettings"));
             services.AddAutoMapper(typeof(WebUIProfile).Assembly);
             services.AddScoped<IHttpRequestFactory, HttpRequestFactory>();
