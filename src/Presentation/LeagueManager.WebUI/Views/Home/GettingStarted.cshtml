@@ -1,0 +1,23 @@
+﻿@model LeagueManager.WebUI.ViewModels.GettingStartedViewModel
+
+    <div class="jumbotron">
+        <h1 class="display-4">Getting Started</h1>
+        <p class="lead">Welcome to League Manager. First, let's setup the application for first use.</p>
+        <hr class="my-4">
+
+        @using (Html.BeginForm("GettingStarted", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="form-group">
+                @Html.LabelFor(m => m.DatabaseServer)
+                @Html.TextBoxFor(m => m.DatabaseServer, new { @class = "form-control", placeholder = "Enter the database server" })
+                <small id="dbServerHelp" class="form-text text-muted">Currently, we only support SQL Server</small>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.DatabaseName)
+                <input asp-for="DatabaseName" class="form-control" value="LeagueManager" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-lg btn-primary mt-5">Go!</button>
+            </div>
+        }
+    </div>

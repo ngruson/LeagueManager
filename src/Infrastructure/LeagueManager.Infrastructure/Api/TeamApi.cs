@@ -1,4 +1,5 @@
-﻿using LeagueManager.Application.Interfaces;
+﻿using LeagueManager.Application.Config;
+using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Teams.Queries.GetTeams;
 using LeagueManager.Infrastructure.HttpHelpers;
 using Microsoft.Extensions.Options;
@@ -20,14 +21,23 @@ namespace LeagueManager.Infrastructure.Api
             this.apiSettings = options.Value;
         }
 
+        public async Task<bool> Configure(DbConfig dbConfig, string accessToken)
+        {
+            var response = await httpRequestFactory.Put(
+                $"{apiSettings.TeamApiUrl}/configuration",
+                dbConfig,
+                accessToken
+            );
+
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<IEnumerable<TeamDto>> GetTeams()
         {
-            var response =  await httpRequestFactory.Get(apiSettings.TeamApiUrl);
+            var response =  await httpRequestFactory.Get($"{apiSettings.TeamApiUrl}/team");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<IEnumerable<TeamDto>>();
             throw new Exception("Teams could not be retrieved");
-        }
-
-        
+        }   
     }
 }

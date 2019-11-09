@@ -14,6 +14,7 @@ using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
+using LeagueManager.Application.Config;
 
 namespace LeagueManager.Infrastructure.Api
 {
@@ -21,24 +22,37 @@ namespace LeagueManager.Infrastructure.Api
     {
         private readonly IHttpRequestFactory httpRequestFactory;
         private readonly ApiSettings apiSettings;
+        private readonly string teamLeagueApiUrl;
 
         public CompetitionApi(IHttpRequestFactory httpRequestFactory,
             IOptions<ApiSettings> options)
         {
             this.httpRequestFactory = httpRequestFactory;
             this.apiSettings = options.Value;
+            this.teamLeagueApiUrl = $"{apiSettings.CompetitionApiUrl}/Competition/teamleague"; 
+        }
+
+        public async Task<bool> Configure(DbConfig dbConfig, string accessToken)
+        {
+            var response = await httpRequestFactory.Put(
+                $"{apiSettings.CompetitionApiUrl}/configuration",
+                dbConfig,
+                accessToken
+            );
+
+            return response.IsSuccessStatusCode;
         }
 
         public async Task CreateTeamLeague(CreateTeamLeagueCommand command)
         {
-            var response = await httpRequestFactory.Post(apiSettings.TeamLeagueApiUrl, command);
+            var response = await httpRequestFactory.Post(teamLeagueApiUrl, command);
             if (!response.IsSuccessStatusCode)
                 throw new CreateTeamLeagueException(command.Name);
         }
 
         public async Task<IEnumerable<CompetitionDto>> GetCompetitions(GetCompetitionsQuery query)
         {
-            var response = await httpRequestFactory.Get(apiSettings.CompetitionApiUrl);
+            var response = await httpRequestFactory.Get($"{apiSettings.CompetitionApiUrl}/competition");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<IEnumerable<CompetitionDto>>();
             return new List<CompetitionDto>();
@@ -46,7 +60,7 @@ namespace LeagueManager.Infrastructure.Api
 
         public async Task<CompetitionDto> GetCompetition(GetCompetitionQuery query)
         {
-            var response = await httpRequestFactory.Get($"{apiSettings.CompetitionApiUrl}/{query.Name}");
+            var response = await httpRequestFactory.Get($"{apiSettings.CompetitionApiUrl}/competition/{query.Name}");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<CompetitionDto>();
             return new CompetitionDto();
@@ -54,7 +68,7 @@ namespace LeagueManager.Infrastructure.Api
 
         public async Task<TeamLeagueTableDto> GetTeamLeagueTable(GetTeamLeagueTableQuery query)
         {
-            string requestUri = $"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/table";
+            string requestUri = $"{teamLeagueApiUrl}/{query.LeagueName}/table";
             var response = await httpRequestFactory.Get(requestUri);
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<TeamLeagueTableDto>();
@@ -63,7 +77,7 @@ namespace LeagueManager.Infrastructure.Api
 
         public async Task<IEnumerable<TeamLeagueRoundDto>> GetTeamLeagueRounds(GetTeamLeagueRoundsQuery query)
         {
-            var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/rounds");
+            var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/rounds");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<IEnumerable<TeamLeagueRoundDto>>();
             return null;
@@ -71,7 +85,7 @@ namespace LeagueManager.Infrastructure.Api
 
         public async Task<TeamMatchDto> GetTeamLeagueMatch(GetTeamLeagueMatchQuery query)
         {
-            var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/match/{query.Guid}");
+            var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/match/{query.Guid}");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<TeamMatchDto>();
             return null;
@@ -80,7 +94,7 @@ namespace LeagueManager.Infrastructure.Api
         public async Task<TeamMatchDto> UpdateTeamLeagueMatch(UpdateTeamLeagueMatchCommand command)
         {
             var response = await httpRequestFactory.Put(
-                $"{apiSettings.TeamLeagueApiUrl}/{command.LeagueName}/match/{command.Guid}",
+                $"{teamLeagueApiUrl}/{command.LeagueName}/match/{command.Guid}",
                 command
             );
 
@@ -92,7 +106,7 @@ namespace LeagueManager.Infrastructure.Api
         public async Task<TeamMatchDto> UpdateTeamLeagueMatchScore(UpdateTeamLeagueMatchScoreCommand command)
         {
             var response = await httpRequestFactory.Put(
-                $"{apiSettings.TeamLeagueApiUrl}/{command.LeagueName}/match/{command.Guid}/score",
+                $"{teamLeagueApiUrl}/{command.LeagueName}/match/{command.Guid}/score",
                 command
             );
 

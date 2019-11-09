@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace LeagueManager.Application.Interfaces
 {
-    public interface ICountryApi
+    public interface ICountryApi : IConfigurationApi
     {
         Task<IEnumerable<CountryDto>> GetCountries();
     }
