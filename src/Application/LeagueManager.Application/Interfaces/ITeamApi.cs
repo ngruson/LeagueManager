@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace LeagueManager.Application.Interfaces
 {
-    public interface ITeamApi
+    public interface ITeamApi : IConfigurationApi
     {
         Task<IEnumerable<TeamDto>> GetTeams();
     }

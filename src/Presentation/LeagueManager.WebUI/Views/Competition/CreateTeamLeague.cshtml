@@ -93,15 +93,15 @@
     <script>
         $(document).ready(function () {
 
-            getCountries($('#country-dropdown'), "@Model.CountryApiUrl");
-            getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl");
+            getCountries($('#country-dropdown'), "@Model.CountryApiUrl/country");
+            getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl/team");
 
             $('#country').change(function () {
                 if (this.value == "--No country selected--") {
-                    getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl");
+                    getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl/team");
                 }
                 else {
-                    getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl" + "/" + this.value);
+                    getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl/team/" + this.value);
                     $('#country-dropdown').val(this.value).change();
                 }
             });
@@ -131,7 +131,7 @@
                     $('#team-name'),
                     $('#country-dropdown option:selected'),
                     $('#teams-to-add'),
-                    "@Model.TeamApiUrl"
+                    "@Model.TeamApiUrl/team"
                 );
             });
         });

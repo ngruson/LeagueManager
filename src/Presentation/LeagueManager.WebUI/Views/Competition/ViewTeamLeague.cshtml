@@ -112,6 +112,7 @@
                 );
                 $('#match-' + guid).html(result);
                 editMatch();
+                setScore();
             });
         }
 
@@ -158,6 +159,7 @@
                     success: function (result) {
                         $('#match-' + guid).html(result);
                         editMatch();
+                        setScore();
                     }
                 });
             });
