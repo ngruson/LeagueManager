@@ -1,3 +1,3 @@
 # LeagueManager
 
-![](https://github.com/ngruson/LeagueManager/.github/workflows/dotnetcore.yml/badge.svg)
+![Test](https://github.com/ngruson/LeagueManager/workflows/.github/workflows/dotnetcore.yml/badge.svg)
