@@ -15,3 +15,5 @@ jobs:
         dotnet-version: 2.2.108
     - name: Build with dotnet
       run: dotnet build src/LeagueManager.sln --configuration Release
+    - name: Unit Tests
+      run: dotnet test src/LeagueManager.sln
