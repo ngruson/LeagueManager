@@ -7,16 +7,16 @@ using LeagueManager.Application.Interfaces;
 using AutoMapper;
 using LeagueManager.Application.Config;
 using LeagueManager.Infrastructure.WritableOptions;
-using Microsoft.Extensions.Options;
 using LeagueManager.Infrastructure.Api;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LeagueManager.WebUI.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IWritableOptions<InitSettings> initSettings;
-        private readonly IOptions<InitSettings> options;
         private readonly IMapper mapper;
         private readonly ICompetitionApi competitionApi;
         private readonly ICountryApi countryApi;
@@ -41,6 +41,7 @@ namespace LeagueManager.WebUI.Controllers
             return View();
         }
 
+        [Authorize]
         public IActionResult GettingStarted()
         {
             return View();
@@ -49,9 +50,7 @@ namespace LeagueManager.WebUI.Controllers
         [HttpPost]
         public async Task<IActionResult> GettingStarted(GettingStartedViewModel model)
         {
-            var configurator = new Configurator();
-            string signingKey = "MySecretKeyIsSecretSoDoNotTell";
-            string accessToken = configurator.GenerateToken(signingKey);
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
             var dbConfig = mapper.Map<DbConfig>(model);
 
             var result = await competitionApi.Configure(dbConfig, accessToken);

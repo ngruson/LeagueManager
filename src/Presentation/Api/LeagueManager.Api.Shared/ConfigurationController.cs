@@ -1,6 +1,5 @@
 ﻿using LeagueManager.Application.Config;
 using LeagueManager.Application.Interfaces;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +7,7 @@ namespace LeagueManager.Api.Shared
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Configurator")]
+    [Authorize]
     public class ConfigurationController : ControllerBase
     {
         private readonly IDbConfigurator dbConfigurator;

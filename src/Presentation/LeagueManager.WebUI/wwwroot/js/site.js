@@ -109,7 +109,7 @@ function createTeamLeague(leagueName, selectedTeams) {
 function getRounds(dropdown, arr) {
     dropdown.empty();
 
-    for (i = 0; i < arr.length; i++) {
+    for (var i = 0; i < arr.length; i++) {
         var option = $("<option />").val(arr[i]).html(arr[i]);
         dropdown.append(option);
     }
