@@ -16,7 +16,7 @@ jobs:
     - name: Build with dotnet
       run: dotnet build src/LeagueManager.sln --configuration Release
     - name: Unit Tests
-      run: dotnet test src/LeagueManager.sln
+      run: dotnet test src/LeagueManager.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
     - name: SonarCloud Scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
