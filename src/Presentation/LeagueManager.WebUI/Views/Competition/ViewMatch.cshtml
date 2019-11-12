@@ -63,17 +63,20 @@
         </div>
     </div>
  </div>
-<div class="row mt-2">
-    <div class="col">
-        <button data-match-guid="@Model.Guid" class="btn btn-primary js-edit-match">Edit</button>
-        @if ((Model.Home.Team == null) || (Model.Away.Team == null))
-        {
-            <button data-match-guid="@Model.Guid" class="btn btn-secondary disabled">Set score</button>
-        }
-        else
-        {
-            <button data-match-guid="@Model.Guid" class="btn btn-secondary js-set-score">Set score</button>
-        }
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="row mt-2">
+        <div class="col">
+            <button data-match-guid="@Model.Guid" class="btn btn-primary js-edit-match">Edit</button>
+            @if ((Model.Home.Team == null) || (Model.Away.Team == null))
+            {
+                <button data-match-guid="@Model.Guid" class="btn btn-secondary disabled">Set score</button>
+            }
+            else
+            {
+                <button data-match-guid="@Model.Guid" class="btn btn-secondary js-set-score">Set score</button>
+            }
 
+        </div>
     </div>
-</div>
+}

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Infrastructure.Api;
-using LeagueManager.Infrastructure.Configuration;
 using LeagueManager.Infrastructure.HttpHelpers;
 using LeagueManager.Infrastructure.WritableOptions;
 using LeagueManager.WebUI.AutoMapper;
@@ -12,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace LeagueManager.WebUI
 {
@@ -43,6 +43,36 @@ namespace LeagueManager.WebUI
             services.AddScoped<ICompetitionApi, CompetitionApi>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = "Cookies";
+                options.DefaultChallengeScheme = "oidc";
+            })
+                .AddCookie("Cookies")
+                .AddOpenIdConnect("oidc", options =>
+                {
+                    options.SignInScheme = "Cookies";
+
+                    options.Authority = "https://desktop-3pdt884/LeagueManager.IdentityServer";
+                    options.SignInScheme = "Cookies";
+                    options.ClientId = "LeagueManager";
+                    options.ClientSecret = "secret";
+                    options.ResponseType = "code id_token";
+                    options.SaveTokens = true;
+                    options.GetClaimsFromUserInfoEndpoint = true;
+
+                    options.Scope.Add("openid");
+                    options.Scope.Add("profile");
+                    options.Scope.Add("offline_access");
+                    options.Scope.Add("competitionapi");
+                    options.Scope.Add("countryapi");
+                    options.Scope.Add("teamapi");
+
+                    //options.ClaimActions.MapJsonKey("website", "website");
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,6 +90,7 @@ namespace LeagueManager.WebUI
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
