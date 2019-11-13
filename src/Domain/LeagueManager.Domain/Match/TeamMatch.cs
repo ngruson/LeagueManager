@@ -43,13 +43,13 @@ namespace LeagueManager.Domain.Match
                 var away = MatchEntries.SingleOrDefault(me =>
                     me.HomeAway == HomeAway.Away);
 
-                if ((home.Score != null) && (away.Score != null))
-                {
-                    if (home.Score.Value < away.Score.Value)
-                        return home.Team;
-                    else if (home.Score.Value > away.Score.Value)
-                        return away.Team;
-                }
+                if ((home.Score == null) || (away.Score == null))
+                    return null;
+                
+                if (home.Score.Value < away.Score.Value)
+                    return home.Team;
+                else if (home.Score.Value > away.Score.Value)
+                    return away.Team;
 
                 return null;
             }

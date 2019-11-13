@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace LeagueManager.Application.Exceptions
 {
@@ -7,6 +8,11 @@ namespace LeagueManager.Application.Exceptions
     {
         public MatchNotFoundException(Guid guid)
             : base($"Match \"{guid}\" not found.")
+        {
+        }
+
+        protected MatchNotFoundException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

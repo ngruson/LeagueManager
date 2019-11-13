@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace LeagueManager.Application.Exceptions
 {
@@ -7,6 +8,11 @@ namespace LeagueManager.Application.Exceptions
     {
         public TeamNotFoundException(string name)
             : base($"Team \"{name}\" not found.")
+        {
+        }
+
+        protected TeamNotFoundException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

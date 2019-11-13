@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace LeagueManager.Application.Exceptions
 {
@@ -7,6 +8,11 @@ namespace LeagueManager.Application.Exceptions
     {
         public CompetitionAlreadyExistsException(string name)
             : base($"Competition \"{name}\" already exists.")
+        {
+        }
+
+        protected CompetitionAlreadyExistsException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
         {
         }
     }

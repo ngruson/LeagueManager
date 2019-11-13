@@ -4,7 +4,6 @@ using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Teams.Queries.GetTeams;
 using LeagueManager.Infrastructure.HttpHelpers;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

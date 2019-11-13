@@ -7,11 +7,19 @@ using System;
 
 namespace LeagueManager.IdentityServer
 {
-    public static class AccountOptions
+    public class AccountOptions
     {
-        public const bool AllowLocalLogin = true;
-        public const bool AllowRememberLogin = true;
-        public static TimeSpan RememberMeLoginDuration = TimeSpan.FromDays(30);
+        public static bool AllowLocalLogin = true;
+        public static bool AllowRememberLogin = true;
+
+        private static TimeSpan rememberMeLoginDuration = TimeSpan.FromDays(30);
+        public static TimeSpan MyProperty 
+        { 
+            get
+            {
+                return rememberMeLoginDuration;
+            }
+         }
 
         public const bool ShowLogoutPrompt = true;
         public const bool AutomaticRedirectAfterSignOut = false;
