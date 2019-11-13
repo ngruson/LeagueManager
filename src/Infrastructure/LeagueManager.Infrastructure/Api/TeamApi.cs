@@ -1,4 +1,5 @@
 ﻿using LeagueManager.Application.Config;
+using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Teams.Queries.GetTeams;
 using LeagueManager.Infrastructure.HttpHelpers;
@@ -37,7 +38,7 @@ namespace LeagueManager.Infrastructure.Api
             var response =  await httpRequestFactory.Get($"{apiSettings.TeamApiUrl}/team");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<IEnumerable<TeamDto>>();
-            throw new Exception("Teams could not be retrieved");
-        }   
+            throw new TeamNotFoundException("Teams could not be retrieved");
+        }
     }
 }

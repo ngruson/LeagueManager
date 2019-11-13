@@ -9,7 +9,6 @@ using IdentityServer4.Events;
 using LeagueManager.IdentityServer;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using LeagueManager.IdentityServer.Models;
 using IdentityServer4;
+using LeagueManager.IdentityServer.Exceptions;
 
 namespace Host.Quickstart.Account
 {
@@ -53,10 +53,10 @@ namespace Host.Quickstart.Account
             if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
 
             // validate returnUrl - either it is a valid OIDC URL or back to a local page
-            if (Url.IsLocalUrl(returnUrl) == false && interaction.IsValidReturnUrl(returnUrl) == false)
+            if  (!Url.IsLocalUrl(returnUrl) && !interaction.IsValidReturnUrl(returnUrl))
             {
                 // user might have clicked on a malicious link - should be logged
-                throw new Exception("invalid return URL");
+                throw new InvalidReturnURLException();
             }
 
             if (AccountOptions.WindowsAuthenticationSchemeName == provider)
@@ -88,7 +88,7 @@ namespace Host.Quickstart.Account
             var result = await HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
             if (result?.Succeeded != true)
             {
-                throw new Exception("External authentication error");
+                throw new ExternalAuthenticationException();
             }
 
             // lookup our user and external provider info
@@ -125,14 +125,11 @@ namespace Host.Quickstart.Account
 
             // check if external login is in the context of an OIDC request
             var context = await interaction.GetAuthorizationContextAsync(returnUrl);
-            if (context != null)
+            if  ((context != null) && (await clientStore.IsPkceClientAsync(context.ClientId)))
             {
-                if (await clientStore.IsPkceClientAsync(context.ClientId))
-                {
-                    // if the client is PKCE then we assume it's native, so this change in how to
-                    // return the response is for better UX for the end user.
-                    return View("Redirect", new RedirectViewModel { RedirectUrl = returnUrl });
-                }
+                // if the client is PKCE then we assume it's native, so this change in how to
+                // return the response is for better UX for the end user.
+                return View("Redirect", new RedirectViewModel { RedirectUrl = returnUrl });
             }
 
             return Redirect(returnUrl);
@@ -183,16 +180,16 @@ namespace Host.Quickstart.Account
                 UserName = Guid.NewGuid().ToString(),
             };
             var identityResult = await userManager.CreateAsync(user);
-            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+            if (!identityResult.Succeeded) throw new CreateUserException(identityResult.Errors.First().Description);
 
             if (filtered.Any())
             {
                 identityResult = await userManager.AddClaimsAsync(user, filtered);
-                if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+                if (!identityResult.Succeeded) throw new AddClaimsException(identityResult.Errors.First().Description);
             }
 
             identityResult = await userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerUserId, provider));
-            if (!identityResult.Succeeded) throw new Exception(identityResult.Errors.First().Description);
+            if (!identityResult.Succeeded) throw new AddLoginException(identityResult.Errors.First().Description);
 
             return user;
         }
@@ -289,10 +286,12 @@ namespace Host.Quickstart.Account
 
         private void ProcessLoginCallbackForWsFed(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
         {
+            throw new NotSupportedException();
         }
 
         private void ProcessLoginCallbackForSaml2p(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
         {
+            throw new NotSupportedException();
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace LeagueManager.Application.Exceptions
 {
+    [Serializable]
     public class CountriesNotFoundException : Exception
     {
         public CountriesNotFoundException()

@@ -1,5 +1,4 @@
-﻿using LeagueManager.Domain.Competitor;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace LeagueManager.WebUI.ViewModels
 {

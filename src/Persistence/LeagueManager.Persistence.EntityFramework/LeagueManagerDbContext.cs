@@ -2,8 +2,6 @@
 using LeagueManager.Domain.Common;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
-using LeagueManager.Domain.Match;
-using LeagueManager.Domain.Score;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeagueManager.Persistence.EntityFramework

@@ -51,15 +51,6 @@ namespace LeagueManager.IdentityServer
             {
                 builder.AddSigningCredential("CN=sts");
             }
-
-            //services.AddAuthentication()
-            //    .AddMicrosoftAccount(options =>
-            //    {
-            //        // https://apps.dev.microsoft.com
-            //        options.SignInScheme = IdentityServerConstants.ExternalCookieAuthenticationScheme;
-            //        options.ClientId = "4c195fba-a31b-4609-b348-8d8a845da8f0";
-            //        options.ClientSecret = "rdoDA139)xlklAJMWA59%[[";
-            //    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -67,7 +58,6 @@ namespace LeagueManager.IdentityServer
         {
             if (env.IsDevelopment())
             {
-                //app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else

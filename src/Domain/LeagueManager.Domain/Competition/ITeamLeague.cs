@@ -1,6 +1,5 @@
 ﻿using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.Round;
-using System.Collections.Generic;
 
 namespace LeagueManager.Domain.Competition
 {

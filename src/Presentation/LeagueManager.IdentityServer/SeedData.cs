@@ -1,18 +1,17 @@
 ﻿using IdentityModel;
+using LeagueManager.IdentityServer.Exceptions;
 using LeagueManager.IdentityServer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LeagueManager.IdentityServer
 {
-    public class SeedData
+    public static class SeedData
     {
         public static void EnsureSeedData(string connectionString)
         {
@@ -46,7 +45,7 @@ namespace LeagueManager.IdentityServer
                         var result = userManager.CreateAsync(adminUser, "LeagueManager01!").Result;
                         if (!result.Succeeded)
                         {
-                            throw new Exception(result.Errors.First().Description);
+                            throw new CreateUserException(result.Errors.First().Description);
                         }
 
                         result = userManager.AddClaimsAsync(adminUser, new Claim[]{
@@ -55,7 +54,7 @@ namespace LeagueManager.IdentityServer
 
                         if (!result.Succeeded)
                         {
-                            throw new Exception(result.Errors.First().Description);
+                            throw new AddClaimsException(result.Errors.First().Description);
                         }
                         userManager.AddToRoleAsync(adminUser, roleName).Wait();
                         Console.WriteLine("admin created");
@@ -76,7 +75,7 @@ namespace LeagueManager.IdentityServer
                 var result = await roleManager.CreateAsync(new IdentityRole(roleName));
                 if (!result.Succeeded)
                 {
-                    throw new Exception(result.Errors.First().Description);
+                    throw new CreateRoleException(result.Errors.First().Description);
                 }
             }
         }

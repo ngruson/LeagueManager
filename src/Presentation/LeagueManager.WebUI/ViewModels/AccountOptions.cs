@@ -3,20 +3,20 @@ using System;
 
 namespace LeagueManager.WebUI.ViewModels
 {
-    public class AccountOptions
+    public static class AccountOptions
     {
-        public static bool AllowLocalLogin = true;
-        public static bool AllowRememberLogin = true;
+        public const bool AllowLocalLogin = true;
+        public const bool AllowRememberLogin = true;
         public static TimeSpan RememberMeLoginDuration = TimeSpan.FromDays(30);
 
-        public static bool ShowLogoutPrompt = true;
-        public static bool AutomaticRedirectAfterSignOut = false;
+        public const bool ShowLogoutPrompt = true;
+        public const bool AutomaticRedirectAfterSignOut = false;
 
         // specify the Windows authentication scheme being used
         public static readonly string WindowsAuthenticationSchemeName = IISDefaults.AuthenticationScheme;
         // if user uses windows auth, should we load the groups from windows
-        public static bool IncludeWindowsGroups = false;
+        public const bool IncludeWindowsGroups = false;
 
-        public static string InvalidCredentialsErrorMessage = "Invalid username or password";
+        public const string InvalidCredentialsErrorMessage = "Invalid username or password";
     }
 }

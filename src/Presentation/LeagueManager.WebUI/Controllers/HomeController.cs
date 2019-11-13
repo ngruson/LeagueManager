@@ -7,7 +7,6 @@ using LeagueManager.Application.Interfaces;
 using AutoMapper;
 using LeagueManager.Application.Config;
 using LeagueManager.Infrastructure.WritableOptions;
-using LeagueManager.Infrastructure.Api;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
