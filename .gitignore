@@ -4,3 +4,4 @@ obj/
 /SQL
 **/coverage.json
 /src/TestResults/**
+/src/.sonarqube

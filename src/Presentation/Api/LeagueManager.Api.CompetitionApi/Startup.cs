@@ -19,10 +19,6 @@ using System.Reflection;
 using LeagueManager.Api.CompetitionApi.AutoMapper;
 using LeagueManager.Infrastructure.Configuration;
 using LeagueManager.Api.Shared;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Text;
 
 namespace LeagueManager.Api.CompetitionApi
 {

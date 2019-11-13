@@ -2,6 +2,7 @@
 
 namespace LeagueManager.Application.Exceptions
 {
+    [Serializable]
     public class TeamAlreadyExistsException : Exception
     {
         public TeamAlreadyExistsException(string name)

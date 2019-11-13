@@ -10,7 +10,6 @@ using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
-using LeagueManager.Application.Config;
 
 namespace LeagueManager.Application.Interfaces
 {

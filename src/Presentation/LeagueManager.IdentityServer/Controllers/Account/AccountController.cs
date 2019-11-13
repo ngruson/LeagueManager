@@ -8,9 +8,7 @@ using IdentityServer4.Extensions;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +16,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using LeagueManager.IdentityServer.Models;
+using LeagueManager.IdentityServer.Exceptions;
 
 namespace LeagueManager.IdentityServer
 {
@@ -83,28 +82,7 @@ namespace LeagueManager.IdentityServer
             // the user clicked the "cancel" button
             if (button != "login")
             {
-                if (context != null)
-                {
-                    // if the user cancels, send a result back into IdentityServer as if they 
-                    // denied the consent (even if this client does not require consent).
-                    // this will send back an access denied OIDC error response to the client.
-                    await interaction.GrantConsentAsync(context, ConsentResponse.Denied);
-
-                    // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                    if (await clientStore.IsPkceClientAsync(context.ClientId))
-                    {
-                        // if the client is PKCE then we assume it's native, so this change in how to
-                        // return the response is for better UX for the end user.
-                        return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
-                    }
-
-                    return Redirect(model.ReturnUrl);
-                }
-                else
-                {
-                    // since we don't have a valid context, then we just go back to the home page
-                    return Redirect("~/");
-                }
+                await UserCanceled(model, context);
             }
 
             if (ModelState.IsValid)
@@ -140,7 +118,7 @@ namespace LeagueManager.IdentityServer
                     else
                     {
                         // user might have clicked on a malicious link - should be logged
-                        throw new Exception("invalid return URL");
+                        throw new InvalidReturnURLException();
                     }
                 }
 
@@ -152,6 +130,32 @@ namespace LeagueManager.IdentityServer
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
         }
+
+        private async Task<IActionResult> UserCanceled(LoginInputModel model, AuthorizationRequest context)
+        {
+            if (context != null)
+            {
+                // if the user cancels, send a result back into IdentityServer as if they 
+                // denied the consent (even if this client does not require consent).
+                // this will send back an access denied OIDC error response to the client.
+                await interaction.GrantConsentAsync(context, ConsentResponse.Denied);
+
+                // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                if (await clientStore.IsPkceClientAsync(context.ClientId))
+                {
+                    // if the client is PKCE then we assume it's native, so this change in how to
+                    // return the response is for better UX for the end user.
+                    return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
+                }
+
+                return Redirect(model.ReturnUrl);
+            }
+            else
+            {
+                // since we don't have a valid context, then we just go back to the home page
+                return Redirect("~/");
+            }
+        }
         
         /// <summary>
         /// Show logout page
@@ -162,7 +166,7 @@ namespace LeagueManager.IdentityServer
             // build a model so the logout page knows what to display
             var vm = await BuildLogoutViewModelAsync(logoutId);
 
-            if (vm.ShowLogoutPrompt == false)
+            if  (!vm.ShowLogoutPrompt)
             {
                 // if the request for logout was properly authenticated from IdentityServer, then
                 // we don't need to show the prompt and can just log the user out directly.

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace LeagueManager.Domain.Round
+﻿namespace LeagueManager.Domain.Round
 {
     public interface IRound
     {

@@ -26,27 +26,5 @@ namespace LeagueManager.WebUI.ViewModels
                 return MatchEntries.SingleOrDefault(m => m.HomeAway == HomeAway.Away);
             }
         }
-
-        //public TeamViewModel HomeTeam
-        //{
-        //    get
-        //    {
-        //        var me = MatchEntries.SingleOrDefault(m => m.HomeAway == HomeAway.Home);
-        //        if (me != null)
-        //            return me.Team;
-        //        return null;
-        //    }
-        //}
-
-        //public TeamViewModel AwayTeam
-        //{
-        //    get
-        //    {
-        //        var me = MatchEntries.SingleOrDefault(m => m.HomeAway == HomeAway.Away);
-        //        if (me != null)
-        //            return me.Team;
-        //        return null;
-        //    }
-        //}
     }
 }

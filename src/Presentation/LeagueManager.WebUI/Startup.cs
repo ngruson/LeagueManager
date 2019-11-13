@@ -70,8 +70,6 @@ namespace LeagueManager.WebUI
                     options.Scope.Add("competitionapi");
                     options.Scope.Add("countryapi");
                     options.Scope.Add("teamapi");
-
-                    //options.ClaimActions.MapJsonKey("website", "website");
                 });
         }
 

@@ -1,7 +1,6 @@
 ﻿using LeagueManager.Application.TeamLeagues.Queries.Dto;
 using MediatR;
 using System;
-using System.Collections.Generic;
 
 namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch
 {

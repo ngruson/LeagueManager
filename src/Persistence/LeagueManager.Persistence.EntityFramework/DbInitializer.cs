@@ -9,14 +9,12 @@ namespace LeagueManager.Persistence.EntityFramework
     public class DbInitializer
     {
         private readonly string environment;
-        private readonly IConfiguration configuration;
         private readonly IImageFileLoader imageFileLoader;
 
         public DbInitializer(
             IConfiguration configuration,
             IImageFileLoader imageFileLoader)
         {
-            this.configuration = configuration;
             environment = configuration["ASPNETCORE_ENVIRONMENT"];
             this.imageFileLoader = imageFileLoader;
         }
@@ -35,12 +33,11 @@ namespace LeagueManager.Persistence.EntityFramework
                 SeedCountries(context);
             }
 
-            if (environment == "Development")
+            if ((environment == "Development") && (!context.Teams.Any()))
             {
-                if (!context.Teams.Any())
-                    SeedTeams(context);
+                SeedTeams(context);
             }
-        }        
+        }
 
         //Got countries from https://datahub.io/core/country-codes
         private void SeedCountries(LeagueManagerDbContext context)

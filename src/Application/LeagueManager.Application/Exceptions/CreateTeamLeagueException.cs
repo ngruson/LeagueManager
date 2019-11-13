@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LeagueManager.Infrastructure.Exceptions
+namespace LeagueManager.Application.Exceptions
 {
     public class CreateTeamLeagueException : Exception
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LeagueManager.IdentityServer
 {
-    public class Config
+    public static class Config
     {
         public static IEnumerable<Client> GetClients()
         {

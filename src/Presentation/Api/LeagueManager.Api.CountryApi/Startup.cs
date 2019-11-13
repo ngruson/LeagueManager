@@ -1,24 +1,19 @@
-﻿using LeagueManager.Api.CountryApi.Controllers;
-using LeagueManager.Api.Shared;
+﻿using LeagueManager.Api.Shared;
 using LeagueManager.Application.Countries.Queries.GetCountries;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Infrastructure.Configuration;
 using LeagueManager.Infrastructure.WritableOptions;
 using LeagueManager.Persistence.EntityFramework;
 using MediatR;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Swagger;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace LeagueManager.Api.CountryApi
 {

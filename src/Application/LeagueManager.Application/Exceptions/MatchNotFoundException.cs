@@ -2,6 +2,7 @@
 
 namespace LeagueManager.Application.Exceptions
 {
+    [Serializable]
     public class MatchNotFoundException : Exception
     {
         public MatchNotFoundException(Guid guid)
