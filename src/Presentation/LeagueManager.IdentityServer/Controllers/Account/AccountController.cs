@@ -87,7 +87,7 @@ namespace LeagueManager.IdentityServer
 
             if (ModelState.IsValid)
             {
-                await LoginUser(model);
+                await LoginUser(model, context);
 
                 await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
                 ModelState.AddModelError("", AccountOptions.InvalidCredentialsErrorMessage);
