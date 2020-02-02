@@ -22,9 +22,11 @@ namespace LeagueManager.IdentityServer
                     {
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
+                        "sportapi",
                         "competitionapi",
                         "countryapi",
-                        "teamapi"
+                        "teamapi",
+                        "playerapi"
                     },
                     AllowOfflineAccess = true,
                     AlwaysIncludeUserClaimsInIdToken = true
@@ -46,9 +48,11 @@ namespace LeagueManager.IdentityServer
         {
             return new ApiResource[]
             {
+                new ApiResource("sportapi", "LeagueManager Sport API"),
                 new ApiResource("competitionapi", "LeagueManager Competition API"),
                 new ApiResource("countryapi", "LeagueManager Country API"),
-                new ApiResource("teamapi", "LeagueManager Team API")
+                new ApiResource("teamapi", "LeagueManager Team API"),
+                new ApiResource("playerapi", "LeagueManager Player API")
             };
         }
     }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagues.Queries.Dto;
+using LeagueManager.Application.TeamLeagues.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;

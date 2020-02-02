@@ -44,6 +44,19 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
+        public void When_SportsIsEmpty_Then_ValidationError()
+        {
+            var command = new CreateTeamLeagueCommand
+            {
+                Name = "Premier League",
+                Sports = "",
+                Teams = new List<string> { "Team A", "Team B" }
+            };
+            var validator = new CreateTeamLeagueCommandValidator();
+            validator.ShouldHaveValidationErrorFor(x => x.Sports, command);
+        }
+
+        [Fact]
         public void When_NoTeamsAreSpecified_Then_ValidationError()
         {
             var command = new CreateTeamLeagueCommand

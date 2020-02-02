@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using LeagueManager.Application.AutoMapper;
 using AutoMapper;
 using System.Reflection;
-using LeagueManager.Api.CompetitionApi.AutoMapper;
 using LeagueManager.Infrastructure.Configuration;
 using LeagueManager.Api.Shared;
 
@@ -60,8 +59,7 @@ namespace LeagueManager.Api.CompetitionApi
             services.AddDbContext<ILeagueManagerDbContext, LeagueManagerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LeagueManager")));
             services.AddAutoMapper(new Assembly[] {
-                typeof(ApplicationProfile).Assembly,
-                typeof(CompetitionApiProfile).Assembly
+                typeof(ApplicationProfile).Assembly
             });
 
             services.AddScoped<ServiceFactory>(p => p.GetService);

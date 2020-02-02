@@ -13,10 +13,14 @@ namespace LeagueManager.Application.TeamLeagues.Commands
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage(x => "Name cannot be empty");
-
+            
             RuleFor(x => x.Name)
                 .Must(x => !x.Contains("/"))
                 .WithMessage(x => "Name cannot contain '/'");
+
+            RuleFor(x => x.Sports)
+                .NotEmpty()
+                .WithMessage(x => "Sports cannot be empty");
 
             RuleFor(x => x.Teams)
                 .NotNull()

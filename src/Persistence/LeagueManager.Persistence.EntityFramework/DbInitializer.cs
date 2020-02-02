@@ -1,5 +1,6 @@
 ﻿using LeagueManager.Domain.Common;
 using LeagueManager.Domain.Competitor;
+using LeagueManager.Domain.Sports;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Linq;
@@ -32,6 +33,9 @@ namespace LeagueManager.Persistence.EntityFramework
             {
                 SeedCountries(context);
             }
+            if (!context.TeamSports.Any())
+                SeedTeamSports(context);
+
 
             if ((environment == "Development") && (!context.Teams.Any()))
             {
@@ -337,6 +341,19 @@ namespace LeagueManager.Persistence.EntityFramework
             };
 
             context.Teams.AddRange(teams);
+            context.SaveChanges();
+        }
+
+        private void SeedTeamSports(LeagueManagerDbContext context)
+        {
+            context.TeamSports.Add(new TeamSports
+            {
+                Name = "Soccer",
+                Options = new TeamSportsOptions
+                {
+                    AmountOfPlayers = 11
+                }
+            });
             context.SaveChanges();
         }
     }

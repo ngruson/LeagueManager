@@ -28,6 +28,7 @@ namespace LeagueManager.Application.Competitions.Queries.GetCompetition
         {
             var list = new List<TeamLeague>();
             var teamLeague = await context.TeamLeagues
+                .Include(t => t.Sports)
                 .Include(t => t.Country)
                 .Include(t => t.Competitors)
                     .ThenInclude(c => c.Team)

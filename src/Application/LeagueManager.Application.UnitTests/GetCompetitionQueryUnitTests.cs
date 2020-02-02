@@ -35,18 +35,18 @@ namespace LeagueManager.Application.UnitTests
             return config.CreateMapper();
         }
 
-        private List<TeamCompetitor> CreateCompetitors()
+        private List<Domain.Competitor.TeamCompetitor> CreateCompetitors()
         {
-            return new List<TeamCompetitor>
+            return new List<Domain.Competitor.TeamCompetitor>
             {
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {
                         Name = "Liverpool"
                     }
                 },
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {

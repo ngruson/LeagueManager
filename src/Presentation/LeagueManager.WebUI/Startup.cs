@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IdentityModel.Tokens.Jwt;
@@ -38,6 +39,7 @@ namespace LeagueManager.WebUI
             services.AddAutoMapper(typeof(WebUIProfile).Assembly);
             services.AddScoped<IHttpRequestFactory, HttpRequestFactory>();
             services.AddScoped<IHttpRequestBuilder, HttpRequestBuilder>();
+            services.AddScoped<ISportApi, SportApi>();
             services.AddScoped<ICountryApi, CountryApi>();
             services.AddScoped<ITeamApi, TeamApi>();
             services.AddScoped<ICompetitionApi, CompetitionApi>();
@@ -67,6 +69,7 @@ namespace LeagueManager.WebUI
                     options.Scope.Add("openid");
                     options.Scope.Add("profile");
                     options.Scope.Add("offline_access");
+                    options.Scope.Add("sportapi");
                     options.Scope.Add("competitionapi");
                     options.Scope.Add("countryapi");
                     options.Scope.Add("teamapi");

@@ -5,6 +5,7 @@ namespace LeagueManager.WebUI.ViewModels
     public class TeamLeagueRoundViewModel
     {
         public string Name { get; set; }
+        public string TeamLeague { get; set; }
         public IEnumerable<TeamMatchViewModel> Matches { get; set; }
     }
 }

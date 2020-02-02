@@ -1,0 +1,71 @@
+﻿@model List<LeagueManager.WebUI.ViewModels.TeamMatchEntryViewModel>
+
+<div class="row">
+    @foreach (var entry in Model)
+    {
+        <div class="col-6">
+            <div class="row">
+                <div class="col-2">
+                    <img src="@entry.Team.Logo" style="height:48px; width:48px" />
+                </div>
+                <div class="col">
+                    <h3>@entry.Team.Name</h3>
+                </div>
+            </div>
+            <div class="py-5">
+                @foreach (var lineupEntry in entry.Lineup)
+                {
+                <div id="lineup-entry-@lineupEntry.Guid">
+                    @await Html.PartialAsync("ViewMatchLineupEntry", lineupEntry)
+                </div>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createPlayerModal" tabindex="-1" role="dialog" aria-labelledby="createPlayerModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPlayerModalTitle">Create Player</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" />
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col">
+                            <label for="player-number" class="col-form-label">Number:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <input type="number" class="form-control" id="player-number">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="player-first-name" class="col-form-label">First Name:</label>
+                    <input type="text" class="form-control" id="player-first-name">
+                </div>
+                <div class="form-group">
+                    <label for="player-middle-name" class="col-form-label">Middle Name:</label>
+                    <input type="text" class="form-control" id="player-middle-name">
+                </div>
+                <div class="form-group">
+                    <label for="player-last-name" class="col-form-label">Last Name:</label>
+                    <input type="text" class="form-control" id="player-last-name">
+                </div>
+                <div class="alert alert-success invisible" role="alert">
+                    A simple success alert—check it out!
+                </div>
+                <div class="alert alert-danger invisible" role="alert"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary js-save-player">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

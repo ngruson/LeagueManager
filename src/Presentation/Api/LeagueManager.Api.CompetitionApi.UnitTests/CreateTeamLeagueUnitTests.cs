@@ -9,7 +9,7 @@ using System;
 using System.Threading;
 using Xunit;
 using AutoMapper;
-using LeagueManager.Api.CompetitionApi.AutoMapper;
+using LeagueManager.Application.AutoMapper;
 
 namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
@@ -19,7 +19,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
         {
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile<CompetitionApiProfile>();
+                opts.AddProfile<ApplicationProfile>();
             });
 
             return config.CreateMapper();

@@ -58,11 +58,11 @@ namespace LeagueManager.Application.UnitTests
             };
         }
 
-        private List<TeamMatch> CreateMatches()
+        private List<TeamLeagueMatch> CreateMatches()
         {
-            return new List<TeamMatch>
+            return new List<TeamLeagueMatch>
             {
-                new TeamMatch
+                new TeamLeagueMatch
                 {
                     MatchEntries = new List<TeamMatchEntry>
                     {
@@ -79,32 +79,32 @@ namespace LeagueManager.Application.UnitTests
             };
         }
 
-        private List<TeamCompetitor> CreateCompetitors()
+        private List<Domain.Competitor.TeamCompetitor> CreateCompetitors()
         {
-            return new List<TeamCompetitor>
+            return new List<Domain.Competitor.TeamCompetitor>
             {
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {
                         Name = "Liverpool"
                     }
                 },
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {
                         Name = "Manchester City"
                     }
                 },
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {
                         Name = "Chelsea"
                     }
                 },
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {
@@ -156,10 +156,10 @@ namespace LeagueManager.Application.UnitTests
                 r.Matches.ToList().ForEach(m =>
                 {
                     m.MatchEntries.SingleOrDefault(me =>
-                            me.HomeAway == TeamLeagues.Queries.Dto.HomeAway.Home)
+                            me.HomeAway == TeamLeagueMatches.Dto.HomeAway.Home)
                         .Should().NotBeNull();
                     m.MatchEntries.SingleOrDefault(me =>
-                        me.HomeAway == TeamLeagues.Queries.Dto.HomeAway.Away)
+                        me.HomeAway == TeamLeagueMatches.Dto.HomeAway.Away)
                     .Should().NotBeNull();
                 });
             });

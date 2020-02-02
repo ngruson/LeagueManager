@@ -50,11 +50,15 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
 
                     b.Property<int?>("PointSystemId");
 
+                    b.Property<int?>("SportsId");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CountryId");
 
                     b.HasIndex("PointSystemId");
+
+                    b.HasIndex("SportsId");
 
                     b.ToTable("TeamLeagues");
                 });
@@ -97,7 +101,28 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.ToTable("TeamCompetitor");
                 });
 
-            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatch", b =>
+            modelBuilder.Entity("LeagueManager.Domain.Competitor.TeamCompetitorPlayer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Number");
+
+                    b.Property<int?>("PlayerId");
+
+                    b.Property<int?>("TeamCompetitorId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("TeamCompetitorId");
+
+                    b.ToTable("TeamCompetitorPlayer");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamLeagueMatch", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,7 +138,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
 
                     b.HasIndex("TeamLeagueRoundId");
 
-                    b.ToTable("TeamMatch");
+                    b.ToTable("TeamLeagueMatch");
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntry", b =>
@@ -128,7 +153,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
 
                     b.Property<int?>("TeamId");
 
-                    b.Property<int?>("TeamMatchId");
+                    b.Property<int?>("TeamLeagueMatchId");
 
                     b.HasKey("Id");
 
@@ -136,9 +161,51 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
 
                     b.HasIndex("TeamId");
 
-                    b.HasIndex("TeamMatchId");
+                    b.HasIndex("TeamLeagueMatchId");
 
                     b.ToTable("TeamMatchEntry");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryLineupEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid>("Guid");
+
+                    b.Property<string>("Number");
+
+                    b.Property<int?>("PlayerId");
+
+                    b.Property<int?>("TeamMatchEntryId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("TeamMatchEntryId");
+
+                    b.ToTable("TeamMatchEntryLineupEntry");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Player.Player", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("BirthDate");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<string>("MiddleName");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Players");
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Points.PointSystem", b =>
@@ -188,6 +255,36 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.ToTable("IntegerScore");
                 });
 
+            modelBuilder.Entity("LeagueManager.Domain.Sports.TeamSports", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name");
+
+                    b.Property<int?>("OptionsId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OptionsId");
+
+                    b.ToTable("TeamSports");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Sports.TeamSportsOptions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AmountOfPlayers");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeamSportsOptions");
+                });
+
             modelBuilder.Entity("LeagueManager.Domain.Competition.TeamLeague", b =>
                 {
                     b.HasOne("LeagueManager.Domain.Common.Country", "Country")
@@ -197,6 +294,10 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.HasOne("LeagueManager.Domain.Points.PointSystem", "PointSystem")
                         .WithMany()
                         .HasForeignKey("PointSystemId");
+
+                    b.HasOne("LeagueManager.Domain.Sports.TeamSports", "Sports")
+                        .WithMany()
+                        .HasForeignKey("SportsId");
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Competitor.Team", b =>
@@ -217,9 +318,20 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .HasForeignKey("TeamLeagueId");
                 });
 
-            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatch", b =>
+            modelBuilder.Entity("LeagueManager.Domain.Competitor.TeamCompetitorPlayer", b =>
                 {
-                    b.HasOne("LeagueManager.Domain.Round.TeamLeagueRound")
+                    b.HasOne("LeagueManager.Domain.Player.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId");
+
+                    b.HasOne("LeagueManager.Domain.Competitor.TeamCompetitor")
+                        .WithMany("Players")
+                        .HasForeignKey("TeamCompetitorId");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamLeagueMatch", b =>
+                {
+                    b.HasOne("LeagueManager.Domain.Round.TeamLeagueRound", "TeamLeagueRound")
                         .WithMany("Matches")
                         .HasForeignKey("TeamLeagueRoundId");
                 });
@@ -234,16 +346,34 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .WithMany()
                         .HasForeignKey("TeamId");
 
-                    b.HasOne("LeagueManager.Domain.Match.TeamMatch")
+                    b.HasOne("LeagueManager.Domain.Match.TeamLeagueMatch")
                         .WithMany("MatchEntries")
-                        .HasForeignKey("TeamMatchId");
+                        .HasForeignKey("TeamLeagueMatchId");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryLineupEntry", b =>
+                {
+                    b.HasOne("LeagueManager.Domain.Player.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId");
+
+                    b.HasOne("LeagueManager.Domain.Match.TeamMatchEntry", "TeamMatchEntry")
+                        .WithMany("Lineup")
+                        .HasForeignKey("TeamMatchEntryId");
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Round.TeamLeagueRound", b =>
                 {
-                    b.HasOne("LeagueManager.Domain.Competition.TeamLeague")
+                    b.HasOne("LeagueManager.Domain.Competition.TeamLeague", "TeamLeague")
                         .WithMany("Rounds")
                         .HasForeignKey("TeamLeagueId");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Sports.TeamSports", b =>
+                {
+                    b.HasOne("LeagueManager.Domain.Sports.TeamSportsOptions", "Options")
+                        .WithMany()
+                        .HasForeignKey("OptionsId");
                 });
 #pragma warning restore 612, 618
         }

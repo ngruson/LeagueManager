@@ -1,0 +1,23 @@
+﻿@model LeagueManager.WebUI.ViewModels.TeamMatchEntryLineupEntryViewModel
+
+    <div class="row">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <div class="col-1">
+                <button type="button" data-team-name="@Model.TeamName" data-lineup-player-guid="@Model.Guid" class="btn btn-default btn-sm fa fa-edit js-edit-lineup-entry"></button>
+            </div>
+        }
+        <div class="col-1">
+            <b>@Model.Number</b>
+        </div>
+        <div class="col">
+            @if (Model.Player != null)
+            {
+                @Model.Player.FullName
+            }
+            else
+            {
+                <div>No player selected</div>
+            }
+        </div>
+    </div>

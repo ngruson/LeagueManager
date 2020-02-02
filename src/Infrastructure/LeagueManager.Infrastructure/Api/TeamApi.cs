@@ -37,7 +37,7 @@ namespace LeagueManager.Infrastructure.Api
             var response =  await httpRequestFactory.Get($"{apiSettings.TeamApiUrl}/team");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<IEnumerable<TeamDto>>();
-            throw new TeamNotFoundException("Teams could not be retrieved");
+            throw new TeamsNotFoundException();
         }
     }
 }

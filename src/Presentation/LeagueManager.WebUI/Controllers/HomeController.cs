@@ -17,18 +17,21 @@ namespace LeagueManager.WebUI.Controllers
     {
         private readonly IWritableOptions<InitSettings> initSettings;
         private readonly IMapper mapper;
+        private readonly ISportApi sportApi;
         private readonly ICompetitionApi competitionApi;
         private readonly ICountryApi countryApi;
         private readonly ITeamApi teamApi;
 
         public HomeController(IWritableOptions<InitSettings> initSettings,
             IMapper mapper,
+            ISportApi sportApi,
             ICompetitionApi competitionApi,
             ICountryApi countryApi,
             ITeamApi teamApi)
         {
             this.initSettings = initSettings;
             this.mapper = mapper;
+            this.sportApi = sportApi;
             this.competitionApi = competitionApi;
             this.countryApi = countryApi;
             this.teamApi = teamApi;
@@ -52,7 +55,8 @@ namespace LeagueManager.WebUI.Controllers
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             var dbConfig = mapper.Map<DbConfig>(model);
 
-            var result = await competitionApi.Configure(dbConfig, accessToken);
+            var result = await sportApi.Configure(dbConfig, accessToken);
+            result = result && await competitionApi.Configure(dbConfig, accessToken);
             result = result && await countryApi.Configure(dbConfig, accessToken);
             result = result && await teamApi.Configure(dbConfig, accessToken);
 

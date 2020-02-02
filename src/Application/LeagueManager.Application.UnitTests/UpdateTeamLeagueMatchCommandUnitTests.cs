@@ -4,7 +4,7 @@ using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
-using LeagueManager.Application.TeamLeagues.Queries.Dto;
+using LeagueManager.Application.TeamLeagueMatches.Dto;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.Match;
@@ -65,9 +65,9 @@ namespace LeagueManager.Application.UnitTests
                     {
                         new TeamLeagueRound
                         {
-                            Matches = new List<TeamMatch>
+                            Matches = new List<TeamLeagueMatch>
                             {
-                                new TeamMatch
+                                new TeamLeagueMatch
                                 {
                                     Guid = guid,
                                     MatchEntries = new List<TeamMatchEntry>
