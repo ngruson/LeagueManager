@@ -2,7 +2,7 @@
 using FluentAssertions;
 using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Match;
 using LeagueManager.Domain.Round;
@@ -53,11 +53,11 @@ namespace LeagueManager.Application.UnitTests
             };
         }
 
-        private List<TeamMatch> CreateMatches()
+        private List<TeamLeagueMatch> CreateMatches()
         {
-            return new List<TeamMatch>
+            return new List<TeamLeagueMatch>
             {
-                new TeamMatch
+                new TeamLeagueMatch
                 {
                     Guid = new Guid("77E49557-62F0-4FE5-8A96-52251F108FE3"),
                     MatchEntries = new List<TeamMatchEntry>

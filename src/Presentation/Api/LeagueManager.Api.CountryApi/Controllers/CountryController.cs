@@ -9,7 +9,7 @@ namespace LeagueManager.Api.CountryApi.Controllers
     [ApiController]
     public class CountryController : ControllerBase
     {
-        private IMediator mediator;
+        private readonly IMediator mediator;
 
         public CountryController(IMediator mediator)
         {

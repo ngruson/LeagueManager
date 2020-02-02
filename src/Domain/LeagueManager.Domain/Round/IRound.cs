@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using LeagueManager.Domain.Competition;
 
 namespace LeagueManager.Domain.Round
 {
@@ -6,5 +6,6 @@ namespace LeagueManager.Domain.Round
     {
         int Id { get; set; }
         string Name { get; set; }
+        //ICompetition Competition { get; set; }
     }
 }

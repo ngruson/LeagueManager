@@ -1,4 +1,4 @@
-﻿using LeagueManager.Application.TeamLeagues.Queries.Dto;
+﻿using LeagueManager.Application.TeamLeagues.Dto;
 using MediatR;
 using System.Collections.Generic;
 

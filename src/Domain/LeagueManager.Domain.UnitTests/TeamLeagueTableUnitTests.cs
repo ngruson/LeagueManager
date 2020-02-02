@@ -43,9 +43,9 @@ namespace LeagueManager.Domain.UnitTests
             {
                 new TeamLeagueRound
                 {
-                    Matches = new List<TeamMatch>
+                    Matches = new List<TeamLeagueMatch>
                     {
-                        new TeamMatch
+                        new TeamLeagueMatch
                         {
                             MatchEntries = new List<TeamMatchEntry>
                             {
@@ -63,7 +63,7 @@ namespace LeagueManager.Domain.UnitTests
                                 }
                             }
                         },
-                        new TeamMatch
+                        new TeamLeagueMatch
                         {
                             MatchEntries = new List<TeamMatchEntry>
                             {
@@ -85,9 +85,9 @@ namespace LeagueManager.Domain.UnitTests
                 },
                 new TeamLeagueRound
                 {
-                    Matches = new List<TeamMatch>
+                    Matches = new List<TeamLeagueMatch>
                     {
-                        new TeamMatch
+                        new TeamLeagueMatch
                         {
                             MatchEntries = new List<TeamMatchEntry>
                             {
@@ -105,7 +105,7 @@ namespace LeagueManager.Domain.UnitTests
                                 }
                             }
                         },
-                        new TeamMatch
+                        new TeamLeagueMatch
                         {
                             MatchEntries = new List<TeamMatchEntry>
                             {

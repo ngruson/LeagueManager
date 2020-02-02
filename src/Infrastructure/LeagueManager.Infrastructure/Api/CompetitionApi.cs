@@ -4,17 +4,24 @@ using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Application.Competitions.Queries.Dto;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagues.Queries.Dto;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
-using LeagueManager.Infrastructure.Exceptions;
 using LeagueManager.Infrastructure.HttpHelpers;
 using Microsoft.Extensions.Options;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
-using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
 using LeagueManager.Application.Config;
+using LeagueManager.Application.Exceptions;
+using LeagueManager.Application.TeamLeagueMatches.Dto;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails;
+using LeagueManager.Application.TeamLeagues.Dto;
+using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
+using LeagueManager.Application.TeamCompetitor.Dto;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupPlayer;
+using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
+using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
 
 namespace LeagueManager.Infrastructure.Api
 {
@@ -66,6 +73,14 @@ namespace LeagueManager.Infrastructure.Api
             return new CompetitionDto();
         }
 
+        public async Task<IEnumerable<TeamCompetitorPlayerDto>> GetPlayersForTeamCompetitor(GetPlayersForTeamCompetitorQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{apiSettings.TeamLeagueApiUrl}/{query.LeagueName}/competitor/{query.TeamName}/players");
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<IEnumerable<TeamCompetitorPlayerDto>>();
+            return null;
+        }
+
         public async Task<TeamLeagueTableDto> GetTeamLeagueTable(GetTeamLeagueTableQuery query)
         {
             string requestUri = $"{teamLeagueApiUrl}/{query.LeagueName}/table";
@@ -86,6 +101,14 @@ namespace LeagueManager.Infrastructure.Api
         public async Task<TeamMatchDto> GetTeamLeagueMatch(GetTeamLeagueMatchQuery query)
         {
             var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/match/{query.Guid}");
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<TeamMatchDto>();
+            return null;
+        }
+
+        public async Task<TeamMatchDto> GetTeamLeagueMatchDetails(GetTeamLeagueMatchDetailsQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/match/details/{query.Guid}");
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<TeamMatchDto>();
             return null;
@@ -112,6 +135,31 @@ namespace LeagueManager.Infrastructure.Api
 
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<TeamMatchDto>();
+            return null;
+        }
+
+        public async Task<Application.TeamLeagueMatches.Lineup.Dto.LineupEntryDto> GetTeamLeagueMatchLineupEntry(GetTeamLeagueMatchLineupEntryQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/match/{query.MatchGuid}/lineup/{query.LineupEntryGuid}");
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<Application.TeamLeagueMatches.Lineup.Dto.LineupEntryDto>();
+            return null;
+        }
+
+        public async Task<Application.TeamLeagueMatches.Lineup.Dto.LineupEntryDto> UpdateTeamLeagueMatchLineupEntry(UpdateTeamLeagueMatchLineupEntryCommand command)
+        {
+            var dto = new UpdateLineupEntryDto
+            {
+                PlayerNumber = command.PlayerNumber,
+                PlayerName = command.PlayerName
+            };
+        var response = await httpRequestFactory.Put(
+                $"{teamLeagueApiUrl}/{command.LeagueName}/match/{command.MatchGuid}/{command.TeamName}/lineup/{command.LineupEntryGuid}",
+                dto
+            );
+
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<Application.TeamLeagueMatches.Lineup.Dto.LineupEntryDto>();
             return null;
         }
     }

@@ -12,14 +12,13 @@ namespace LeagueManager.Domain.LeagueTable
         public List<TeamLeagueTableItem> Items { get; set; } = new List<TeamLeagueTableItem>();
 
         public void CalculateTable(
-            List<TeamCompetitor> competitors, 
+            List<TeamCompetitor> teams, 
             List<TeamLeagueRound> rounds,
             PointSystem pointSystem)
         {
             Items.Clear();
 
-            var teams = competitors.Select(t => t.Team).ToList();
-            competitors.Select(t => t.Team)
+            teams.Select(t => t.Team)
                 .ToList()
                 .ForEach(t =>
                     {
@@ -27,7 +26,7 @@ namespace LeagueManager.Domain.LeagueTable
                         var item = new TeamLeagueTableItem
                         {
                             Team = t,
-                            GamesPlayed = matches.Count(),
+                            GamesPlayed = matches.Count,
                             GamesWon = matches.Count(m => m.Winner == t),
                             GamesLost = matches.Count(m => m.Loser == t),
                             GamesDrawn = matches.Count(m => m.IsDraw),
@@ -51,13 +50,13 @@ namespace LeagueManager.Domain.LeagueTable
             });
         }
 
-        private List<TeamMatch> GetMatchesForTeam(
+        private List<TeamLeagueMatch> GetMatchesForTeam(
             Team team,
             List<TeamLeagueRound> rounds)
         {
             return rounds.SelectMany(r =>
                 r.Matches.Where(m =>
-                    m.MatchEntries.Exists(me => 
+                    m.MatchEntries.Any(me => 
                         me.Team != null && 
                         me.Team.Name == team.Name &&
                         me.Score != null)))

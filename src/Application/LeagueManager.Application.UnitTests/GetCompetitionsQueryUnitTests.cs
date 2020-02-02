@@ -60,18 +60,18 @@ namespace LeagueManager.Application.UnitTests
             };
         }
 
-        private List<TeamCompetitor> CreateCompetitorsForEngland()
+        private List<Domain.Competitor.TeamCompetitor> CreateCompetitorsForEngland()
         {
-            return new List<TeamCompetitor>
+            return new List<Domain.Competitor.TeamCompetitor>
             {
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {
                         Name = "Liverpool"
                     }
                 },
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {
@@ -81,18 +81,18 @@ namespace LeagueManager.Application.UnitTests
             };
         }
 
-        private List<TeamCompetitor> CreateCompetitorsForSpain()
+        private List<Domain.Competitor.TeamCompetitor> CreateCompetitorsForSpain()
         {
-            return new List<TeamCompetitor>
+            return new List<Domain.Competitor.TeamCompetitor>
             {
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {
                         Name = "FC Barcelona"
                     }
                 },
-                new TeamCompetitor
+                new Domain.Competitor.TeamCompetitor
                 {
                     Team = new Team
                     {

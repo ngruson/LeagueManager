@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
 using FluentAssertions;
-using LeagueManager.Api.CompetitionApi.AutoMapper;
 using LeagueManager.Api.CompetitionApi.Controllers;
-using LeagueManager.Api.CompetitionApi.Dto;
+using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
 using MediatR;
@@ -20,7 +19,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
         {
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile<CompetitionApiProfile>();
+                opts.AddProfile<ApplicationProfile>();
             });
 
             return config.CreateMapper();

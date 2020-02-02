@@ -1,5 +1,6 @@
 ﻿using LeagueManager.Domain.Common;
 using LeagueManager.Domain.Competitor;
+using LeagueManager.Domain.Sports;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Linq;
@@ -9,14 +10,12 @@ namespace LeagueManager.Persistence.EntityFramework
     public class DbInitializer
     {
         private readonly string environment;
-        private readonly IConfiguration configuration;
         private readonly IImageFileLoader imageFileLoader;
 
         public DbInitializer(
             IConfiguration configuration,
             IImageFileLoader imageFileLoader)
         {
-            this.configuration = configuration;
             environment = configuration["ASPNETCORE_ENVIRONMENT"];
             this.imageFileLoader = imageFileLoader;
         }
@@ -34,13 +33,15 @@ namespace LeagueManager.Persistence.EntityFramework
             {
                 SeedCountries(context);
             }
+            if (!context.TeamSports.Any())
+                SeedTeamSports(context);
 
-            if (environment == "Development")
+
+            if ((environment == "Development") && (!context.Teams.Any()))
             {
-                if (!context.Teams.Any())
-                    SeedTeams(context);
+                SeedTeams(context);
             }
-        }        
+        }
 
         //Got countries from https://datahub.io/core/country-codes
         private void SeedCountries(LeagueManagerDbContext context)
@@ -340,6 +341,19 @@ namespace LeagueManager.Persistence.EntityFramework
             };
 
             context.Teams.AddRange(teams);
+            context.SaveChanges();
+        }
+
+        private void SeedTeamSports(LeagueManagerDbContext context)
+        {
+            context.TeamSports.Add(new TeamSports
+            {
+                Name = "Soccer",
+                Options = new TeamSportsOptions
+                {
+                    AmountOfPlayers = 11
+                }
+            });
             context.SaveChanges();
         }
     }

@@ -1,5 +1,4 @@
-﻿using LeagueManager.Application.Teams.Queries.GetTeams;
-using MediatR;
+﻿using MediatR;
 using System.Collections.Generic;
 
 namespace LeagueManager.Application.Teams.Queries.GetTeamsByCountry

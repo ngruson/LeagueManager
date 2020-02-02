@@ -1,5 +1,5 @@
 ﻿using System;
-using LeagueManager.Application.TeamLeagues.Queries.Dto;
+using LeagueManager.Application.TeamLeagueMatches.Dto;
 using MediatR;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore

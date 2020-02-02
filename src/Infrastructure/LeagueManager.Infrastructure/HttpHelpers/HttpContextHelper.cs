@@ -2,7 +2,7 @@
 
 namespace LeagueManager.Infrastructure.HttpHelpers
 {
-    public class HttpContextHelper
+    public static class HttpContextHelper
     {
         private static IHttpContextAccessor accessor;
         public static void Configure(IHttpContextAccessor httpContextAccessor)

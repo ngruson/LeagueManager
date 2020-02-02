@@ -2,3 +2,7 @@
 bin/
 obj/
 /SQL
+**/coverage.json
+**/coverage.opencover.xml
+/src/TestResults/**
+/src/.sonarqube

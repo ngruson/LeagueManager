@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LeagueManager.Domain.Competitor
+﻿namespace LeagueManager.Domain.Competitor
 {
     public interface IPlayerCompetitor : ICompetitor
     {
-        
+        Domain.Player.Player Player { get; set; }
     }
 }

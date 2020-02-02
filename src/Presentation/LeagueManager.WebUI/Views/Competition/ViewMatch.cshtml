@@ -63,17 +63,28 @@
         </div>
     </div>
  </div>
+
 <div class="row mt-2">
     <div class="col">
-        <button data-match-guid="@Model.Guid" class="btn btn-primary js-edit-match">Edit</button>
+        @if (User.Identity.IsAuthenticated)
+        {
+            <button data-match-guid="@Model.Guid" class="btn btn-default fa fa-edit js-edit-match" data-toggle="tooltip" data-placement="top" title="Edit fixture"></button>
+            @if ((Model.Home.Team == null) || (Model.Away.Team == null))
+            {
+                <button data-match-guid="@Model.Guid" class="btn btn-default fa fa-futbol disabled" data-toggle="tooltip" data-placement="top" title="Set score'"></button>
+            }
+            else
+            {
+                <button data-match-guid="@Model.Guid" class="btn btn-default fa fa-futbol js-set-score" data-toggle="tooltip" data-placement="top" title="Set score"></button>
+            }
+        }
         @if ((Model.Home.Team == null) || (Model.Away.Team == null))
         {
-            <button data-match-guid="@Model.Guid" class="btn btn-secondary disabled">Set score</button>
+            <a href="@Url.Action("ViewMatchDetails", new { leagueName = Model.TeamLeague,  guid = Model.Guid })" class="btn btn-default fa fa-glasses disabled" data-toggle="tooltip" data-placement="top" title="View match details"></a>
         }
         else
         {
-            <button data-match-guid="@Model.Guid" class="btn btn-secondary js-set-score">Set score</button>
+            <a href="@Url.Action("ViewMatchDetails", new { leagueName = Model.TeamLeague,  guid = Model.Guid })" class="btn btn-default fa fa-glasses" data-toggle="tooltip" data-placement="top" title="View details"></a>
         }
-
     </div>
 </div>
