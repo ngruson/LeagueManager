@@ -40,7 +40,6 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
                                 HomeAway = mapper.Map<HomeAway>(me.HomeAway),
                                 Team = mapper.Map<TeamDto>(me.Team),
                                 Score = mapper.Map<IntegerScoreDto>(me.Score),
-                                //Lineup = mapper.Map<List<LineupEntryDto>>(me.Lineup)
                                 Lineup = me.Lineup.Select(lp =>
                                     new LineupEntryDto
                                     {

@@ -27,10 +27,10 @@ namespace LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeag
         {
             var lineupEntry = await context.TeamLeagues
                 .Where(t => t.Name == request.LeagueName)
-                .Select(l => l.Rounds.SelectMany(r =>
-                        r.Matches.Where(m => m.Guid == request.MatchGuid)
-                    ).FirstOrDefault())
-                .SelectMany(m => m.MatchEntries.SelectMany(me => me.Lineup))
+                .SelectMany(l => l.Rounds.SelectMany(r =>
+                        r.Matches
+                        .Where(m => m.Guid == request.MatchGuid)
+                        .SelectMany(m => m.MatchEntries.SelectMany(me => me.Lineup))))
                 .ProjectTo<LineupEntryDto>(config)
                 .SingleOrDefaultAsync(l => l.Guid == request.LineupEntryGuid);
 

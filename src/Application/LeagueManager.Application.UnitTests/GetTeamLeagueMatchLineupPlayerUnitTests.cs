@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.UnitTests.TestData;
@@ -8,11 +9,12 @@ using Moq;
 using System;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace LeagueManager.Application.UnitTests
 {
-    public class GetTeamLeagueMatchLineupPlayerUnitTests
+    public class GetTeamLeagueMatchLineupEntryUnitTests
     {
         private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<TeamLeague> leagues)
         {
@@ -21,9 +23,9 @@ namespace LeagueManager.Application.UnitTests
             mockContext.Setup(c => c.TeamLeagues).Returns(leaguesDbSet.Object);
             return mockContext;
         }
-
+        
         [Fact]
-        public async void Given_LineupPlayerDoesExist_When_GetTeamLeagueMatchLineupPlayer_Then_ReturnLineupPlayer()
+        public async void Given_LineupEntryDoesExist_When_GetTeamLeagueMatchLineupEntry_Then_ReturnLineupEntry()
         {
             // Arrange
             var teams = new TeamsBuilder().Build();
@@ -55,7 +57,7 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public async void Given_LeagueDoesNotExist_When_GetTeamLeagueMatchLineupPlayer_Then_ReturnNull()
+        public void Given_LeagueDoesNotExist_When_GetTeamLeagueMatchLineupEntry_Then_ReturnNull()
         {
             // Arrange
             var teams = new TeamsBuilder().Build();
@@ -79,14 +81,14 @@ namespace LeagueManager.Application.UnitTests
                 MatchGuid = match.Guid,
                 LineupEntryGuid = lineupPlayerGuid
             };
-            var result = await handler.Handle(request, CancellationToken.None);
+            Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 
             //Assert
-            result.Should().BeNull();
+            func.Should().Throw<LineupEntryNotFoundException>();
         }
 
         [Fact]
-        public async void Given_MatchDoesNotExist_When_GetTeamLeagueMatchLineupPlayer_Then_ReturnNull()
+        public void Given_MatchDoesNotExist_When_GetTeamLeagueMatchLineupEntry_Then_ThrowLineupEntryNotFoundException()
         {
             // Arrange
             var teams = new TeamsBuilder().Build();
@@ -100,24 +102,22 @@ namespace LeagueManager.Application.UnitTests
             var handler = new GetTeamLeagueMatchLineupEntryQueryHandler(
                 contextMock.Object, Mapper.MapperConfig()
             );
-            var match = league.Rounds[0].Matches[0];
-            var lineupPlayerGuid = match.MatchEntries.First().Lineup.First().Guid;
 
             //Act
             var request = new GetTeamLeagueMatchLineupEntryQuery
             {
                 LeagueName = "Premier League",
-                MatchGuid = match.Guid,
-                LineupEntryGuid = lineupPlayerGuid
+                MatchGuid = new Guid("00000000-0000-0000-0000-000000000001"),
+                LineupEntryGuid = new Guid("00000000-0000-0000-0000-000000000001")
             };
-            var result = await handler.Handle(request, CancellationToken.None);
+            Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 
             //Assert
-            result.Should().BeNull();
+            func.Should().Throw<LineupEntryNotFoundException>();
         }
 
         [Fact]
-        public async void Given_LineupPlayerDoesNotExist_When_GetTeamLeagueMatchLineupPlayer_Then_ReturnNull()
+        public void Given_LineupEntryDoesNotExist_When_GetTeamLeagueMatchLineupEntry_Then_ThrowLineupEntryNotFoundException()
         {
             // Arrange
             var teams = new TeamsBuilder().Build();
@@ -141,10 +141,10 @@ namespace LeagueManager.Application.UnitTests
                 MatchGuid = matchGuid,
                 LineupEntryGuid = lineupPlayerGuid
             };
-            var result = await handler.Handle(request, CancellationToken.None);
+            Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 
             //Assert
-            result.Should().BeNull();
+            func.Should().Throw<LineupEntryNotFoundException>();
         }
     }
 }

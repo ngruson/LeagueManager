@@ -29,13 +29,7 @@ namespace LeagueManager.Application.Match.Commands.AddPlayerToLineup
                 .Where(l => l.TeamMatchEntry.Team.Name == request.Team)
                 .ToListAsync();
 
-            //.Select(m => m.MatchEntries.Where(me => me.Team.Name == request.Team).FirstOrDefault())
-            //.SelectMany(me => me.Lineup)
-            //.Include(me => me.Lineup)
-            //.SingleOrDefaultAsync(me => me.Team.Name == request.Team);
-
-
-            if (lineup == null)
+            if ((lineup == null) || (lineup.Count == 0))
                 throw new MatchEntryNotFoundException(request.Team);
 
             var player = await context.Players.SingleOrDefaultAsync(p => p.FullName == request.Player);

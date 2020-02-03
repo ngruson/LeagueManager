@@ -40,40 +40,45 @@ namespace LeagueManager.Application.UnitTests.TestData
         }
 
         private static List<TeamLeagueMatch> CreateMatches(TeamLeagueRound round, List<Domain.Competitor.TeamCompetitor> competitors)
-        {
+        {            
+            var matchEntries = new List<TeamMatchEntry>();
+
+            var matchEntry = new TeamMatchEntry
+            {
+                HomeAway = HomeAway.Home,
+                Team = competitors[0].Team
+            };
+            matchEntry.Lineup = CreateLineup(matchEntry);
+            matchEntries.Add(matchEntry);
+
+            matchEntry = new TeamMatchEntry
+            {
+                HomeAway = HomeAway.Away,
+                Team = competitors[1].Team
+            };
+            matchEntry.Lineup = CreateLineup(matchEntry);
+            matchEntries.Add(matchEntry);
+
             return new List<TeamLeagueMatch>
             {
                 new TeamLeagueMatch
                 {
-                    Guid = Guid.NewGuid(),
+                    Guid = new Guid("00000000-0000-0000-0000-000000000000"),
                     TeamLeagueRound = round,
-                    MatchEntries = new List<TeamMatchEntry>
-                    {
-                        new TeamMatchEntry
-                        {
-                            HomeAway = HomeAway.Home,
-                            Team = competitors[0].Team,
-                            Lineup = CreateLineup()
-                        },
-                        new TeamMatchEntry
-                        {
-                            HomeAway = HomeAway.Away,
-                            Team = competitors[1].Team,
-                            Lineup = CreateLineup()
-                        }
-                    }
+                    MatchEntries = matchEntries
                 }
             };
         }
 
-        private static List<TeamMatchEntryLineupEntry> CreateLineup()
+        private static List<TeamMatchEntryLineupEntry> CreateLineup(TeamMatchEntry matchEntry)
         {
             var list = new List<TeamMatchEntryLineupEntry>();
             for (int i = 0; i < 11; i++)
             {
                 list.Add(new TeamMatchEntryLineupEntry
                 {
-                    Guid = Guid.NewGuid()
+                    Guid = Guid.NewGuid(),
+                    TeamMatchEntry = matchEntry
                 });
             }
             return list;
