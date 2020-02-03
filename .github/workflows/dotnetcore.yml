@@ -18,7 +18,7 @@ jobs:
     - name: Build with dotnet
       run: dotnet build src/LeagueManager.sln --configuration Release
     - name: Unit Tests
-      run: dotnet test src/LeagueManager.sln /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      run: dotnet test src/LeagueManager.sln
     - name: SonarCloud Scan
       #uses: sonarsource/sonarcloud-github-action@master
       env:
@@ -26,5 +26,5 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: 
         dotnet sonarscanner begin /o:ngruson /k:LeagueManager /d:sonar.host.url="https://sonarcloud.io" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
-        dotnet test /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+        dotnet build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
         dotnet sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
