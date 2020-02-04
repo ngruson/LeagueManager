@@ -64,7 +64,7 @@ namespace LeagueManager.Application.UnitTests
         }       
 
         [Fact]
-        public void Given_MatchEntryDoesNotExist_When_AddPlayerToLineup_Then_Exception()
+        public void Given_MatchEntryDoesNotExist_When_AddPlayerToLineup_Then_MatchEntryNotFoundException()
         {
             // Arrange
             var builder = new TeamLeagueBuilder()
@@ -96,7 +96,7 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public void Given_PlayerDoesNotExist_When_AddPlayerToLineup_Then_Exception()
+        public void Given_PlayerDoesNotExist_When_AddPlayerToLineup_Then_PlayerNotFoundException()
         {
             // Arrange
             var builder = new TeamLeagueBuilder()
