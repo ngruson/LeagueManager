@@ -25,6 +25,22 @@ namespace LeagueManager.Application.UnitTests.TestData
             return this;
         }
 
+        public TeamLeagueBuilder WithPlayers(Team team, List<Domain.Player.Player> players)
+        {
+            var competitor = competitors.SingleOrDefault(c => c.Team == team);
+
+            foreach (var p in players)
+            {
+                var cp = new TeamCompetitorPlayer
+                {
+                    Number = (players.IndexOf(p) + 1).ToString(),
+                    Player = p
+                };
+                competitor.Players.Add(cp);
+            }
+            return this;
+        }
+
         public TeamLeagueBuilder WithRounds()
         {
             rounds = new List<TeamLeagueRound>
@@ -75,9 +91,12 @@ namespace LeagueManager.Application.UnitTests.TestData
             var list = new List<TeamMatchEntryLineupEntry>();
             for (int i = 0; i < 11; i++)
             {
+                string guidValue = "00000000-0000-0000-0000-000000000000";
+                guidValue = guidValue.Substring(0, guidValue.Length - 1 - (i.ToString().Length - 1)) + i.ToString();
+
                 list.Add(new TeamMatchEntryLineupEntry
                 {
-                    Guid = Guid.NewGuid(),
+                    Guid = new Guid(guidValue),
                     TeamMatchEntry = matchEntry
                 });
             }

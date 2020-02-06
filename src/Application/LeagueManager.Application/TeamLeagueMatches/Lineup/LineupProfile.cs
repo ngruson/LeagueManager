@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupPlayer;
+using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
 using LeagueManager.Domain.Competition;

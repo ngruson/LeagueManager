@@ -19,7 +19,7 @@ using LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetito
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor;
 using LeagueManager.Application.TeamLeagueMatches.Dto;
-using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupPlayer;
+using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
 
 namespace LeagueManager.Api.CompetitionApi.Controllers

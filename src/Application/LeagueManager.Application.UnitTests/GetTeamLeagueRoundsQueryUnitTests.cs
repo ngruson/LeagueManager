@@ -2,14 +2,13 @@
 using FluentAssertions;
 using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.Match;
 using LeagueManager.Domain.Round;
 using MockQueryable.Moq;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -17,7 +16,7 @@ using Xunit;
 
 namespace LeagueManager.Application.UnitTests
 {
-    public class GetTeamLeagueTableUnitTests
+    public class GetTeamLeagueRoundsQueryUnitTests
     {
         private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<TeamLeague> leagues)
         {
@@ -69,11 +68,11 @@ namespace LeagueManager.Application.UnitTests
                     {
                         new TeamMatchEntry
                         {
-                            HomeAway = HomeAway.Home
+                            HomeAway = Domain.Match.HomeAway.Home
                         },
                         new TeamMatchEntry
                         {
-                            HomeAway = HomeAway.Away
+                            HomeAway = Domain.Match.HomeAway.Away
                         }
                     }
                 }
@@ -116,23 +115,23 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public async void Given_NoTeamLeaguesExist_When_GetTeamLeagueTable_Then_ReturnNull()
+        public async void Given_NoTeamLeaguesExist_When_GetTeamLeagueRounds_Then_ReturnNull()
         {
             // Arrange
             var leagues = new List<TeamLeague>();
             var contextMock = MockDbContext(leagues.AsQueryable());
-            var handler = new GetTeamLeagueTableQueryHandler(
+            var handler = new GetTeamLeagueRoundsQueryHandler(
                 contextMock.Object, CreateMapper());
 
             //Act
-            var result = await handler.Handle(new GetTeamLeagueTableQuery { LeagueName = "Premier League" }, CancellationToken.None);
+            var result = await handler.Handle(new GetTeamLeagueRoundsQuery { LeagueName = "Premier League" }, CancellationToken.None);
 
             //Assert
             result.Should().BeNull();
         }
 
         [Fact]
-        public async void Given_TeamLeagueExist_When_GetTeamLeagueTable_Then_ReturnTable()
+        public async void Given_TeamLeagueExist_When_GetTeamLeagueRounds_Then_ReturnRounds()
         {
             // Arrange
             var leagues = new List<TeamLeague> {
@@ -141,16 +140,29 @@ namespace LeagueManager.Application.UnitTests
             };
 
             var contextMock = MockDbContext(leagues.AsQueryable());
-            var handler = new GetTeamLeagueTableQueryHandler(
+            var handler = new GetTeamLeagueRoundsQueryHandler(
                 contextMock.Object, CreateMapper());
 
             //Act
-            var result = await handler.Handle(new GetTeamLeagueTableQuery { LeagueName = "Premier League" }, CancellationToken.None);
+            var result = await handler.Handle(new GetTeamLeagueRoundsQuery { LeagueName = "Premier League" }, CancellationToken.None);
 
             //Assert
             result.Should().NotBeNull();
-            result.Items.Should().NotBeNull();
-            result.Items.Count.Should().Be(4);
+            result.Count().Should().Be(2);
+            result.Should().BeInAscendingOrder(x => x.Name);
+            result.ToList().ForEach(r =>
+            {
+                r.Matches.Should().NotBeNull();
+                r.Matches.ToList().ForEach(m =>
+                {
+                    m.MatchEntries.SingleOrDefault(me =>
+                            me.HomeAway == TeamLeagueMatches.Dto.HomeAway.Home)
+                        .Should().NotBeNull();
+                    m.MatchEntries.SingleOrDefault(me =>
+                        me.HomeAway == TeamLeagueMatches.Dto.HomeAway.Away)
+                    .Should().NotBeNull();
+                });
+            });
         }
     }
 }

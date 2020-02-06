@@ -14,9 +14,8 @@ using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDeta
 using LeagueManager.Application.TeamLeagues.Dto;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Dto;
-using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupPlayer;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 
 namespace LeagueManager.Application.Interfaces
 {

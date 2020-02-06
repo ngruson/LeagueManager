@@ -2,7 +2,7 @@
 using MediatR;
 using System;
 
-namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupPlayer
+namespace LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry
 {
     public class UpdateTeamLeagueMatchLineupEntryCommand : IRequest<LineupEntryDto>
     {

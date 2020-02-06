@@ -48,6 +48,9 @@ namespace LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompe
                 }))
                 .SingleOrDefaultAsync(x => x.Player.FullName == request.PlayerName);
 
+            if (player == null)
+                throw new PlayerNotFoundException(request.PlayerName);
+
             return player;
         }
     }

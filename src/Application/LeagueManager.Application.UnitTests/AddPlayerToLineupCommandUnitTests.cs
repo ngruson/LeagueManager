@@ -17,7 +17,7 @@ using LeagueManager.Application.Exceptions;
 
 namespace LeagueManager.Application.UnitTests
 {
-    public class AddPlayerToLineupUnitTests
+    public class AddPlayerToLineupCommandUnitTests
     {
         private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<TeamLeague> teamLeagues,
             IQueryable<Team> teams,

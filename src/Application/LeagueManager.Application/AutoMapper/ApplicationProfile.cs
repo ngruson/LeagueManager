@@ -5,7 +5,7 @@ using LeagueManager.Application.Player.Commands.CreatePlayer;
 using LeagueManager.Application.Player.Dto;
 using LeagueManager.Application.TeamCompetitor.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
-using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupPlayer;
+using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
 using LeagueManager.Application.TeamLeagueMatches.Dto;
 using LeagueManager.Application.TeamLeagues.Dto;

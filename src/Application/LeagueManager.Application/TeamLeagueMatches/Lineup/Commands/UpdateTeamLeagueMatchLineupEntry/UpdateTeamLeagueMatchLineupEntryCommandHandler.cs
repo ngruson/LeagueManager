@@ -10,21 +10,18 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupPlayer
+namespace LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry
 {
     public class UpdateTeamLeagueMatchLineupEntryCommandHandler : IRequestHandler<UpdateTeamLeagueMatchLineupEntryCommand, LineupEntryDto>
     {
         private readonly ILeagueManagerDbContext context;
-        private readonly IMediator mediator;
         private readonly IConfigurationProvider config;
 
         public UpdateTeamLeagueMatchLineupEntryCommandHandler(
             ILeagueManagerDbContext context,
-            IMediator mediator,
             IConfigurationProvider config)
         {
             this.context = context;
-            this.mediator = mediator;
             this.config = config;
         }
 
@@ -32,10 +29,14 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueM
         {
             var lineupEntry = await context.TeamLeagues
                 .Where(t => t.Name == request.LeagueName)
-                .Select(l => l.Rounds.SelectMany(r =>
+                .SelectMany(l => l.Rounds.SelectMany(r =>
                         r.Matches.Where(m => m.Guid == request.MatchGuid)
-                    ).FirstOrDefault())
-                .SelectMany(m => m.MatchEntries.SelectMany(me => me.Lineup))
+                        .SelectMany(m => m.MatchEntries
+                            .Where(me => me.Team.Name == request.TeamName)
+                            .SelectMany(me => me.Lineup)
+                        )
+                    )
+                )
                 .Include(l =>l.TeamMatchEntry)
                     .ThenInclude(e => e.Team)
                 .SingleOrDefaultAsync(l => l.Guid == request.LineupEntryGuid);

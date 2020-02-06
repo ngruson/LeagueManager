@@ -13,7 +13,7 @@ using Xunit;
 
 namespace LeagueManager.Application.UnitTests
 {
-    public class GetTeamsByCountryUnitTests
+    public class GetTeamsByCountryQueryUnitTests
     {
         private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<Team> teams)
         {
