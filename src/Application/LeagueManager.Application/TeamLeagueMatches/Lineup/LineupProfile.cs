@@ -26,26 +26,5 @@ namespace LeagueManager.Application.TeamLeagueMatches.Lineup
 
             CreateMap<UpdateTeamLeagueMatchLineupEntryCommand, GetTeamLeagueMatchLineupEntryQuery>();
         }
-
-        private Expression<Func<TeamLeague, TeamLeagueMatch>>  SelectMatch(
-            Expression<Func<TeamLeague>> league,
-            Guid matchGuid)
-        {
-            return (l) => l.Rounds.SelectMany(r => 
-                    r.Matches.Where(m => m.Guid == matchGuid)
-                )
-                .First();
-        }
-
-        private Expression<Func<TeamLeagueMatch, TeamMatchEntryLineupEntry>> SelectLineupEntry(
-            Expression<Func<TeamLeagueMatch>> match, 
-            Guid matchGuid, 
-            Guid lineupEntryGuid)
-        {
-            return (m) => m.MatchEntries.SelectMany(me =>
-                    me.Lineup.Where(l => l.Guid == lineupEntryGuid)
-                )
-                .First();
-        }
     }
 }

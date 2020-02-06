@@ -4,10 +4,13 @@ using LeagueManager.Api.CompetitionApi.Controllers;
 using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
+using LeagueManager.Application.TeamLeagueMatches.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Xunit;
 
@@ -15,31 +18,62 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
     public class UpdateTeamLeagueMatchUnitTests
     {
-        private IMapper CreateMapper()
-        {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile<ApplicationProfile>();
-            });
-
-            return config.CreateMapper();
-        }
-
         [Fact]
         public async void Given_MatchDoesExist_When_UpdateTeamLeagueMatch_Then_ReturnOk()
         {
             //Arrange
+            var leagueName = "Premier League";
+            var homeTeam = "Tottenham Hotspur";
+            var awayTeam = "Chelsea";
+            var startTime = new DateTime(2020, 01, 01, 20, 15, 0);
+
             var mockMediator = new Mock<IMediator>();
+            mockMediator.Setup(x => x.Send(
+                    It.IsAny<UpdateTeamLeagueMatchCommand>(),
+                    It.IsAny<CancellationToken>()
+                ))
+                .ReturnsAsync(new TeamMatchDto
+                {
+                    TeamLeague = leagueName,
+                    StartTime = startTime,
+                    MatchEntries = new List<TeamMatchEntryDto>
+                    {
+                        new TeamMatchEntryDto
+                        {
+                            HomeAway = HomeAway.Home,
+                            Team = new TeamDto { Name = homeTeam }
+                        },
+                        new TeamMatchEntryDto
+                        {
+                            HomeAway = HomeAway.Away,
+                            Team = new TeamDto { Name = awayTeam }
+                        }
+                    }        
+                });
+               
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
-            var dto = new UpdateTeamLeagueMatchDto();
+                Mapper.CreateMapper());
+            var dto = new UpdateTeamLeagueMatchDto
+            {
+                HomeTeam = homeTeam,
+                AwayTeam = awayTeam,
+                StartTime = startTime
+            };
 
             //Act
             var result = await controller.UpdateTeamLeagueMatch("TeamLeague", Guid.NewGuid().ToString(), dto);
 
             //Assert
-            result.Should().BeOfType<OkObjectResult>();
+            var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+            var match = okResult.Value.Should().BeAssignableTo<TeamMatchDto>().Subject;
+            match.TeamLeague.Should().Be(leagueName);
+            match.MatchEntries.Count.Should().Be(2);
+            match.MatchEntries.Single(me => me.HomeAway == HomeAway.Home)
+                .Team.Name.Should().Be(homeTeam);
+            match.MatchEntries.Single(me => me.HomeAway == HomeAway.Away)
+                .Team.Name.Should().Be(awayTeam);
+            match.StartTime.Should().Be(startTime);
         }
 
         [Fact]
@@ -56,7 +90,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
             var dto = new UpdateTeamLeagueMatchDto();
 
             //Act
@@ -81,7 +115,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
             var dto = new UpdateTeamLeagueMatchDto
             {
                 HomeTeam = homeTeam

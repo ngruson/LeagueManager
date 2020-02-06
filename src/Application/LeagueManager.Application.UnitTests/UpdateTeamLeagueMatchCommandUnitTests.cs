@@ -34,16 +34,6 @@ namespace LeagueManager.Application.UnitTests
             return mockContext;
         }
 
-        private IMapper CreateMapper()
-        {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile<ApplicationProfile>();
-            });
-
-            return config.CreateMapper();
-        }
-
         private List<Team> CreateTeams()
         {
             return new List<Team> {
@@ -102,7 +92,7 @@ namespace LeagueManager.Application.UnitTests
                 teams.AsQueryable());
             var handler = new UpdateTeamLeagueMatchCommandHandler(
                 contextMock.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
 
             //Act
             var request = new UpdateTeamLeagueMatchCommand
@@ -131,7 +121,7 @@ namespace LeagueManager.Application.UnitTests
                 teamLeagues.AsQueryable(),
                 teams.AsQueryable());
             var handler = new UpdateTeamLeagueMatchCommandHandler(
-                contextMock.Object, CreateMapper());
+                contextMock.Object, Mapper.CreateMapper());
 
             //Act
             var request = new UpdateTeamLeagueMatchCommand
@@ -160,7 +150,7 @@ namespace LeagueManager.Application.UnitTests
             var contextMock = MockDbContext(
                 teamLeagues.AsQueryable(),
                 teams.AsQueryable());
-            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object, CreateMapper());
+            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object, Mapper.CreateMapper());
 
             //Act
             var request = new UpdateTeamLeagueMatchCommand
@@ -189,7 +179,7 @@ namespace LeagueManager.Application.UnitTests
             var contextMock = MockDbContext(
                 teamLeagues.AsQueryable(),
                 teams.AsQueryable());
-            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object, CreateMapper());
+            var handler = new UpdateTeamLeagueMatchCommandHandler(contextMock.Object, Mapper.CreateMapper());
 
             //Act
             var request = new UpdateTeamLeagueMatchCommand
