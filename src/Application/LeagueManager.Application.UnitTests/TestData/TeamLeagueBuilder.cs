@@ -64,7 +64,7 @@ namespace LeagueManager.Application.UnitTests.TestData
                 HomeAway = HomeAway.Home,
                 Team = competitors[0].Team
             };
-            matchEntry.Lineup = CreateLineup(matchEntry);
+            matchEntry.Lineup = CreateLineup(matchEntry, 0);
             matchEntries.Add(matchEntry);
 
             matchEntry = new TeamMatchEntry
@@ -72,7 +72,7 @@ namespace LeagueManager.Application.UnitTests.TestData
                 HomeAway = HomeAway.Away,
                 Team = competitors[1].Team
             };
-            matchEntry.Lineup = CreateLineup(matchEntry);
+            matchEntry.Lineup = CreateLineup(matchEntry, 11);
             matchEntries.Add(matchEntry);
 
             return new List<TeamLeagueMatch>
@@ -86,13 +86,14 @@ namespace LeagueManager.Application.UnitTests.TestData
             };
         }
 
-        private static List<TeamMatchEntryLineupEntry> CreateLineup(TeamMatchEntry matchEntry)
+        private static List<TeamMatchEntryLineupEntry> CreateLineup(TeamMatchEntry matchEntry, int totalCounter)
         {
             var list = new List<TeamMatchEntryLineupEntry>();
             for (int i = 0; i < 11; i++)
             {
+                int counter = totalCounter + i;
                 string guidValue = "00000000-0000-0000-0000-000000000000";
-                guidValue = guidValue.Substring(0, guidValue.Length - 1 - (i.ToString().Length - 1)) + i.ToString();
+                guidValue = guidValue.Substring(0, guidValue.Length - 1 - (counter.ToString().Length - 1)) + counter.ToString();
 
                 list.Add(new TeamMatchEntryLineupEntry
                 {
