@@ -19,16 +19,6 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
     public class AddPlayerToLineupUnitTests
     {
-        private IMapper CreateMapper()
-        {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile<ApplicationProfile>();
-            });
-
-            return config.CreateMapper();
-        }
-
         [Fact]
         public async void Given_AllConditionsPass_When_AddPlayerToLineup_Then_ReturnSuccess()
         {
@@ -36,7 +26,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             var mockMediator = new Mock<IMediator>();
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
 
             var dto = new AddPlayerToLineupDto
             {
@@ -46,7 +36,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             //Act
             var result = await controller.AddPlayerToLineup("Premier League",
-                "00000000-0000-0000-0000-000000000000",
+                new Guid("00000000-0000-0000-0000-000000000000"),
                 "Tottenham Hotspur", 
                 dto);
 
@@ -67,7 +57,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
 
             var dto = new AddPlayerToLineupDto
             {
@@ -77,7 +67,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             //Act
             var result = await controller.AddPlayerToLineup("Premier League",
-                "00000000-0000-0000-0000-000000000000",
+                new Guid("00000000-0000-0000-0000-000000000000"),
                 "Tottenham Hotspur",
                 dto);
 
@@ -98,7 +88,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
 
             var dto = new AddPlayerToLineupDto
             {
@@ -108,12 +98,114 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             //Act
             var result = await controller.AddPlayerToLineup("Premier League",
-                "00000000-0000-0000-0000-000000000000",
+                new Guid("00000000-0000-0000-0000-000000000000"),
                 "Tottenham Hotspur",
                 dto);
 
             //Assert
             result.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        public async void Given_MatchEntryNotFoundException_When_AddPlayerToLineup_Then_ReturnBadRequest()
+        {
+            //Arrange
+            string teamName = "Tottenham Hotspur";
+            var mockMediator = new Mock<IMediator>();
+            mockMediator.Setup(x => x.Send(
+                    It.IsAny<AddPlayerToLineupCommand>(),
+                    It.IsAny<CancellationToken>()
+                ))
+                .Throws(new MatchEntryNotFoundException(teamName));
+
+            var controller = new CompetitionController(
+                mockMediator.Object,
+                Mapper.CreateMapper());
+
+            var dto = new AddPlayerToLineupDto
+            {
+                Number = "1",
+                Player = "John Doe"
+            };
+
+            //Act
+            var result = await controller.AddPlayerToLineup("Premier League",
+                Guid.NewGuid(),
+                teamName,
+                dto);
+
+            //Assert
+            var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
+            var errorMessage = badRequest.Value.Should().BeAssignableTo<string>().Subject;
+            errorMessage.Should().Be($"No match entry found for team \"{teamName}\".") ;
+        }
+
+        [Fact]
+        public async void Given_PlayerNotFoundException_When_AddPlayerToLineup_Then_ReturnBadRequest()
+        {
+            //Arrange
+            string playerName = "John Doe";
+            var mockMediator = new Mock<IMediator>();
+            mockMediator.Setup(x => x.Send(
+                    It.IsAny<AddPlayerToLineupCommand>(),
+                    It.IsAny<CancellationToken>()
+                ))
+                .Throws(new PlayerNotFoundException(playerName));
+
+            var controller = new CompetitionController(
+                mockMediator.Object,
+                Mapper.CreateMapper());
+
+            var dto = new AddPlayerToLineupDto
+            {
+                Number = "1",
+                Player = playerName
+            };
+
+            //Act
+            var result = await controller.AddPlayerToLineup("Premier League",
+                Guid.NewGuid(),
+                playerName,
+                dto);
+
+            //Assert
+            var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
+            var errorMessage = badRequest.Value.Should().BeAssignableTo<string>().Subject;
+            errorMessage.Should().Be($"Player \"{playerName}\" not found.");
+        }
+
+        [Fact]
+        public async void Given_OtherException_When_AddPlayerToLineup_Then_ReturnBadRequest()
+        {
+            //Arrange
+            string playerName = "John Doe";
+            var mockMediator = new Mock<IMediator>();
+            mockMediator.Setup(x => x.Send(
+                    It.IsAny<AddPlayerToLineupCommand>(),
+                    It.IsAny<CancellationToken>()
+                ))
+                .Throws(new Exception());
+
+            var controller = new CompetitionController(
+                mockMediator.Object,
+                Mapper.CreateMapper());
+
+            var dto = new AddPlayerToLineupDto
+            {
+                Number = "1",
+                Player = playerName
+            };
+
+            //Act
+            var result = await controller.AddPlayerToLineup("Premier League",
+                Guid.NewGuid(),
+                playerName,
+                dto);
+
+            //Assert
+            var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
+            var errorMessage = badRequest.Value.Should().BeAssignableTo<string>().Subject;
+            errorMessage.Should().Be("Something went wrong!");
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using FluentAssertions;
+﻿using FluentAssertions;
 using LeagueManager.Api.CompetitionApi.Controllers;
-using LeagueManager.Application.AutoMapper;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Dto;
@@ -127,6 +125,30 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             //Assert
             var error = result.Should().BeOfType<BadRequestObjectResult>().Subject;
             error.Value.Should().Be($"Team \"{homeTeam}\" not found.");
+        }
+
+        [Fact]
+        public async void Given_OtherException_When_UpdateTeamLeagueMatch_Then_ReturnBadRequest()
+        {
+            //Arrange
+            var mockMediator = new Mock<IMediator>();
+            mockMediator.Setup(x => x.Send(
+                    It.IsAny<UpdateTeamLeagueMatchCommand>(),
+                    It.IsAny<CancellationToken>()
+                ))
+                .Throws(new Exception());
+
+            var controller = new CompetitionController(
+                mockMediator.Object,
+                Mapper.CreateMapper());
+            var dto = new UpdateTeamLeagueMatchDto();
+
+            //Act
+            var result = await controller.UpdateTeamLeagueMatch("TeamLeague", Guid.NewGuid().ToString(), dto);
+
+            //Assert
+            var error = result.Should().BeOfType<BadRequestObjectResult>().Subject;
+            error.Value.Should().Be("Something went wrong!");
         }
     }
 }

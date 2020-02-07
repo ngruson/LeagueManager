@@ -143,6 +143,10 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+            catch (PlayerNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch
             {
                 return BadRequest("Something went wrong!");
@@ -207,17 +211,17 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
 
         // GET api/competition/teamleague/Premier League 2019-2020/match/guid
         [HttpGet("teamleague/{name}/match/{guid}")]
-        public async Task<IActionResult> GetTeamLeagueMatch(string name, string guid)
+        public async Task<IActionResult> GetTeamLeagueMatch(string name, Guid guid)
         {
             try
             {
                 var match = await mediator.Send(new GetTeamLeagueMatchQuery {
                     LeagueName = name,
-                    Guid = new Guid(guid)
+                    Guid = guid
                 });
                 return Ok(match);
             }
-            catch
+            catch (Exception ex)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -225,14 +229,14 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
 
         // GET api/competition/teamleague/Premier League 2019-2020/match/guid
         [HttpGet("teamleague/{name}/match/details/{guid}")]
-        public async Task<IActionResult> GetTeamLeagueMatchDetails(string name, string guid)
+        public async Task<IActionResult> GetTeamLeagueMatchDetails(string name, Guid guid)
         {
             try
             {
                 var match = await mediator.Send(new GetTeamLeagueMatchDetailsQuery
                 {
                     LeagueName = name,
-                    Guid = new Guid(guid)
+                    Guid = guid
                 });
                 return Ok(match);
             }
@@ -244,15 +248,15 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
 
         // GET api/competition/teamleague/Premier League 2019-2020/match/{matchGuid}/lineup/{lineupPlayerGuid}
         [HttpGet("teamleague/{name}/match/{matchGuid}/lineup/{lineupPlayerGuid}")]
-        public async Task<IActionResult> GetTeamLeagueMatchLineupEntry(string name, string matchGuid, string lineupPlayerGuid)
+        public async Task<IActionResult> GetTeamLeagueMatchLineupEntry(string name, Guid matchGuid, Guid lineupPlayerGuid)
         {
             try
             {
                 var lineupPlayer = await mediator.Send(new GetTeamLeagueMatchLineupEntryQuery
                 {
                     LeagueName = name,
-                    MatchGuid = new Guid(matchGuid),
-                    LineupEntryGuid = new Guid(lineupPlayerGuid)
+                    MatchGuid = matchGuid,
+                    LineupEntryGuid = lineupPlayerGuid
                 });
                 return Ok(lineupPlayer);
             }
@@ -329,7 +333,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         // POST api/competition/teamleague/Premier League 2019-2020/match/{guid}/{team}/lineup
         [HttpPost("teamleague/{name}/match/{guid}/{team}/lineup")]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> AddPlayerToLineup(string name, string guid, string team, [FromBody]AddPlayerToLineupDto dto)
+        public async Task<IActionResult> AddPlayerToLineup(string name, Guid guid, string team, [FromBody]AddPlayerToLineupDto dto)
         {
             try
             {

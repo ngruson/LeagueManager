@@ -17,16 +17,6 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
     public class GetCompetitionsUnitTests
     {
-        private IMapper CreateMapper()
-        {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile<ApplicationProfile>();
-            });
-
-            return config.CreateMapper();
-        }
-
         [Fact]
         public async void Given_CompetitionsExist_When_GetCompetitions_Then_ReturnCompetitions()
         {
@@ -45,7 +35,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
 
             //Act
             var result = await controller.GetCompetitions(null);
