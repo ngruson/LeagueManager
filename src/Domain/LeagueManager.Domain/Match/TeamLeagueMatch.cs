@@ -15,6 +15,22 @@ namespace LeagueManager.Domain.Match
         public DateTime? StartTime { get; set; }
         public IEnumerable<TeamMatchEntry> MatchEntries { get; set; } = new List<TeamMatchEntry>();
 
+        public TeamMatchEntry Home
+        {
+            get
+            {
+                return MatchEntries.SingleOrDefault(me => me.HomeAway == HomeAway.Home);
+            }
+        }
+
+        public TeamMatchEntry Away
+        {
+            get
+            {
+                return MatchEntries.SingleOrDefault(me => me.HomeAway == HomeAway.Away);
+            }
+        }
+
         public Team Winner
         {
             get
