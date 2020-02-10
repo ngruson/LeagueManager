@@ -24,6 +24,11 @@ namespace LeagueManager.Persistence.EntityFramework
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(LeagueManagerDbContext).Assembly);
         }
 
+        public bool EnsureCreated()
+        {
+            return Database.EnsureCreated();
+        }
+
         public DbSet<Country> Countries { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<TeamLeague> TeamLeagues { get; set; }

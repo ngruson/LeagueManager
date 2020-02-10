@@ -18,6 +18,6 @@ namespace LeagueManager.Application.Interfaces
         DbSet<TeamSports> TeamSports { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
-        DatabaseFacade Database { get; }
+        bool EnsureCreated();
     }
 }
