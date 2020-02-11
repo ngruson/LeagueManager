@@ -2,11 +2,8 @@
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
-using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Match;
 using System;
-using System.Linq;
-using System.Linq.Expressions;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Lineup
 {

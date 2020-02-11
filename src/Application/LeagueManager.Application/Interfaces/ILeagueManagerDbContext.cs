@@ -3,7 +3,6 @@ using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.Sports;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 

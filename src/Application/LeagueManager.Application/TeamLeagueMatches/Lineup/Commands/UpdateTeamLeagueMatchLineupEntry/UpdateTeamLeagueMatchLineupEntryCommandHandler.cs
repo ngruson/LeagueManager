@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;

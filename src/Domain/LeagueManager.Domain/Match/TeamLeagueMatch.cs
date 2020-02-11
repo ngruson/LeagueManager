@@ -135,10 +135,8 @@ namespace LeagueManager.Domain.Match
                 return pointSystem.Win;
             else if (meTeam.Team == Loser)
                 return pointSystem.Lost;
-            else if (IsDraw)
+            else
                 return pointSystem.Draw;
-
-            return 0;
         }
     }
 }

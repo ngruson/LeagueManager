@@ -45,7 +45,7 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public async void Given_PlayerAlreadyExists_When_CreatePlayer_Then_ExceptionIsThrown()
+        public void Given_PlayerAlreadyExists_When_CreatePlayer_Then_ExceptionIsThrown()
         {
             // Arrange
             var teams = new List<Domain.Player.Player>

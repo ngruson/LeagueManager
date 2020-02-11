@@ -7,11 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace LeagueManager.Api.CompetitionApi.UnitTests
@@ -96,7 +92,6 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
         public async void Given_OtherException_When_UpdateTeamLeagueMatchScore_Then_ReturnBadRequest()
         {
             //Arrange
-            var teamName = "Tottenham Hotspur";
             var mockMediator = new Mock<IMediator>();
             mockMediator.Setup(x => x.Send(
                     It.IsAny<UpdateTeamLeagueMatchScoreCommand>(),

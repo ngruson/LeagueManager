@@ -64,9 +64,7 @@ namespace LeagueManager.WebUI.AutoMapper
             CreateMap<TeamCompetitorPlayerDto, PlayerViewModel>();
             CreateMap<Application.Player.Dto.PlayerDto, PlayerViewModel>();
             CreateMap<Application.TeamLeagueMatches.Lineup.Dto.PlayerDto, PlayerViewModel>();
-            CreateMap<Application.TeamLeagueMatches.Dto.LineupEntryDto, TeamMatchEntryLineupEntryViewModel>()
-                .ForMember(m => m.Number, opt => opt.MapFrom(src => src.PlayerNumber));
-            CreateMap<Application.TeamLeagueMatches.Lineup.Dto.LineupEntryDto, TeamMatchEntryLineupEntryViewModel>()
+            CreateMap<LineupEntryDto, TeamMatchEntryLineupEntryViewModel>()
                 .ForMember(m => m.Number, opt => opt.MapFrom(src => src.PlayerNumber));
             CreateMap<IntegerScoreDto, IntegerScoreViewModel>();
         }

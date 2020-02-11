@@ -8,6 +8,7 @@ using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
 using LeagueManager.Application.TeamLeagueMatches.Dto;
+using Lineup = LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
 using LeagueManager.Application.TeamLeagues.Dto;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
@@ -52,7 +53,7 @@ namespace LeagueManager.Application.AutoMapper
                 .ForMember(m => m.Team, opt => opt.MapFrom(src => src.Team));
             CreateMap<Domain.Match.HomeAway, TeamLeagueMatches.Dto.HomeAway>();
             CreateMap<IntegerScore, IntegerScoreDto>();
-            CreateMap<TeamMatchEntryLineupEntry, LineupEntryDto>()
+            CreateMap<TeamMatchEntryLineupEntry, Lineup.LineupEntryDto>()
                 .ForMember(m => m.TeamName, opt => opt.MapFrom(src => src.TeamMatchEntry.Team.Name));
             CreateMap<Domain.Player.Player, PlayerDto>();
             CreateMap<TeamCompetitorPlayer, TeamCompetitorPlayerDto>()

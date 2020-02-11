@@ -1,4 +1,4 @@
-﻿using LeagueManager.Application.Player.Dto;
+﻿using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
 using System.Collections.Generic;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Dto

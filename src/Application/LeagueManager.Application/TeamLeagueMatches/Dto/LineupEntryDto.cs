@@ -3,7 +3,7 @@ using System;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Dto
 {
-    public class LineupEntryDto
+    public class LineupEntryDto_old
     {
         public string TeamName { get; set; }
         public Guid Guid { get; set; }

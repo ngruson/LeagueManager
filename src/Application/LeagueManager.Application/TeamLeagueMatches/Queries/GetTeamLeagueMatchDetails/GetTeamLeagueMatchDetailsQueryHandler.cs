@@ -2,6 +2,7 @@
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Player.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Dto;
+using L = LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -41,11 +42,11 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
                                 Team = mapper.Map<TeamDto>(me.Team),
                                 Score = mapper.Map<IntegerScoreDto>(me.Score),
                                 Lineup = me.Lineup.Select(lp =>
-                                    new LineupEntryDto
+                                    new L.LineupEntryDto
                                     {
                                         Guid = lp.Guid,
                                         PlayerNumber = lp.Number,
-                                        Player = mapper.Map<PlayerDto>(lp.Player),
+                                        Player = mapper.Map<L.PlayerDto>(lp.Player),
                                         TeamName = me.Team.Name
                                     }).ToList()
                             }).ToList()

@@ -221,7 +221,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 });
                 return Ok(match);
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest("Something went wrong!");
             }
@@ -391,7 +391,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch
             {
                 return BadRequest("Something went wrong!");
             }

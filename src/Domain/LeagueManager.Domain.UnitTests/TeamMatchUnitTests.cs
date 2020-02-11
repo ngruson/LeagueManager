@@ -71,6 +71,36 @@ namespace LeagueManager.Domain.UnitTests
         }
 
         [Fact]
+        public void Given_ScoreIsMissing_When_Winner_Then_NullIsReturned()
+        {
+            //Act
+            var teamLiverpool = new Team { Name = "Liverpool" };
+            var teamChelsea = new Team { Name = "Chelsea" };
+
+            var match = new TeamLeagueMatch
+            {
+                MatchEntries = new List<TeamMatchEntry>
+                {
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Home,
+                        Team = teamLiverpool,
+                        Score = null
+                    },
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Away,
+                        Team = teamChelsea,
+                        Score = null
+                    }
+                }
+            };
+
+            //Assert
+            match.Winner.Should().BeNull();
+        }
+
+        [Fact]
         public void Given_HomeTeamIsLoser_When_Loser_Then_HomeTeamIsReturned()
         {
             //Act
@@ -128,6 +158,36 @@ namespace LeagueManager.Domain.UnitTests
 
             //Assert
             match.Loser.Should().Be(teamChelsea);
+        }
+
+        [Fact]
+        public void Given_ScoreIsMissing_When_Loser_Then_NullIsReturned()
+        {
+            //Act
+            var teamLiverpool = new Team { Name = "Liverpool" };
+            var teamChelsea = new Team { Name = "Chelsea" };
+
+            var match = new TeamLeagueMatch
+            {
+                MatchEntries = new List<TeamMatchEntry>
+                {
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Home,
+                        Team = teamLiverpool,
+                        Score = null
+                    },
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Away,
+                        Team = teamChelsea,
+                        Score = null
+                    }
+                }
+            };
+
+            //Assert
+            match.Loser.Should().BeNull();
         }
 
         [Fact]
@@ -242,6 +302,36 @@ namespace LeagueManager.Domain.UnitTests
                         HomeAway = HomeAway.Away,
                         Team = teamChelsea,
                         Score = new IntegerScore { Value = 0 }
+                    }
+                }
+            };
+
+            //Assert
+            match.IsDraw.Should().Be(false);
+        }
+
+        [Fact]
+        public void Given_ScoreIsMissing_When_IsDraw_Then_FalseIsReturned()
+        {
+            //Act
+            var teamLiverpool = new Team { Name = "Liverpool" };
+            var teamChelsea = new Team { Name = "Chelsea" };
+
+            var match = new TeamLeagueMatch
+            {
+                MatchEntries = new List<TeamMatchEntry>
+                {
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Home,
+                        Team = teamLiverpool,
+                        Score = null
+                    },
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Away,
+                        Team = teamChelsea,
+                        Score = null
                     }
                 }
             };
