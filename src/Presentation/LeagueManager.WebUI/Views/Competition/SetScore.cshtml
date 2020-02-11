@@ -52,8 +52,8 @@
 </div>
 <div class="match-row">
     <div class="match-col">
-        <button data-match-guid="@Model.Guid" class="btn btn-primary js-save-score">Save</button>
-        <button data-match-guid="@Model.Guid" class="btn btn-secondary js-cancel-edit-score">Cancel</button>
+        <button data-match-guid="@Model.Guid" class="btn btn-default fa fa-save js-save-score" data-toggle="tooltip" data-placement="top" title="Save score"></button>
+        <button data-match-guid="@Model.Guid" class="btn btn-default fa fa-window-close js-cancel-edit-score" data-toggle="tooltip" data-placement="top" title="Cancel"></button>
         <div class="alert alert-success invisible" role="alert" id="alert-success-@Model.Guid"></div>
         <div class="alert alert-danger invisible" role="alert" id="alert-danger-@Model.Guid"></div>
     </div>

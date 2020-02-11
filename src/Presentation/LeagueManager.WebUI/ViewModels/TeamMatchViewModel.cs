@@ -1,4 +1,4 @@
-﻿using LeagueManager.Application.TeamLeagues.Queries.Dto;
+﻿using LeagueManager.Application.TeamLeagueMatches.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +7,7 @@ namespace LeagueManager.WebUI.ViewModels
 {
     public class TeamMatchViewModel
     {
+        public string TeamLeague { get; set; }
         public Guid Guid { get; set; }
         public DateTime? StartTime { get; set; }
         public List<TeamMatchEntryViewModel> MatchEntries { get; set; }

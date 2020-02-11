@@ -17,7 +17,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -47,7 +47,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -71,13 +71,43 @@ namespace LeagueManager.Domain.UnitTests
         }
 
         [Fact]
+        public void Given_ScoreIsMissing_When_Winner_Then_NullIsReturned()
+        {
+            //Act
+            var teamLiverpool = new Team { Name = "Liverpool" };
+            var teamChelsea = new Team { Name = "Chelsea" };
+
+            var match = new TeamLeagueMatch
+            {
+                MatchEntries = new List<TeamMatchEntry>
+                {
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Home,
+                        Team = teamLiverpool,
+                        Score = null
+                    },
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Away,
+                        Team = teamChelsea,
+                        Score = null
+                    }
+                }
+            };
+
+            //Assert
+            match.Winner.Should().BeNull();
+        }
+
+        [Fact]
         public void Given_HomeTeamIsLoser_When_Loser_Then_HomeTeamIsReturned()
         {
             //Act
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -107,7 +137,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -131,13 +161,43 @@ namespace LeagueManager.Domain.UnitTests
         }
 
         [Fact]
+        public void Given_ScoreIsMissing_When_Loser_Then_NullIsReturned()
+        {
+            //Act
+            var teamLiverpool = new Team { Name = "Liverpool" };
+            var teamChelsea = new Team { Name = "Chelsea" };
+
+            var match = new TeamLeagueMatch
+            {
+                MatchEntries = new List<TeamMatchEntry>
+                {
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Home,
+                        Team = teamLiverpool,
+                        Score = null
+                    },
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Away,
+                        Team = teamChelsea,
+                        Score = null
+                    }
+                }
+            };
+
+            //Assert
+            match.Loser.Should().BeNull();
+        }
+
+        [Fact]
         public void Given_GameIsDraw_When_Winner_Then_NullIsReturned()
         {
             //Act
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -167,7 +227,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -197,7 +257,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -227,7 +287,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -251,13 +311,43 @@ namespace LeagueManager.Domain.UnitTests
         }
 
         [Fact]
+        public void Given_ScoreIsMissing_When_IsDraw_Then_FalseIsReturned()
+        {
+            //Act
+            var teamLiverpool = new Team { Name = "Liverpool" };
+            var teamChelsea = new Team { Name = "Chelsea" };
+
+            var match = new TeamLeagueMatch
+            {
+                MatchEntries = new List<TeamMatchEntry>
+                {
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Home,
+                        Team = teamLiverpool,
+                        Score = null
+                    },
+                    new TeamMatchEntry
+                    {
+                        HomeAway = HomeAway.Away,
+                        Team = teamChelsea,
+                        Score = null
+                    }
+                }
+            };
+
+            //Assert
+            match.IsDraw.Should().Be(false);
+        }
+
+        [Fact]
         public void Given_ScoreForHomeTeamIsSet_When_GetGoalsForHomeTeam_Then_GoalsForHomeTeamAreReturned()
         {
             //Act
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -287,7 +377,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -315,7 +405,7 @@ namespace LeagueManager.Domain.UnitTests
         {
             //Act
             var teamLiverpool = new Team { Name = "Liverpool" };
-            var match = new TeamMatch();
+            var match = new TeamLeagueMatch();
 
             //Assert
             match.GetGoalsFor(teamLiverpool).Should().Be(0);
@@ -328,7 +418,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -356,7 +446,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch();
+            var match = new TeamLeagueMatch();
 
             //Assert
             match.GetGoalsAgainst(teamLiverpool).Should().Be(0);
@@ -369,7 +459,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -395,7 +485,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -423,7 +513,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -455,7 +545,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -487,7 +577,7 @@ namespace LeagueManager.Domain.UnitTests
             var teamLiverpool = new Team { Name = "Liverpool" };
             var teamChelsea = new Team { Name = "Chelsea" };
 
-            var match = new TeamMatch
+            var match = new TeamLeagueMatch
             {
                 MatchEntries = new List<TeamMatchEntry>
                 {
@@ -517,7 +607,7 @@ namespace LeagueManager.Domain.UnitTests
         {
             //Act
             var teamLiverpool = new Team { Name = "Liverpool" };            
-            var match = new TeamMatch();
+            var match = new TeamLeagueMatch();
             var pointSystem = new PointSystem(3, 1, 0);
 
             //Assert
@@ -529,7 +619,7 @@ namespace LeagueManager.Domain.UnitTests
         {
             //Act
             var teamLiverpool = new Team { Name = "Liverpool" };
-            var match = new TeamMatch();
+            var match = new TeamLeagueMatch();
 
             //Assert
             match.GetPointsFor(teamLiverpool, null).Should().Be(0);

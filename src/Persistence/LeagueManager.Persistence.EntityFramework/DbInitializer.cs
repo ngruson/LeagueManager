@@ -1,8 +1,12 @@
-﻿using LeagueManager.Domain.Common;
+﻿using LeagueManager.Application.Interfaces;
+using LeagueManager.Domain.Common;
 using LeagueManager.Domain.Competitor;
+using LeagueManager.Domain.Sports;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LeagueManager.Persistence.EntityFramework
 {
@@ -19,28 +23,31 @@ namespace LeagueManager.Persistence.EntityFramework
             this.imageFileLoader = imageFileLoader;
         }
 
-        public void Initialize(LeagueManagerDbContext context)
+        public async Task Initialize(ILeagueManagerDbContext context)
         {
-            SeedEverything(context);
+            await SeedEverything(context);
         }
 
-        private void SeedEverything(LeagueManagerDbContext context)
+        private async Task SeedEverything(ILeagueManagerDbContext context)
         {
-            context.Database.EnsureCreated();
+            context.EnsureCreated();
 
             if (!context.Countries.Any())
             {
-                SeedCountries(context);
+                await SeedCountries(context);
             }
+            if (!context.TeamSports.Any())
+                await SeedTeamSports(context);
+
 
             if ((environment == "Development") && (!context.Teams.Any()))
             {
-                SeedTeams(context);
+                await SeedTeams(context);
             }
         }
 
         //Got countries from https://datahub.io/core/country-codes
-        private void SeedCountries(LeagueManagerDbContext context)
+        private async Task SeedCountries(ILeagueManagerDbContext context)
         {
             string imagePath = "country-flags\\png100px";
 
@@ -301,15 +308,15 @@ namespace LeagueManager.Persistence.EntityFramework
             };
 
             context.Countries.AddRange(countries);
-            context.SaveChanges();
+            await context.SaveChangesAsync(CancellationToken.None);
         }
 
-        private void SeedTeams(LeagueManagerDbContext context)
+        private async Task SeedTeams(ILeagueManagerDbContext context)
         {
-            SeedTeamsNL(context);
+            await SeedTeamsNL(context);
         }
 
-        private void SeedTeamsNL(LeagueManagerDbContext context)
+        private async Task SeedTeamsNL(ILeagueManagerDbContext context)
         {
             string imagePath = "teams\\nl";
             var country = context.Countries.SingleOrDefault(c => c.Name == "Netherlands");
@@ -337,7 +344,20 @@ namespace LeagueManager.Persistence.EntityFramework
             };
 
             context.Teams.AddRange(teams);
-            context.SaveChanges();
+            await context.SaveChangesAsync(CancellationToken.None);
+        }
+
+        private async Task SeedTeamSports(ILeagueManagerDbContext context)
+        {
+            context.TeamSports.Add(new TeamSports
+            {
+                Name = "Soccer",
+                Options = new TeamSportsOptions
+                {
+                    AmountOfPlayers = 11
+                }
+            });
+            await context.SaveChangesAsync(CancellationToken.None);
         }
     }
 }

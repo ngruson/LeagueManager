@@ -161,3 +161,139 @@ async function updateTeamLeagueMatchScore(url, homeTeam, homeScore, awayTeam, aw
     });
     return result;
 }
+
+/*ViewMatchDetails */
+
+async function createPlayer(firstName, middleName, lastName, url) {
+    var req = {
+        firstName: $(firstName).val(),
+        middleName: $(middleName).val(),
+        lastName: $(lastName).val()
+    };
+    var result = false;
+
+    await $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: url,
+        dataType: "json",
+        data: JSON.stringify(req),
+        success: function () {
+            result = true;
+        },
+        error: function (jqXHR) {
+            $('.modal .alert-danger').text(jqXHR.responseText);
+            $('.modal .alert-danger').removeClass('invisible');
+            result = false;
+        }
+    });
+
+    return result;
+}
+
+function constructFullName(firstName, middleName, lastName) {
+    var result = firstName;
+    if (middleName)
+        result += ' ' + middleName;
+    result += ' ' + lastName;
+    return result;
+}
+
+async function addPlayerToTeamCompetitor(leagueName, teamName, playerNumber, playerName, url) {
+    var req = {
+        "leagueName": leagueName,
+        "teamName": teamName,
+        "playerNumber": playerNumber,
+        "playerName": playerName
+    };
+    var result = false;
+
+    await $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: url,
+        dataType: "json",
+        data: JSON.stringify(req),
+        success: function () {
+            result = true;
+        },
+        error: function (jqXHR) {
+            $('.modal .alert-danger').text(jqXHR.responseText);
+            $('.modal .alert-danger').removeClass('invisible');
+            result = false;
+        }
+    });
+
+    return result;
+}
+
+async function addPlayerToLineup(number, playerName, url) {
+    var req = {
+        number: $(number).val(),
+        player: playerName
+    };
+    var result = false;
+
+    await $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: url,
+        dataType: "json",
+        data: JSON.stringify(req),
+        success: function () {
+            result = true;
+        },
+        error: function (jqXHR) {
+            $('.modal .alert-danger').text(jqXHR.responseText);
+            $('.modal .alert-danger').removeClass('invisible');
+            result = false;
+        }
+    });
+
+    return result;
+}
+
+async function getPlayerNumber(url) {
+    var number = '';
+
+    await $.ajax({
+        type: "GET",
+        contentType: "application/json; charset=utf-8",
+        url: url,
+        dataType: "json",
+        success: function (data) {
+            number = data.number;
+        }
+    });
+
+    return number;
+}
+
+async function updateTeamLeagueMatchLineupEntry(url, playerNumber, playerName) {
+    var req = {
+        playerNumber: playerNumber,
+        playerName: playerName
+    };
+
+    var result = await $.ajax({
+        type: "PUT",
+        url: url,
+        data: req
+    });
+    return result;
+}
+
+function getPlayers(dropdowns, url) {
+    dropdowns.each(function() {
+        var dropdown = $(this);
+        dropdown.empty();
+        dropdown.append('<option selected="true" disabled>--Select player--</option>');
+        dropdown.prop('selectedIndex', 0);
+
+        $.getJSON(url, function (data) {
+            $.each(data, function (key, entry) {
+                dropdown.append($('<option></option>').attr('value', entry.player.fullName).text(entry.player.fullName));
+            });
+        });
+    });
+}

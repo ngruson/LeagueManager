@@ -9,22 +9,12 @@ using System;
 using System.Threading;
 using Xunit;
 using AutoMapper;
-using LeagueManager.Api.CompetitionApi.AutoMapper;
+using LeagueManager.Application.AutoMapper;
 
 namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
     public class CreateTeamLeagueUnitTests
     {
-        private IMapper CreateMapper()
-        {
-            var config = new MapperConfiguration(opts =>
-            {
-                opts.AddProfile<CompetitionApiProfile>();
-            });
-
-            return config.CreateMapper();
-        }
-
         [Fact]
         public async void Given_TeamLeagueDoesNotExist_When_CreateTeamLeague_Then_ReturnSuccess()
         {
@@ -32,7 +22,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             var mockMediator = new Mock<IMediator>();
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
 
             var command = new CreateTeamLeagueCommand
             {
@@ -60,7 +50,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
 
             var command = new CreateTeamLeagueCommand
             {
@@ -89,7 +79,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
 
             var command = new CreateTeamLeagueCommand();
 
@@ -114,7 +104,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                CreateMapper());
+                Mapper.CreateMapper());
             var command = new CreateTeamLeagueCommand();
 
             //Act

@@ -33,7 +33,7 @@ namespace LeagueManager.Api.CountryApi
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://desktop-3pdt884/LeagueManager.IdentityServer";
+                    options.Authority = Configuration["IdentityServer"];
                     options.Audience = "countryapi";
                 });
 

@@ -50,13 +50,13 @@ namespace LeagueManager.Domain.LeagueTable
             });
         }
 
-        private List<TeamMatch> GetMatchesForTeam(
+        private List<TeamLeagueMatch> GetMatchesForTeam(
             Team team,
             List<TeamLeagueRound> rounds)
         {
             return rounds.SelectMany(r =>
                 r.Matches.Where(m =>
-                    m.MatchEntries.Exists(me => 
+                    m.MatchEntries.Any(me => 
                         me.Team != null && 
                         me.Team.Name == team.Name &&
                         me.Score != null)))

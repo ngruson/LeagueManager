@@ -7,12 +7,14 @@ using LeagueManager.Domain.LeagueTable;
 using LeagueManager.Domain.Match;
 using LeagueManager.Domain.Points;
 using LeagueManager.Domain.Round;
+using LeagueManager.Domain.Sports;
 
 namespace LeagueManager.Domain.Competition
 {
     public class TeamLeague : ITeamLeague
     {
         public int Id { get; set; }
+        public TeamSports Sports { get; set; }
         public string Name { get; set; }
         public Country Country { get; set; }
         public byte[] Logo { get; set; }
@@ -33,20 +35,12 @@ namespace LeagueManager.Domain.Competition
             {
                 var round = new TeamLeagueRound
                 {
-                    Name = $"Round {r}",
+                    Name = $"Round {r}"
                 };
                 for (int m = 0; m < Competitors.Count / 2; m++)
                 {
-                    var match = new TeamMatch { Guid = Guid.NewGuid() };
-                    match.MatchEntries.Add(new TeamMatchEntry
-                    {
-                        HomeAway = HomeAway.Home
-                    });
-                    match.MatchEntries.Add(new TeamMatchEntry
-                    {
-                        HomeAway = HomeAway.Away
-                    });
-
+                    var match = new TeamLeagueMatch { Guid = Guid.NewGuid() };
+                    match.CreateMatchEntries(Sports.Options.AmountOfPlayers);
                     round.Matches.Add(match);
                 }
 
@@ -54,9 +48,9 @@ namespace LeagueManager.Domain.Competition
             }
         }
 
-        public TeamMatch GetMatch(Guid guid)
+        public TeamLeagueMatch GetMatch(Guid guid)
         {
-            TeamMatch match = null;
+            TeamLeagueMatch match = null;
 
             if (Rounds != null)
                 foreach (var round in Rounds)

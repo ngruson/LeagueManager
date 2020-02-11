@@ -1,11 +1,15 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Application.Competitions.Queries.Dto;
-using LeagueManager.Application.TeamLeagues.Queries.Dto;
 using LeagueManager.WebUI.ViewModels;
 using System;
 using System.IO;
 using LeagueManager.Application.Config;
+using LeagueManager.Application.Player.Dto;
+using LeagueManager.Application.TeamLeagueMatches.Dto;
+using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
+using LeagueManager.Application.TeamLeagues.Dto;
+using LeagueManager.Application.TeamCompetitor.Dto;
 
 namespace LeagueManager.WebUI.AutoMapper
 {
@@ -41,7 +45,7 @@ namespace LeagueManager.WebUI.AutoMapper
                 })
                 .ForMember(m => m.Teams, opt => opt.MapFrom(src => src.SelectedTeamIds));
 
-            CreateMap<TeamLeagueDto, ViewTeamLeagueViewModel>();
+            CreateMap<Application.TeamLeagues.Dto.TeamLeagueDto, ViewTeamLeagueViewModel>();
             CreateMap<TeamLeagueTableDto, TeamLeagueTableViewModel>();
             CreateMap<TeamLeagueTableItemDto, TeamLeagueTableItemViewModel>();
             CreateMap<TeamDto, TeamViewModel>()
@@ -57,6 +61,11 @@ namespace LeagueManager.WebUI.AutoMapper
             CreateMap<TeamLeagueRoundDto, TeamLeagueRoundViewModel>();
             CreateMap<TeamMatchDto, TeamMatchViewModel>();
             CreateMap<TeamMatchEntryDto, TeamMatchEntryViewModel>();
+            CreateMap<TeamCompetitorPlayerDto, PlayerViewModel>();
+            CreateMap<Application.Player.Dto.PlayerDto, PlayerViewModel>();
+            CreateMap<Application.TeamLeagueMatches.Lineup.Dto.PlayerDto, PlayerViewModel>();
+            CreateMap<LineupEntryDto, TeamMatchEntryLineupEntryViewModel>()
+                .ForMember(m => m.Number, opt => opt.MapFrom(src => src.PlayerNumber));
             CreateMap<IntegerScoreDto, IntegerScoreViewModel>();
         }
     }

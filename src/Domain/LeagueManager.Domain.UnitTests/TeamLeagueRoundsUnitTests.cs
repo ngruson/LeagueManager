@@ -1,57 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using FluentAssertions;
-using LeagueManager.Domain.Competition;
-using LeagueManager.Domain.Competitor;
+﻿using FluentAssertions;
 using Xunit;
+using LeagueManager.Domain.UnitTests.TestData;
+using LeagueManager.Domain.Sports;
 
 namespace LeagueManager.Domain.UnitTests
 {
     public class TeamLeagueRoundsUnitTests
     {
-        private List<TeamCompetitor> CreateCompetitors()
-        {
-            return new List<TeamCompetitor>
-            {
-                new TeamCompetitor
-                {
-                    Team = new Team
-                    {
-                        Name = "Team A"
-                    }
-                },
-                new TeamCompetitor
-                {
-                    Team = new Team
-                    {
-                        Name = "Team B"
-                    }
-                },
-                new TeamCompetitor
-                {
-                    Team = new Team
-                    {
-                        Name = "Team C"
-                    }
-                },
-                new TeamCompetitor
-                {
-                    Team = new Team
-                    {
-                        Name = "Team D"
-                    }
-                }
-            };
-        }
+        
 
         [Fact]
         public void Given_TeamsAreAdded_When_CreateRounds_Then_CreateAllRounds()
         {
             //Arrange
-            var league = new TeamLeague
-            {
-                Competitors = CreateCompetitors()
-            };
+            var sports = new TeamSports { Options = new TeamSportsOptions { AmountOfPlayers = 11 } };
+            var league = new TeamLeagueBuilder()
+                .WithSports(sports)
+                .WithCompetitors(new TeamsBuilder().Build())
+                .Build();
 
             //Act
             league.CreateRounds();
