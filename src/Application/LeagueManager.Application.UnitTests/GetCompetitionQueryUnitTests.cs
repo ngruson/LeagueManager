@@ -6,6 +6,7 @@ using LeagueManager.Application.Interfaces;
 using LeagueManager.Domain.Common;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
+using Microsoft.Extensions.Logging;
 using MockQueryable.Moq;
 using Moq;
 using System.Collections.Generic;
@@ -70,8 +71,11 @@ namespace LeagueManager.Application.UnitTests
                 }
             };
             var contextMock = MockDbContext(leagues.AsQueryable());
+            var loggerMock = new Mock<ILogger<GetCompetitionQueryHandler>>();
             var handler = new GetCompetitionQueryHandler(
-                contextMock.Object, CreateMapper());
+                contextMock.Object, 
+                CreateMapper(),
+                loggerMock.Object);
 
             //Act
             var result = await handler.Handle(
@@ -92,8 +96,12 @@ namespace LeagueManager.Application.UnitTests
             // Arrange
             var leagues = new List<TeamLeague>();
             var contextMock = MockDbContext(leagues.AsQueryable());
+            var loggerMock = new Mock<ILogger<GetCompetitionQueryHandler>>();
             var handler = new GetCompetitionQueryHandler(
-                contextMock.Object, CreateMapper());
+                contextMock.Object, 
+                CreateMapper(),
+                loggerMock.Object
+           );
 
             //Act
             var result = await handler.Handle(
