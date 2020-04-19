@@ -21,6 +21,12 @@ using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetito
 using LeagueManager.Application.TeamLeagueMatches.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Commands;
+using Microsoft.Extensions.Logging;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
 
 namespace LeagueManager.Api.CompetitionApi.Controllers
 {
@@ -30,13 +36,16 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
     {
         private readonly IMediator mediator;
         private readonly IMapper mapper;
+        private readonly ILogger<CompetitionController> logger;
 
         public CompetitionController(
             IMediator mediator,
-            IMapper mapper)
+            IMapper mapper,
+            ILogger<CompetitionController> logger)
         {
             this.mediator = mediator;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         // GET api/competition?country={country}
@@ -173,7 +182,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -215,7 +224,8 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         {
             try
             {
-                var match = await mediator.Send(new GetTeamLeagueMatchQuery {
+                var match = await mediator.Send(new GetTeamLeagueMatchQuery
+                {
                     LeagueName = name,
                     Guid = guid
                 });
@@ -282,7 +292,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                         opt.Items["leagueName"] = name;
                         opt.Items["guid"] = guid;
                     });
-                    
+
                 var match = await mediator.Send(command);
                 return Ok(match);
             }
@@ -393,6 +403,153 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch
             {
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        // POST api/competition/teamleague/Premier League 2019-2020/match/{guid}/{team}/goals
+        [HttpPost("teamleague/{leagueName}/match/{matchGuid}/{teamName}/goals")]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> AddTeamLeagueMatchGoal(string leagueName, Guid matchGuid, string teamName, [FromBody]AddTeamLeagueMatchGoalDto dto)
+        {
+            string methodName = "AddTeamLeagueMatchGoal";
+            logger.LogInformation($"{methodName}: Request received");
+
+            try
+            {
+                var command = mapper.Map<AddTeamLeagueMatchGoalCommand>(dto, opt =>
+                {
+                    opt.Items["leagueName"] = leagueName;
+                    opt.Items["matchGuid"] = matchGuid;
+                    opt.Items["teamName"] = teamName;
+                });
+
+                logger.LogInformation("{methodName}: Sending command {command}", methodName, command);
+                var goal = await mediator.Send(command);
+                logger.LogInformation("{methodName}: Returning goal {goal}", methodName, goal);
+                return Ok(goal);
+            }
+            catch (TeamLeagueNotFoundException ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (MatchNotFoundException ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (MatchEntryNotFoundException ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (PlayerNotFoundException ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        [HttpGet("teamleague/{leagueName}/match/{matchGuid}/goal/{goalGuid}")]
+        public async Task<IActionResult> GetTeamLeagueMatchGoal(string leagueName, Guid matchGuid, Guid goalGuid)
+        {
+            try
+            {
+                var goal = await mediator.Send(new GetTeamLeagueMatchGoalQuery
+                {
+                    LeagueName = leagueName,
+                    MatchGuid = matchGuid,
+                    GoalGuid = goalGuid
+                });
+                return Ok(goal);
+            }
+            catch (GoalNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        [HttpPut("teamleague/{leagueName}/match/{matchGuid}/team/{teamName}/goal/{goalGuid}")]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> UpdateTeamLeagueMatchGoal(string leagueName, Guid matchGuid, string teamName, Guid goalGuid, [FromBody]UpdateTeamLeagueMatchGoalDto dto)
+        {
+            string methodName = "UpdateTeamLeagueMatchGoal";
+            logger.LogInformation($"{methodName}: Request received");
+
+            try
+            {
+                var command = mapper.Map<UpdateTeamLeagueMatchGoalCommand>(dto, opt =>
+                {
+                    opt.Items["leagueName"] = leagueName;
+                    opt.Items["matchGuid"] = matchGuid;
+                    opt.Items["teamName"] = teamName;
+                    opt.Items["goalGuid"] = goalGuid;
+                });
+
+                logger.LogInformation($"{methodName}: Sending command {command}");
+                var goal = await mediator.Send(command);
+                logger.LogInformation($"{methodName}: Returning goal {goal}");
+                return Ok(goal);
+            }
+            catch (TeamLeagueNotFoundException ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (MatchNotFoundException ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (MatchEntryNotFoundException ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (PlayerNotFoundException ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+                return BadRequest("Something went wrong!");
+            }
+        }
+
+        [HttpGet("teamleague/{leagueName}/match/{matchGuid}/{teamName}/events")]
+        public async Task<IActionResult> GetMatchEvents(string leagueName, Guid matchGuid, string teamName)
+        {
+            string methodName = nameof(GetMatchEvents);
+            logger.LogInformation($"{methodName}: Request received");
+
+            try
+            {
+                logger.LogInformation($"{methodName}: Retrieving match events");
+                var events = await mediator.Send(new GetTeamLeagueMatchEventsQuery
+                {
+                    LeagueName = leagueName,
+                    MatchGuid = matchGuid,
+                    TeamName = teamName
+                });
+
+                logger.LogInformation($"{methodName}: Returning events");
+                return Ok(events);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
                 return BadRequest("Something went wrong!");
             }
         }

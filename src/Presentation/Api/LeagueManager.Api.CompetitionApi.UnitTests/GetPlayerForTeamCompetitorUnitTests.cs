@@ -6,6 +6,7 @@ using LeagueManager.Application.TeamCompetitor.Dto;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -38,10 +39,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                         }
                     }
                 );
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             //Act
             var result = await controller.GetPlayerForTeamCompetitor(null, null, null);
@@ -62,10 +66,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new TeamLeagueNotFoundException(leagueName));
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             //Act
             var result = await controller.GetPlayerForTeamCompetitor(null, null, null);
@@ -87,10 +94,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new TeamNotFoundException(teamName));
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             //Act
             var result = await controller.GetPlayerForTeamCompetitor(null, null, null);
@@ -112,10 +122,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new PlayerNotFoundException(playerName));
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             //Act
             var result = await controller.GetPlayerForTeamCompetitor(null, null, null);
@@ -136,10 +149,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new Exception());
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             //Act
             var result = await controller.GetPlayerForTeamCompetitor(null, null, null);

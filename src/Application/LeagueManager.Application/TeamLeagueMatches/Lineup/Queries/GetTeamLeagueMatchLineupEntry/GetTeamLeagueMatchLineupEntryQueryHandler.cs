@@ -15,14 +15,12 @@ namespace LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeag
     {
         private readonly ILeagueManagerDbContext context;
         private readonly IConfigurationProvider config;
-        
+
         public GetTeamLeagueMatchLineupEntryQueryHandler(
             ILeagueManagerDbContext context,
-            IConfigurationProvider config)
-        {
-            this.context = context;
-            this.config = config;
-        }
+            IConfigurationProvider config) 
+                => (this.context, this.config) = (context, config);
+        
         public async Task<LineupEntryDto> Handle(GetTeamLeagueMatchLineupEntryQuery request, CancellationToken cancellationToken)
         {
             var lineupEntry = await context.TeamLeagues

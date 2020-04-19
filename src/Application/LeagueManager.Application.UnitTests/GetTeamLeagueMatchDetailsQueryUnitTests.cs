@@ -34,7 +34,7 @@ namespace LeagueManager.Application.UnitTests
             var leagues = Enumerable.Repeat(league, 1);
             var contextMock = MockDbContext(leagues.AsQueryable());
             var handler = new GetTeamLeagueMatchDetailsQueryHandler(
-                contextMock.Object, Mapper.CreateMapper()
+                contextMock.Object, Mapper.MapperConfig()
             );
 
             //Act
@@ -61,7 +61,7 @@ namespace LeagueManager.Application.UnitTests
             var leagues = Enumerable.Repeat(league, 1);
             var contextMock = MockDbContext(leagues.AsQueryable());
             var handler = new GetTeamLeagueMatchDetailsQueryHandler(
-                contextMock.Object, Mapper.CreateMapper()
+                contextMock.Object, Mapper.MapperConfig()
             );
 
             //Act

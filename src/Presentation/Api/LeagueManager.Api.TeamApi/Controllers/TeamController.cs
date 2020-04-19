@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Teams.Commands.CreateTeam;
 using LeagueManager.Application.Teams.Queries.GetTeams;
@@ -28,7 +29,7 @@ namespace LeagueManager.Api.TeamApi.Controllers
                 var teams = await mediator.Send(new GetTeamsQuery());
                 return Ok(teams);
             }
-            catch
+            catch (Exception ex)
             {
                 return BadRequest("Something went wrong!");
             }

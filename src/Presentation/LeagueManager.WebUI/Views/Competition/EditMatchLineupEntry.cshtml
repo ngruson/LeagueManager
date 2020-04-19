@@ -4,14 +4,14 @@
     var players = ViewData["Players"] as IEnumerable<LeagueManager.WebUI.ViewModels.PlayerViewModel>;    
 }
 
-<div class="row">
+<div class="row edit-lineup-entry">
     <div class="col-2 form-group">
         @Html.LabelFor(m => m.Number)
         @Html.TextBoxFor(m => m.Number, new { id = $"number-{Model.Guid}", @class = "form-control"} )
     </div>
     <div class="col form-group">
         @Html.LabelFor(m => m.Player)
-        <button type="button" class="btn btn-default fa fa-user-plus create-player" data-toggle="modal" data-team-name="@Model.TeamName" data-target="#createPlayerModal"></button>
+        <button type="button" class="btn btn-default fa fa-user-plus create-player" data-toggle="modal" data-team-name="@Model.TeamName" data-target="#playerModal"></button>
         <button type="button" class="btn btn-default fa fa-save js-save-lineup-entry" data-guid="@Model.Guid" data-team-name="@Model.TeamName" data-toggle="tooltip" data-placement="top" title="Save"></button>
         <button type="button" class="btn btn-default fa fa-window-close js-cancel-lineup-entry" data-guid="@Model.Guid" data-team-name="@Model.TeamName" data-toggle="tooltip" data-placement="top" title="Cancel"></button>
         @Html.DropDownListFor(m => m.Player.FullName, new SelectList(players, "FullName", "FullName"), "--Select player--", new { id = $"player-{Model.Guid}", @class = "form-control js-select-player", @data_team_name = $"{Model.TeamName}", @data_guid = $"{Model.Guid}" })

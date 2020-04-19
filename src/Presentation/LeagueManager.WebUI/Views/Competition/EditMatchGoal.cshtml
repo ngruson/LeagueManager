@@ -1,0 +1,17 @@
+﻿@model LeagueManager.WebUI.ViewModels.TeamMatchEntryGoalEventViewModel
+@{
+    var players = ViewData["Players"] as IEnumerable<LeagueManager.WebUI.ViewModels.PlayerViewModel>;
+}
+
+<div class="row edit-goal">
+    <div class="col-2 form-group">
+        @Html.LabelFor(m => m.Minute)
+        @Html.TextBoxFor(m => m.Minute, new { id = $"minute-{Model.Guid}", @class = "form-control" })
+    </div>
+    <div class="col form-group">
+        @Html.LabelFor(m => m.Player)
+        <button type="button" class="btn btn-default fa fa-save js-save-goal" data-guid="@Model.Guid" data-team-name="@Model.TeamName" data-toggle="tooltip" data-placement="top" title="Save"></button>
+        <button type="button" class="btn btn-default fa fa-window-close js-cancel-goal" data-guid="@Model.Guid" data-toggle="tooltip" data-placement="top" title="Cancel"></button>
+        @Html.DropDownListFor(m => m.Player.FullName, new SelectList(players, "FullName", "FullName"), "--Select player--", new { id = $"player-{Model.Guid}", @class = "form-control js-select-player", @data_guid = $"{Model.Guid}" })
+    </div>
+</div>
