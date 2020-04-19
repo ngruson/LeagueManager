@@ -1,15 +1,11 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagueMatches.Goals;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -64,7 +60,6 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueM
             await context.SaveChangesAsync(cancellationToken);
             logger.LogInformation("Changes are saved");
 
-            //return await mediator.send GetTeamLeagueMatchGoalQuery
             return config.CreateMapper().Map<GoalDto>(goal);
         }
     }
