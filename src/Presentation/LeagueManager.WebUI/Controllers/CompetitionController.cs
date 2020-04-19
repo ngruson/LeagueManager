@@ -22,6 +22,9 @@ using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetit
 using LeagueManager.Application.TeamLeagueMatches.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
 
 namespace LeagueManager.WebUI.Controllers
 {
@@ -300,6 +303,79 @@ namespace LeagueManager.WebUI.Controllers
 
             var viewModel = mapper.Map<TeamMatchEntryLineupEntryViewModel>(lineupEntry);
             return PartialView("ViewMatchLineupEntry", viewModel);
+        }
+
+        [HttpGet("{controller}/{leagueName}/match/{matchGuid}/{teamName}/events")]
+        public async Task<IActionResult> ViewTeamMatchEvents(string leagueName, Guid matchGuid, string teamName)
+        {
+            var events = await competitionApi.GetTeamLeagueMatchEvents(
+                    new GetTeamLeagueMatchEventsQuery
+                    {
+                        LeagueName = leagueName,
+                        MatchGuid = matchGuid,
+                        TeamName = teamName
+                    }
+                );
+
+            var viewModel = mapper.Map<IEnumerable<TeamMatchEntryGoalEventViewModel>>(events.Goals);
+            return PartialView(viewModel);
+        }
+
+        [HttpGet("{controller}/{leagueName}/match/{matchGuid}/team/{teamName}/goal/{goalGuid}/edit")]
+        public async Task<IActionResult> EditMatchGoal(string leagueName, Guid matchGuid, string teamName, Guid goalGuid)
+        {
+            var goal = await competitionApi.GetTeamLeagueMatchGoal(
+                new GetTeamLeagueMatchGoalQuery
+                {
+                    LeagueName = leagueName,
+                    MatchGuid = matchGuid,
+                    GoalGuid = goalGuid
+                }
+            );
+
+            var players = await competitionApi.GetPlayersForTeamCompetitor(new GetPlayersForTeamCompetitorQuery
+            {
+                LeagueName = leagueName,
+                TeamName = teamName
+            });
+            ViewData["Players"] = mapper.Map<IEnumerable<PlayerViewModel>>(players.Select(p => p.Player));
+
+            var viewModel = mapper.Map<TeamMatchEntryGoalEventViewModel>(goal);
+            return PartialView(viewModel);
+        }
+
+        [HttpPut("{controller}/{leagueName}/match/{matchGuid}/team/{teamName}/goal/{goalGuid}")]
+        public async Task<IActionResult> UpdateMatchGoal(string leagueName, Guid matchGuid, string teamName, Guid goalGuid, UpdateTeamLeagueMatchGoalDto dto)
+        {
+            var goal = await competitionApi.UpdateTeamLeagueMatchGoal(
+                new UpdateTeamLeagueMatchGoalCommand
+                {
+                    LeagueName = WebUtility.HtmlDecode(leagueName),
+                    MatchGuid = matchGuid,
+                    TeamName = teamName,
+                    GoalGuid = goalGuid,
+                    Minute = dto.Minute,
+                    PlayerName = dto.PlayerName
+                });
+
+            var viewModel = mapper.Map<TeamMatchEntryGoalEventViewModel>(goal);
+            return PartialView("ViewGoalMatchEvent", viewModel);
+        }
+
+        [HttpGet("{controller}/{leagueName}/match/{matchGuid}/goal/{goalGuid}")]
+        public async Task<IActionResult> ViewGoalMatchEvent(string leagueName, Guid matchGuid, Guid goalGuid)
+        {
+            var goal = await competitionApi.GetTeamLeagueMatchGoal(
+                new GetTeamLeagueMatchGoalQuery
+                {
+                    LeagueName = leagueName,
+                    MatchGuid = matchGuid,
+                    GoalGuid = goalGuid
+                }
+            );
+
+            var viewModel = mapper.Map<TeamMatchEntryGoalEventViewModel>(goal);
+            return PartialView(viewModel);
         }
     }
 }

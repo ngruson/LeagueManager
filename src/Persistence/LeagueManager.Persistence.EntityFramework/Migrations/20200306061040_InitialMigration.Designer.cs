@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeagueManager.Persistence.EntityFramework.Migrations
 {
     [DbContext(typeof(LeagueManagerDbContext))]
-    [Migration("20200129063916_InitialMigration")]
+    [Migration("20200306061040_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,6 +166,30 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.HasIndex("TeamLeagueMatchId");
 
                     b.ToTable("TeamMatchEntry");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryGoal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid>("Guid");
+
+                    b.Property<string>("Minute")
+                        .IsRequired();
+
+                    b.Property<int?>("PlayerId");
+
+                    b.Property<int?>("TeamMatchEntryId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("TeamMatchEntryId");
+
+                    b.ToTable("TeamMatchEntryGoal");
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryLineupEntry", b =>
@@ -351,6 +375,17 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.HasOne("LeagueManager.Domain.Match.TeamLeagueMatch")
                         .WithMany("MatchEntries")
                         .HasForeignKey("TeamLeagueMatchId");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryGoal", b =>
+                {
+                    b.HasOne("LeagueManager.Domain.Player.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId");
+
+                    b.HasOne("LeagueManager.Domain.Match.TeamMatchEntry")
+                        .WithMany("Goals")
+                        .HasForeignKey("TeamMatchEntryId");
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryLineupEntry", b =>

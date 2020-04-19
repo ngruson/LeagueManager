@@ -10,6 +10,7 @@ using LeagueManager.Application.TeamLeagueMatches.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
 using LeagueManager.Application.TeamLeagues.Dto;
 using LeagueManager.Application.TeamCompetitor.Dto;
+using LeagueManager.Application.TeamLeagueMatches.Goals;
 
 namespace LeagueManager.WebUI.AutoMapper
 {
@@ -60,7 +61,9 @@ namespace LeagueManager.WebUI.AutoMapper
                 });
             CreateMap<TeamLeagueRoundDto, TeamLeagueRoundViewModel>();
             CreateMap<TeamMatchDto, TeamMatchViewModel>();
-            CreateMap<TeamMatchEntryDto, TeamMatchEntryViewModel>();
+            CreateMap<TeamMatchEntryDto, TeamMatchEntryViewModel>()
+                .ForMember(m => m.Events, opt => opt.Ignore());
+            CreateMap<GoalDto, TeamMatchEntryGoalEventViewModel>();
             CreateMap<TeamCompetitorPlayerDto, PlayerViewModel>();
             CreateMap<Application.Player.Dto.PlayerDto, PlayerViewModel>();
             CreateMap<Application.TeamLeagueMatches.Lineup.Dto.PlayerDto, PlayerViewModel>();

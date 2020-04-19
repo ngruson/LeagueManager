@@ -166,6 +166,30 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.ToTable("TeamMatchEntry");
                 });
 
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryGoal", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid>("Guid");
+
+                    b.Property<string>("Minute")
+                        .IsRequired();
+
+                    b.Property<int?>("PlayerId");
+
+                    b.Property<int?>("TeamMatchEntryId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.HasIndex("TeamMatchEntryId");
+
+                    b.ToTable("TeamMatchEntryGoal");
+                });
+
             modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryLineupEntry", b =>
                 {
                     b.Property<int>("Id")
@@ -349,6 +373,17 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.HasOne("LeagueManager.Domain.Match.TeamLeagueMatch")
                         .WithMany("MatchEntries")
                         .HasForeignKey("TeamLeagueMatchId");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryGoal", b =>
+                {
+                    b.HasOne("LeagueManager.Domain.Player.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId");
+
+                    b.HasOne("LeagueManager.Domain.Match.TeamMatchEntry")
+                        .WithMany("Goals")
+                        .HasForeignKey("TeamMatchEntryId");
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntryLineupEntry", b =>

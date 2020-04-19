@@ -55,6 +55,29 @@ namespace LeagueManager.Application.UnitTests.TestData
             return this;
         }
 
+        public TeamLeagueBuilder WithGoals()
+        {
+            var match = rounds[0].Matches[0];
+            var matchEntry = match.MatchEntries.ToList()[0];
+            matchEntry.Goals = new List<TeamMatchEntryGoal>
+            {
+                new TeamMatchEntryGoal
+                {
+                    TeamMatchEntry = matchEntry,
+                    Guid = Guid.NewGuid(),
+                    Minute = new Random().Next(1, 45).ToString()
+                },
+                new TeamMatchEntryGoal
+                {
+                    TeamMatchEntry = matchEntry,
+                    Guid = Guid.NewGuid(),
+                    Minute = new Random().Next(46, 90).ToString()
+                }
+            };
+
+            return this;
+        }
+
         private static List<TeamLeagueMatch> CreateMatches(TeamLeagueRound round, List<Domain.Competitor.TeamCompetitor> competitors)
         {            
             var matchEntries = new List<TeamMatchEntry>();

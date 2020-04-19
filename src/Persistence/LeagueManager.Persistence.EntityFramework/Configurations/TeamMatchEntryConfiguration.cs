@@ -7,8 +7,7 @@ namespace LeagueManager.Persistence.EntityFramework.Configurations
     public class TeamMatchEntryConfiguration : IEntityTypeConfiguration<TeamMatchEntry>
     {
         public void Configure(EntityTypeBuilder<TeamMatchEntry> builder)
-        {
-            builder.Property(g => g.Team).IsRequired();
+        {            
         }
     }
 }

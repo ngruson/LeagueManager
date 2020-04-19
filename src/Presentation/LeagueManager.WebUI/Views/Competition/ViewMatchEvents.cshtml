@@ -1,0 +1,30 @@
+﻿@model List<LeagueManager.WebUI.ViewModels.TeamMatchEntryViewModel>
+
+<div class="row">
+    @foreach (var entry in Model)
+    {
+        <div class="col-6">
+            <div class="row">
+                @*<div class="col-2">
+                    <img src="@entry.Team.Logo" style="height:48px; width:48px" />
+                </div>
+                <div class="col">
+                    <h3>@entry.Team.Name</h3>
+                </div>*@
+            </div>
+            <div>
+                <button type="button" class="btn btn-default fa fa-futbol add-goal" data-toggle="modal" data-target="#goalModal" data-match-guid="@entry.TeamMatch.Guid" data-team-name="@entry.Team.Name" title="Add scored goal"></button>
+            </div>
+            <div id="match-events-@entry.Team.Name.Replace(" ", "-")" class="py-5">
+                @if (entry.Events.Count == 0)
+                {
+                    <div>No match events</div>
+                }
+                else
+                {
+                    @await Html.PartialAsync("ViewTeamMatchEvents", entry.Events)
+                }
+            </div>
+        </div>
+    }
+</div>

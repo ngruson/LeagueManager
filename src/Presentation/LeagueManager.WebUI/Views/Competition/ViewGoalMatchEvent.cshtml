@@ -1,0 +1,16 @@
+﻿@model LeagueManager.WebUI.ViewModels.TeamMatchEntryGoalEventViewModel
+
+<div class="row">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="col-1">
+            <button type="button" data-guid="@Model.Guid" data-team-name="@Model.TeamName" class="btn btn-default btn-sm fa fa-edit js-edit-goal"></button>
+        </div>
+    }
+    <div class="col-1">
+        <b>@($"{Model.Minute}'")</b>
+    </div>
+    <div class="col">
+        @Model.Player.FullName
+    </div>
+</div>

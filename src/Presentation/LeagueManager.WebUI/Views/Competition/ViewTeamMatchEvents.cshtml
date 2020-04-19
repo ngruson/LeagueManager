@@ -1,0 +1,8 @@
+﻿@model IEnumerable<LeagueManager.WebUI.ViewModels.IMatchEventViewModel>
+
+@foreach (var matchEvent in Model)
+{
+    <div id="match-event-@matchEvent.Guid">
+        @await Html.PartialAsync(matchEvent.ViewName, matchEvent)
+    </div>
+}

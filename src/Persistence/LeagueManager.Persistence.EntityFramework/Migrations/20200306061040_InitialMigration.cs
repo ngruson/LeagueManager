@@ -285,6 +285,34 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "TeamMatchEntryGoal",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Guid = table.Column<Guid>(nullable: false),
+                    Minute = table.Column<string>(nullable: false),
+                    PlayerId = table.Column<int>(nullable: true),
+                    TeamMatchEntryId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamMatchEntryGoal", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TeamMatchEntryGoal_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_TeamMatchEntryGoal_TeamMatchEntry_TeamMatchEntryId",
+                        column: x => x.TeamMatchEntryId,
+                        principalTable: "TeamMatchEntry",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TeamMatchEntryLineupEntry",
                 columns: table => new
                 {
@@ -373,6 +401,16 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 column: "TeamLeagueMatchId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TeamMatchEntryGoal_PlayerId",
+                table: "TeamMatchEntryGoal",
+                column: "PlayerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TeamMatchEntryGoal_TeamMatchEntryId",
+                table: "TeamMatchEntryGoal",
+                column: "TeamMatchEntryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TeamMatchEntryLineupEntry_PlayerId",
                 table: "TeamMatchEntryLineupEntry",
                 column: "PlayerId");
@@ -397,6 +435,9 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
         {
             migrationBuilder.DropTable(
                 name: "TeamCompetitorPlayer");
+
+            migrationBuilder.DropTable(
+                name: "TeamMatchEntryGoal");
 
             migrationBuilder.DropTable(
                 name: "TeamMatchEntryLineupEntry");
