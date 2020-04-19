@@ -11,6 +11,7 @@ using System;
 using System.Threading;
 using Xunit;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
+using Microsoft.Extensions.Logging;
 
 namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
@@ -26,10 +27,14 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .ReturnsAsync(new Lineup.LineupEntryDto());
-               
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
+
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
+
             var dto = new UpdateLineupEntryDto();
 
             //Act
@@ -51,10 +56,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new LineupEntryNotFoundException(lineupEntryGuid));
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
             var dto = new UpdateLineupEntryDto();
 
             //Act
@@ -76,10 +84,14 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new Exception());
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
+
             var dto = new UpdateLineupEntryDto();
 
             //Act

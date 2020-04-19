@@ -6,6 +6,7 @@ using LeagueManager.Application.Competitions.Queries.Dto;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System.Threading;
 using Xunit;
@@ -26,10 +27,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                 .ReturnsAsync(
                     new CompetitionDto { Name = "Premier League", Country = "England" }
                 );
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             //Act
             var result = await controller.GetCompetition("Premier League");
@@ -44,7 +48,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
         public async void Given_Exception_When_GetCompetition_Then_ReturnBadRequest()
         {
             //Arrange
-            var controller = new CompetitionController(null, null);
+            var controller = new CompetitionController(null, null, null);
 
             //Act
             var result = await controller.GetCompetition(null);

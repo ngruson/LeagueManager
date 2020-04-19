@@ -4,6 +4,7 @@ using LeagueManager.Application.TeamLeagueMatches.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Threading;
@@ -25,10 +26,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                 .ReturnsAsync(
                     new TeamMatchDto()
                 );
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             //Act
             var result = await controller.GetTeamLeagueMatch("Premier League", Guid.NewGuid());
@@ -50,10 +54,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                 .Throws(
                     new Exception()
                 );
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             //Act
             var result = await controller.GetTeamLeagueMatch("Premier League", Guid.NewGuid());

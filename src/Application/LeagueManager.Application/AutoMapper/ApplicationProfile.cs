@@ -17,6 +17,9 @@ using LeagueManager.Domain.Match;
 using LeagueManager.Domain.Round;
 using LeagueManager.Domain.Score;
 using System.Linq;
+using LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Goals;
 
 namespace LeagueManager.Application.AutoMapper
 {
@@ -54,11 +57,16 @@ namespace LeagueManager.Application.AutoMapper
             CreateMap<Domain.Match.HomeAway, TeamLeagueMatches.Dto.HomeAway>();
             CreateMap<IntegerScore, IntegerScoreDto>();
             CreateMap<TeamMatchEntryLineupEntry, Lineup.LineupEntryDto>()
-                .ForMember(m => m.TeamName, opt => opt.MapFrom(src => src.TeamMatchEntry.Team.Name));
+                .ForMember(m => m.TeamName, opt => opt.MapFrom(src => src.TeamMatchEntry.Team.Name))
+                .ForMember(m => m.PlayerNumber, opt => opt.MapFrom(src => src.Number));
             CreateMap<Domain.Player.Player, PlayerDto>();
             CreateMap<TeamCompetitorPlayer, TeamCompetitorPlayerDto>()
                 .ForMember(m => m.Player, opt => opt.MapFrom(src => src.Player));
-            
+            CreateMap<TeamMatchEntryGoal, GoalDto>()
+                .ForMember(m => m.TeamName, opt => opt.MapFrom(src => src.TeamMatchEntry.Team.Name));
+            CreateMap<TeamMatchEntryGoal, UpdateTeamLeagueMatchGoalDto>()
+                .ForMember(m => m.PlayerName, opt => opt.MapFrom(src => src.Player.FullName));
+
             CreateMap<CreatePlayerCommand, Domain.Player.Player>();
 
             CreateMap<UpdateTeamLeagueMatchDto, UpdateTeamLeagueMatchCommand>()
@@ -86,10 +94,28 @@ namespace LeagueManager.Application.AutoMapper
                     context.Items["leagueName"]))
                 .ForMember(m => m.MatchGuid, opt => opt.MapFrom((src, dest, destMember, context) =>
                     context.Items["matchGuid"]))
-            .ForMember(m => m.TeamName, opt => opt.MapFrom((src, dest, destMember, context) =>
+                .ForMember(m => m.TeamName, opt => opt.MapFrom((src, dest, destMember, context) =>
                     context.Items["teamName"]))
-            .ForMember(m => m.LineupEntryGuid, opt => opt.MapFrom((src, dest, destMember, context) =>
+                .ForMember(m => m.LineupEntryGuid, opt => opt.MapFrom((src, dest, destMember, context) =>
                     context.Items["lineupEntryGuid"]));
+
+            CreateMap<AddTeamLeagueMatchGoalDto, AddTeamLeagueMatchGoalCommand>()
+                .ForMember(m => m.LeagueName, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    context.Items["leagueName"]))
+                .ForMember(m => m.MatchGuid, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    context.Items["matchGuid"]))
+                .ForMember(m => m.TeamName, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    context.Items["teamName"]));
+
+            CreateMap<UpdateTeamLeagueMatchGoalDto, UpdateTeamLeagueMatchGoalCommand>()
+                .ForMember(m => m.LeagueName, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    context.Items["leagueName"]))
+                .ForMember(m => m.MatchGuid, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    context.Items["matchGuid"]))
+                .ForMember(m => m.TeamName, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    context.Items["teamName"]))
+                .ForMember(m => m.GoalGuid, opt => opt.MapFrom((src, dest, destMember, context) =>
+                    context.Items["goalGuid"]));
         }
     }
 }

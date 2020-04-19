@@ -5,6 +5,7 @@ using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 using LeagueManager.Application.TeamLeagueMatches.Dto;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -48,10 +49,14 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                         }
                     }        
                 });
-               
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
+
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
+
             var dto = new UpdateTeamLeagueMatchDto
             {
                 HomeTeam = homeTeam,
@@ -85,10 +90,14 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new MatchNotFoundException(guid));
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
+
             var dto = new UpdateTeamLeagueMatchDto();
 
             //Act
@@ -110,10 +119,14 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new TeamNotFoundException(homeTeam));
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
+
             var dto = new UpdateTeamLeagueMatchDto
             {
                 HomeTeam = homeTeam
@@ -137,10 +150,14 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new Exception());
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
+
             var dto = new UpdateTeamLeagueMatchDto();
 
             //Act

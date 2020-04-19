@@ -10,6 +10,7 @@ using System.Threading;
 using Xunit;
 using AutoMapper;
 using LeagueManager.Application.AutoMapper;
+using Microsoft.Extensions.Logging;
 
 namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
@@ -20,9 +21,12 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
         {
             //Arrange
             var mockMediator = new Mock<IMediator>();
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             var command = new CreateTeamLeagueCommand
             {
@@ -47,10 +51,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new CompetitionAlreadyExistsException("Premier League"));
-            
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
+
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             var command = new CreateTeamLeagueCommand
             {
@@ -76,10 +83,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new TeamNotFoundException("Liverpool"));
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
 
             var command = new CreateTeamLeagueCommand();
 
@@ -101,10 +111,13 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     It.IsAny<CancellationToken>()
                 ))
                 .Throws(new Exception());
+            var mockLogger = new Mock<ILogger<CompetitionController>>();
 
             var controller = new CompetitionController(
                 mockMediator.Object,
-                Mapper.CreateMapper());
+                Mapper.CreateMapper(),
+                mockLogger.Object
+            );
             var command = new CreateTeamLeagueCommand();
 
             //Act

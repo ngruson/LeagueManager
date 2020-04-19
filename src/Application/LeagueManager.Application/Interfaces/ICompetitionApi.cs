@@ -16,6 +16,10 @@ using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetit
 using LeagueManager.Application.TeamCompetitor.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
+using LeagueManager.Application.TeamLeagueMatches.Goals;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
 
 namespace LeagueManager.Application.Interfaces
 {
@@ -33,5 +37,8 @@ namespace LeagueManager.Application.Interfaces
         Task<TeamMatchDto> UpdateTeamLeagueMatchScore(UpdateTeamLeagueMatchScoreCommand command);
         Task<TeamLeagueMatches.Lineup.Dto.LineupEntryDto> GetTeamLeagueMatchLineupEntry(GetTeamLeagueMatchLineupEntryQuery query);
         Task<TeamLeagueMatches.Lineup.Dto.LineupEntryDto> UpdateTeamLeagueMatchLineupEntry(UpdateTeamLeagueMatchLineupEntryCommand command);
+        Task<MatchEventsDto> GetTeamLeagueMatchEvents(GetTeamLeagueMatchEventsQuery query);
+        Task<GoalDto> GetTeamLeagueMatchGoal(GetTeamLeagueMatchGoalQuery query);
+        Task<GoalDto> UpdateTeamLeagueMatchGoal(UpdateTeamLeagueMatchGoalCommand command);
     }
 }
