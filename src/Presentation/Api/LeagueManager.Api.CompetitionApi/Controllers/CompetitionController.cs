@@ -22,7 +22,6 @@ using LeagueManager.Application.TeamLeagueMatches.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchGoal;
-using LeagueManager.Application.TeamLeagueMatches.Commands;
 using Microsoft.Extensions.Logging;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
