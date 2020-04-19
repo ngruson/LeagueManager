@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace LeagueManager.Application.Exceptions
 {
     [Serializable]
-    public class GoalNotFoundException : Exception
+    public class GoalNotFoundException : LeagueManagerException
     {
         public GoalNotFoundException(Guid guid)
             : base($"No goal found with id \"{guid}\".")

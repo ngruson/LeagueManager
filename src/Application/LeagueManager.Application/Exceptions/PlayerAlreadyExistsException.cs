@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace LeagueManager.Application.Exceptions
 {
-    public class PlayerAlreadyExistsException : Exception
+    public class PlayerAlreadyExistsException : LeagueManagerException
     {
         public PlayerAlreadyExistsException(string name)
             : base($"Player \"{name}\" already exists.")

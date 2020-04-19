@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace LeagueManager.Application.Exceptions
 {
     [Serializable]
-    public class CountriesNotFoundException : Exception
+    public class CountriesNotFoundException : LeagueManagerException
     {
         public CountriesNotFoundException()
             : base("Countries not found.")

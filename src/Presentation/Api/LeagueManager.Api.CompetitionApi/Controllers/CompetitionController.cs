@@ -170,19 +170,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 await mediator.Send(command);
                 return Created($"/teamLeague/{leagueName}/competitor/{command.TeamName}/player/{command.PlayerName}", command);
             }
-            catch (TeamLeagueNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch (TeamNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (PlayerNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -212,7 +204,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var rounds = await mediator.Send(new GetTeamLeagueRoundsQuery { LeagueName = name });
                 return Ok(rounds);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -296,11 +288,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var match = await mediator.Send(command);
                 return Ok(match);
             }
-            catch (MatchNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (TeamNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -326,11 +314,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var match = await mediator.Send(command);
                 return Ok(match);
             }
-            catch (MatchNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (TeamNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -357,23 +341,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var match = await mediator.Send(command);
                 return Ok(match);
             }
-            catch (TeamLeagueNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch (MatchNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (MatchEntryNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (PlayerNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -397,7 +369,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var lineupEntry = await mediator.Send(command);
                 return Ok(lineupEntry);
             }
-            catch (LineupEntryNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -429,22 +401,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 logger.LogInformation("{methodName}: Returning goal {goal}", methodName, goal);
                 return Ok(goal);
             }
-            catch (TeamLeagueNotFoundException ex)
-            {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
-            }
-            catch (MatchNotFoundException ex)
-            {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
-            }
-            catch (MatchEntryNotFoundException ex)
-            {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
-            }
-            catch (PlayerNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
                 return BadRequest(ex.Message);
@@ -469,11 +426,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 });
                 return Ok(goal);
             }
-            catch (GoalNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -501,22 +458,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 logger.LogInformation($"{methodName}: Returning goal {goal}");
                 return Ok(goal);
             }
-            catch (TeamLeagueNotFoundException ex)
-            {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
-            }
-            catch (MatchNotFoundException ex)
-            {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
-            }
-            catch (MatchEntryNotFoundException ex)
-            {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
-            }
-            catch (PlayerNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
                 return BadRequest(ex.Message);

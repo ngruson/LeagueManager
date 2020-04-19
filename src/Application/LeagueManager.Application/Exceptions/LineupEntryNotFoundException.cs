@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace LeagueManager.Application.Exceptions
 {
     [Serializable]
-    public class LineupEntryNotFoundException : Exception
+    public class LineupEntryNotFoundException : LeagueManagerException
     {
         public LineupEntryNotFoundException(Guid guid)
             : base($"No lineup entry found with id \"{guid}\".")
