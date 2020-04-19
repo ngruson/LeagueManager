@@ -2,17 +2,16 @@
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Goals;
 using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -52,6 +51,7 @@ namespace LeagueManager.Application.UnitTests
 
             var handler = new AddTeamLeagueMatchGoalCommandHandler(
                 mockContext.Object,
+                Mapper.MapperConfig(),
                 mockLogger.Object
             );
 
@@ -67,7 +67,7 @@ namespace LeagueManager.Application.UnitTests
             var result = await handler.Handle(command, CancellationToken.None);
 
             //Assert
-            result.Should().Be(Unit.Value);
+            result.Should().BeAssignableTo<GoalDto>();
             mockContext.Verify(mock => mock.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
         }
 
@@ -90,6 +90,7 @@ namespace LeagueManager.Application.UnitTests
 
             var handler = new AddTeamLeagueMatchGoalCommandHandler(
                 mockContext.Object,
+                Mapper.MapperConfig(),
                 mockLogger.Object
             );
 
@@ -127,6 +128,7 @@ namespace LeagueManager.Application.UnitTests
 
             var handler = new AddTeamLeagueMatchGoalCommandHandler(
                 mockContext.Object,
+                Mapper.MapperConfig(),
                 mockLogger.Object
             );
 
@@ -164,6 +166,7 @@ namespace LeagueManager.Application.UnitTests
 
             var handler = new AddTeamLeagueMatchGoalCommandHandler(
                 mockContext.Object,
+                Mapper.MapperConfig(),
                 mockLogger.Object
             );
 
@@ -201,6 +204,7 @@ namespace LeagueManager.Application.UnitTests
 
             var handler = new AddTeamLeagueMatchGoalCommandHandler(
                 mockContext.Object,
+                Mapper.MapperConfig(),
                 mockLogger.Object
             );
 

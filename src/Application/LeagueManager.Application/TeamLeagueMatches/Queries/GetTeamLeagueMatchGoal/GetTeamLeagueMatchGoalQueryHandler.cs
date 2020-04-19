@@ -5,6 +5,7 @@ using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagueMatches.Goals;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,14 +16,20 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
     {
         private readonly ILeagueManagerDbContext context;
         private readonly IConfigurationProvider config;
+        private readonly ILogger<GetTeamLeagueMatchGoalQueryHandler> logger;
 
         public GetTeamLeagueMatchGoalQueryHandler(
              ILeagueManagerDbContext context,
-            IConfigurationProvider config)
-                => (this.context, this.config) = (context, config);
+            IConfigurationProvider config,
+            ILogger<GetTeamLeagueMatchGoalQueryHandler> logger)
+                => (this.context, this.config, this.logger) = (context, config, logger);
 
         public async Task<GoalDto> Handle(GetTeamLeagueMatchGoalQuery request, CancellationToken cancellationToken)
         {
+            string methodName = nameof(Handle);
+            logger.LogInformation($"{methodName}: Request received");
+
+            logger.LogInformation($"{methodName}: Retrieving goal");
             var goal = await context.TeamLeagues
                 .Where(t => t.Name == request.LeagueName)
                 .SelectMany(l => l.Rounds.SelectMany(r =>
@@ -33,8 +40,13 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
                 .SingleOrDefaultAsync(l => l.Guid == request.GoalGuid);
 
             if (goal == null)
-                throw new GoalNotFoundException(request.GoalGuid);
+            {
+                var ex = new GoalNotFoundException(request.GoalGuid);
+                logger.LogError(ex, "Goal '{guid}' was not found", request.GoalGuid);
+                throw ex;
+            }
 
+            logger.LogInformation($"{methodName}: Returning goal");
             return goal;
         }
     }

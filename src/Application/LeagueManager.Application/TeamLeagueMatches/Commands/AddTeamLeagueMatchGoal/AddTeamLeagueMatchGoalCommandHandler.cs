@@ -1,5 +1,7 @@
-﻿using LeagueManager.Application.Exceptions;
+﻿using AutoMapper;
+using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
+using LeagueManager.Application.TeamLeagueMatches.Goals;
 using LeagueManager.Domain.Match;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,17 +13,19 @@ using System.Threading.Tasks;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchGoal
 {
-    public class AddTeamLeagueMatchGoalCommandHandler : IRequestHandler<AddTeamLeagueMatchGoalCommand, Unit>
+    public class AddTeamLeagueMatchGoalCommandHandler : IRequestHandler<AddTeamLeagueMatchGoalCommand, GoalDto>
     {
         private readonly ILeagueManagerDbContext context;
+        private readonly IConfigurationProvider config;
         private readonly ILogger<AddTeamLeagueMatchGoalCommandHandler> logger;
 
         public AddTeamLeagueMatchGoalCommandHandler(
             ILeagueManagerDbContext context,
+            IConfigurationProvider config,
             ILogger<AddTeamLeagueMatchGoalCommandHandler> logger
-        ) => (this.context, this.logger) = (context, logger);
+        ) => (this.context, this.config, this.logger) = (context, config, logger);
 
-        public async Task<Unit> Handle(AddTeamLeagueMatchGoalCommand request, CancellationToken cancellationToken)
+        public async Task<GoalDto> Handle(AddTeamLeagueMatchGoalCommand request, CancellationToken cancellationToken)
         {
             string methodName = nameof(Handle);
             logger.LogInformation($"{methodName}: Request received");
@@ -83,7 +87,7 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatc
             await context.SaveChangesAsync(cancellationToken);
             logger.LogInformation($"{methodName}: Changes are saved");
 
-            return Unit.Value;
+            return config.CreateMapper().Map<GoalDto>(goal);
         }
     }
 }

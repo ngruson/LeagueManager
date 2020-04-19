@@ -29,122 +29,132 @@ using System.Threading.Tasks;
 using Xunit;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Goals;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
 
 namespace LeagueManager.Infrastructure.UnitTests
 {
     public class CompetitionApiUnitTests
     {
-        [Fact]
-        public async void Given_PutIsOK_When_Configure_Then_ReturnTrue()
+        public class Configure
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Put(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_PutIsOK_When_Configure_Then_ReturnTrue()
             {
-                StatusCode = HttpStatusCode.OK
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var result = await sut.Configure(null, null);
+                //Act
+                var result = await sut.Configure(null, null);
 
-            //Assert
-            result.Should().BeTrue();
-        }
-
-        [Fact]
-        public async void Given_PutIsNotOK_When_Configure_Then_ReturnFalse()
-        {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Put(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+                //Assert
+                result.Should().BeTrue();
+            }
+            [Fact]
+            public async void Given_PutIsNotOK_When_Configure_Then_ReturnFalse()
             {
-                StatusCode = HttpStatusCode.NotFound
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var result = await sut.Configure(null, null);
+                //Act
+                var result = await sut.Configure(null, null);
 
-            //Assert
-            result.Should().BeFalse();
+                //Assert
+                result.Should().BeFalse();
+            }
         }
 
-        [Fact]
-        public async void Given_PostIsOK_When_CreateTeamLeague_Then_Ok()
+        public class CreateTeamLeague
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Post(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
+            [Fact]
+            public async void Given_PostIsOK_When_CreateTeamLeague_Then_Ok()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Post(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            //Act
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                //Act
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Assert
-            var command = new CreateTeamLeagueCommand();
-            await sut.CreateTeamLeague(command);
+                //Assert
+                var command = new CreateTeamLeagueCommand();
+                await sut.CreateTeamLeague(command);
+            }
+            [Fact]
+            public void Given_PostIsNotOK_When_CreateTeamLeague_Then_CreateTeamLeagueExceptionIsThrown()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Post(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NotFound));
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+                //Act
+
+                var command = new CreateTeamLeagueCommand();
+                Func<Task> func = async () => await sut.CreateTeamLeague(command);
+
+                //Assert
+                func.Should().Throw<CreateTeamLeagueException>();
+            }
         }
 
-        [Fact]
-        public void Given_PostIsNotOK_When_CreateTeamLeague_Then_CreateTeamLeagueExceptionIsThrown()
+        public class GetCompetitions
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Post(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NotFound));
-
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
-
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-            //Act
-
-            var command = new CreateTeamLeagueCommand();
-            Func<Task> func = async () => await sut.CreateTeamLeague(command);
-
-            //Assert
-            func.Should().Throw<CreateTeamLeagueException>();
-        }
-
-        [Fact]
-        public async void Given_GetIsOK_When_GetCompetitions_Then_ReturnList()
-        {
-            //Arrange
-            var list = new List<CompetitionDto>
+            [Fact]
+            public async void Given_GetIsOK_When_GetCompetitions_Then_ReturnList()
+            {
+                //Arrange
+                var list = new List<CompetitionDto>
             {
                 new CompetitionDto
                 {
@@ -158,132 +168,136 @@ namespace LeagueManager.Infrastructure.UnitTests
                 }
             };
 
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(list)
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetCompetitionsQuery();
+                var resultList = await sut.GetCompetitions(query);
+
+                //Assert
+                resultList.ToList().Count().Should().Be(2);
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetCompetitions_Then_ReturnEmptyList()
             {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(list)
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var query = new GetCompetitionsQuery();
-            var resultList = await sut.GetCompetitions(query);
+                //Act
+                var query = new GetCompetitionsQuery();
+                var resultList = await sut.GetCompetitions(query);
 
-            //Assert
-            resultList.ToList().Count().Should().Be(2);
+                //Assert
+                resultList.ToList().Count().Should().Be(0);
+            }
         }
 
-        [Fact]
-        public async void Given_GetIsNotOK_When_GetCompetitions_Then_ReturnEmptyList()
+        public class GetCompetition
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_GetIsOK_When_GetCompetition_Then_ReturnCompetition()
             {
-                StatusCode = HttpStatusCode.NotFound
-            });
+                //Arrange
+                var dto = new CompetitionDto
+                {
+                    Country = "England",
+                    Name = "Premier League"
+                };
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(dto)
+                });
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            //Act
-            var query = new GetCompetitionsQuery();
-            var resultList = await sut.GetCompetitions(query);
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Assert
-            resultList.ToList().Count().Should().Be(0);
+                //Act
+                var query = new GetCompetitionQuery();
+                var result = await sut.GetCompetition(query);
+
+                //Assert
+                result.Should().NotBeNull();
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetCompetition_Then_ReturnEmptyCompetition()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetCompetitionQuery();
+                var result = await sut.GetCompetition(query);
+
+                //Assert
+                result.Should().NotBeNull();
+                result.Name.Should().BeNull();
+            }
         }
-
-        [Fact]
-        public async void Given_GetIsOK_When_GetCompetition_Then_ReturnCompetition()
+        
+        public class GetPlayersForTeamCompetitor
         {
-            //Arrange
-            var dto = new CompetitionDto
+            [Fact]
+            public async void Given_GetIsOK_When_GetPlayersForTeamCompetitor_Then_ReturnList()
             {
-                Country = "England",
-                Name = "Premier League"
-            };
-
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(dto)
-            });
-
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
-
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-
-            //Act
-            var query = new GetCompetitionQuery();
-            var result = await sut.GetCompetition(query);
-
-            //Assert
-            result.Should().NotBeNull();
-        }
-
-        [Fact]
-        public async void Given_GetIsNotOK_When_GetCompetition_Then_ReturnEmptyCompetition()
-        {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.NotFound
-            });
-
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
-
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-
-            //Act
-            var query = new GetCompetitionQuery();
-            var result = await sut.GetCompetition(query);
-
-            //Assert
-            result.Should().NotBeNull();
-            result.Name.Should().BeNull();
-        }
-
-        [Fact]
-        public async void Given_GetIsOK_When_GetPlayersForTeamCompetitor_Then_ReturnList()
-        {
-            //Arrange
-            var list = new List<TeamCompetitorPlayerDto>
+                //Arrange
+                var list = new List<TeamCompetitorPlayerDto>
             {
                 new TeamCompetitorPlayerDto
                 {
@@ -305,544 +319,745 @@ namespace LeagueManager.Infrastructure.UnitTests
                 }
             };
 
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(list)
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetPlayersForTeamCompetitorQuery();
+                var result = await sut.GetPlayersForTeamCompetitor(query);
+
+                //Assert
+                result.Should().NotBeNull();
+                result.ToList().Count().Should().Be(2);
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetPlayersForTeamCompetitor_Then_ReturnNull()
             {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(list)
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var query = new GetPlayersForTeamCompetitorQuery();
-            var result = await sut.GetPlayersForTeamCompetitor(query);
+                //Act
+                var query = new GetPlayersForTeamCompetitorQuery();
+                var result = await sut.GetPlayersForTeamCompetitor(query);
 
-            //Assert
-            result.Should().NotBeNull();
-            result.ToList().Count().Should().Be(2);
+                //Assert
+                result.Should().BeNull();
+            }
         }
 
-        [Fact]
-        public async void Given_GetIsNotOK_When_GetPlayersForTeamCompetitor_Then_ReturnNull()
+        public class GetTeamLeagueTable
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_GetIsOK_When_GetTeamLeagueTable_Then_ReturnTeamLeagueTableDto()
             {
-                StatusCode = HttpStatusCode.NotFound
-            });
+                //Arrange
+                var dto = new TeamLeagueTableDto();
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(dto)
+                });
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            //Act
-            var query = new GetPlayersForTeamCompetitorQuery();
-            var result = await sut.GetPlayersForTeamCompetitor(query);
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Assert
-            result.Should().BeNull();
+                //Act
+                var query = new GetTeamLeagueTableQuery();
+                var result = await sut.GetTeamLeagueTable(query);
+
+                //Assert
+                result.Should().NotBeNull();
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetTeamLeagueTable_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueTableQuery();
+                var result = await sut.GetTeamLeagueTable(query);
+
+                //Assert
+                result.Should().BeNull();
+            }
         }
 
-        [Fact]
-        public async void Given_GetIsOK_When_GetTeamLeagueTable_Then_ReturnTeamLeagueTableDto()
+        public class GetTeamLeagueRounds
         {
-            //Arrange
-            var dto = new TeamLeagueTableDto();
-
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_GetIsOK_When_GetTeamLeagueRounds_Then_ReturnList()
             {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(dto)
-            });
-
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
-
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-
-            //Act
-            var query = new GetTeamLeagueTableQuery();
-            var result = await sut.GetTeamLeagueTable(query);
-
-            //Assert
-            result.Should().NotBeNull();
-        }
-
-        [Fact]
-        public async void Given_GetIsNotOK_When_GetTeamLeagueTable_Then_ReturnNull()
-        {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.NotFound
-            });
-
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
-
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-
-            //Act
-            var query = new GetTeamLeagueTableQuery();
-            var result = await sut.GetTeamLeagueTable(query);
-
-            //Assert
-            result.Should().BeNull();
-        }
-
-        [Fact]
-        public async void Given_GetIsOK_When_GetTeamLeagueRounds_Then_ReturnList()
-        {
-            //Arrange
-            var list = new List<TeamLeagueRoundDto>
+                //Arrange
+                var list = new List<TeamLeagueRoundDto>
             {
                 new TeamLeagueRoundDto(),
                 new TeamLeagueRoundDto(),
                 new TeamLeagueRoundDto(),
             };
 
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(list)
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueRoundsQuery();
+                var result = await sut.GetTeamLeagueRounds(query);
+
+                //Assert
+                result.Should().NotBeNull();
+                result.ToList().Count().Should().Be(3);
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetTeamLeagueRounds_Then_ReturnNull()
             {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(list)
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var query = new GetTeamLeagueRoundsQuery();
-            var result = await sut.GetTeamLeagueRounds(query);
+                //Act
+                var query = new GetTeamLeagueRoundsQuery();
+                var result = await sut.GetTeamLeagueRounds(query);
 
-            //Assert
-            result.Should().NotBeNull();
-            result.ToList().Count().Should().Be(3);
+                //Assert
+                result.Should().BeNull();
+            }
         }
 
-        [Fact]
-        public async void Given_GetIsNotOK_When_GetTeamLeagueRounds_Then_ReturnNull()
+        public class GetTeamLeagueMatch
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_GetIsOK_When_GetTeamLeagueMatch_Then_ReturnTeamLeagueMatchDto()
             {
-                StatusCode = HttpStatusCode.NotFound
-            });
+                //Arrange
+                var dto = new TeamMatchDto();
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(dto)
+                });
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            //Act
-            var query = new GetTeamLeagueRoundsQuery();
-            var result = await sut.GetTeamLeagueRounds(query);
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Assert
-            result.Should().BeNull();
+                //Act
+                var query = new GetTeamLeagueMatchQuery();
+                var result = await sut.GetTeamLeagueMatch(query);
+
+                //Assert
+                result.Should().NotBeNull();
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetTeamLeagueMatch_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueMatchQuery();
+                var result = await sut.GetTeamLeagueMatch(query);
+
+                //Assert
+                result.Should().BeNull();
+            }
         }
 
-        [Fact]
-        public async void Given_GetIsOK_When_GetTeamLeagueMatch_Then_ReturnTeamLeagueMatchDto()
+        public class GetTeamLeagueMatchDetails
         {
-            //Arrange
-            var dto = new TeamMatchDto();
-
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_GetIsOK_When_GetTeamLeagueMatchDetails_Then_ReturnTeamMatchDto()
             {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(dto)
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new TeamMatchDto())
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var query = new GetTeamLeagueMatchQuery();
-            var result = await sut.GetTeamLeagueMatch(query);
+                //Act
+                var query = new GetTeamLeagueMatchDetailsQuery();
+                var result = await sut.GetTeamLeagueMatchDetails(query);
 
-            //Assert
-            result.Should().NotBeNull();
+                //Assert
+                result.Should().NotBeNull();
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetTeamLeagueMatchDetails_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueMatchDetailsQuery();
+                var result = await sut.GetTeamLeagueMatchDetails(query);
+
+                //Assert
+                result.Should().BeNull();
+            }
         }
         
-        [Fact]
-        public async void Given_GetIsNotOK_When_GetTeamLeagueMatch_Then_ReturnNull()
+        public class UpdateTeamLeagueMatch
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_PutIsOK_When_UpdateTeamLeagueMatch_Then_ReturnTeamMatchDto()
             {
-                StatusCode = HttpStatusCode.NotFound
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new TeamMatchDto())
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var query = new GetTeamLeagueMatchQuery();
-            var result = await sut.GetTeamLeagueMatch(query);
+                //Act
+                var command = new UpdateTeamLeagueMatchCommand();
+                var result = await sut.UpdateTeamLeagueMatch(command);
 
-            //Assert
-            result.Should().BeNull();
+                //Assert
+                result.Should().NotBeNull();
+            }
+            [Fact]
+            public async void Given_PutIsNotOK_When_UpdateTeamLeagueMatch_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var command = new UpdateTeamLeagueMatchCommand();
+                var result = await sut.UpdateTeamLeagueMatch(command);
+
+                //Assert
+                result.Should().BeNull();
+            }
         }
 
-        [Fact]
-        public async void Given_GetIsOK_When_GetTeamLeagueMatchDetails_Then_ReturnTeamMatchDto()
+        public class UpdateTeamLeagueMatchScore
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_PutIsOK_When_UpdateTeamLeagueMatchScore_Then_ReturnTeamMatchDto()
             {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(new TeamMatchDto())
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new TeamMatchDto())
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-            
-            //Act
-            var query = new GetTeamLeagueMatchDetailsQuery();
-            var result = await sut.GetTeamLeagueMatchDetails(query);
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Assert
-            result.Should().NotBeNull();
+                //Act
+                var command = new UpdateTeamLeagueMatchScoreCommand();
+                var result = await sut.UpdateTeamLeagueMatchScore(command);
+
+                //Assert
+                result.Should().NotBeNull();
+            }
+            [Fact]
+            public async void Given_PutIsNotOK_When_UpdateTeamLeagueMatchScore_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var command = new UpdateTeamLeagueMatchScoreCommand();
+                var result = await sut.UpdateTeamLeagueMatchScore(command);
+
+                //Assert
+                result.Should().BeNull();
+            }
         }
 
-        [Fact]
-        public async void Given_GetIsNotOK_When_GetTeamLeagueMatchDetails_Then_ReturnNull()
+        public class GetTeamLeagueMatchLineupEntry
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_GetIsOK_When_GetTeamLeagueMatchLineupEntry_Then_ReturnLineupEntryDto()
             {
-                StatusCode = HttpStatusCode.NotFound
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new Lineup.LineupEntryDto())
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var query = new GetTeamLeagueMatchDetailsQuery();
-            var result = await sut.GetTeamLeagueMatchDetails(query);
+                //Act
+                var query = new GetTeamLeagueMatchLineupEntryQuery();
+                var result = await sut.GetTeamLeagueMatchLineupEntry(query);
 
-            //Assert
-            result.Should().BeNull();
+                //Assert
+                result.Should().NotBeNull();
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetTeamLeagueMatchLineupEntry_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueMatchLineupEntryQuery();
+                var result = await sut.GetTeamLeagueMatchLineupEntry(query);
+
+                //Assert
+                result.Should().BeNull();
+            }
+        }
+        
+        public class UpdateTeamLeagueMatchLineupEntry
+        {
+            [Fact]
+            public async void Given_PutIsOK_When_UpdateTeamLeagueMatchLineupEntry_Then_ReturnLineupEntryDto()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new Lineup.LineupEntryDto())
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var command = new UpdateTeamLeagueMatchLineupEntryCommand();
+                var result = await sut.UpdateTeamLeagueMatchLineupEntry(command);
+
+                //Assert
+                result.Should().NotBeNull();
+            }
+            [Fact]
+            public async void Given_PutIsNotOK_When_UpdateTeamLeagueMatchLineupEntry_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var command = new UpdateTeamLeagueMatchLineupEntryCommand();
+                var result = await sut.UpdateTeamLeagueMatchLineupEntry(command);
+
+                //Assert
+                result.Should().BeNull();
+            }
         }
 
-        [Fact]
-        public async void Given_PutIsOK_When_UpdateTeamLeagueMatch_Then_ReturnTeamMatchDto()
+        public class GetTeamLeagueMatchEvents
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Put(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>() 
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_GetIsOK_When_GetTeamLeagueMatchEvents_Then_ReturnMatchEvents()
             {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(new TeamMatchDto())
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new MatchEventsDto())
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var command = new UpdateTeamLeagueMatchCommand();
-            var result = await sut.UpdateTeamLeagueMatch(command);
+                //Act
+                var query = new GetTeamLeagueMatchEventsQuery();
+                var result = await sut.GetTeamLeagueMatchEvents(query);
 
-            //Assert
-            result.Should().NotBeNull();
+                //Assert
+                result.Should().NotBeNull();
+                result.Should().BeAssignableTo<MatchEventsDto>();
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetTeamLeagueMatchEvents_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueMatchEventsQuery();
+                var result = await sut.GetTeamLeagueMatchEvents(query);
+
+                //Assert
+                result.Should().BeNull();
+            }
         }
 
-        [Fact]
-        public async void Given_PutIsNotOK_When_UpdateTeamLeagueMatch_Then_ReturnNull()
+        public class GetTeamLeagueMatchGoal
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Put(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_GetIsOK_When_GetTeamLeagueMatchGoal_Then_ReturnGoal()
             {
-                StatusCode = HttpStatusCode.NotFound
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new MatchEventsDto())
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var command = new UpdateTeamLeagueMatchCommand();
-            var result = await sut.UpdateTeamLeagueMatch(command);
+                //Act
+                var query = new GetTeamLeagueMatchGoalQuery();
+                var result = await sut.GetTeamLeagueMatchGoal(query);
 
-            //Assert
-            result.Should().BeNull();
+                //Assert
+                result.Should().NotBeNull();
+                result.Should().BeAssignableTo<GoalDto>();
+            }
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetTeamLeagueMatchGoal_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueMatchGoalQuery();
+                var result = await sut.GetTeamLeagueMatchGoal(query);
+
+                //Assert
+                result.Should().BeNull();
+            }
         }
 
-        [Fact]
-        public async void Given_PutIsOK_When_UpdateTeamLeagueMatchScore_Then_ReturnTeamMatchDto()
+        public class UpdateTeamLeagueMatchGoal
         {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Put(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+            [Fact]
+            public async void Given_PutIsOK_When_UpdateTeamLeagueMatchGoal_Then_ReturnGoalDto()
             {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(new TeamMatchDto())
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new GoalDto())
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var command = new UpdateTeamLeagueMatchScoreCommand();
-            var result = await sut.UpdateTeamLeagueMatchScore(command);
+                //Act
+                var command = new UpdateTeamLeagueMatchGoalCommand();
+                var result = await sut.UpdateTeamLeagueMatchGoal(command);
 
-            //Assert
-            result.Should().NotBeNull();
-        }
-
-        [Fact]
-        public async void Given_PutIsNotOK_When_UpdateTeamLeagueMatchScore_Then_ReturnNull()
-        {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Put(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
+                //Assert
+                result.Should().NotBeNull();
+            }
+            [Fact]
+            public async void Given_PutIsNotOK_When_UpdateTeamLeagueMatchGoal_Then_ReturnNull()
             {
-                StatusCode = HttpStatusCode.NotFound
-            });
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
 
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
 
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
 
-            //Act
-            var command = new UpdateTeamLeagueMatchScoreCommand();
-            var result = await sut.UpdateTeamLeagueMatchScore(command);
+                //Act
+                var command = new UpdateTeamLeagueMatchGoalCommand();
+                var result = await sut.UpdateTeamLeagueMatchGoal(command);
 
-            //Assert
-            result.Should().BeNull();
-        }
-
-        [Fact]
-        public async void Given_GetIsOK_When_GetTeamLeagueMatchLineupEntry_Then_ReturnLineupEntryDto()
-        {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(new Lineup.LineupEntryDto())
-            });
-
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
-
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-
-            //Act
-            var query = new GetTeamLeagueMatchLineupEntryQuery();
-            var result = await sut.GetTeamLeagueMatchLineupEntry(query);
-
-            //Assert
-            result.Should().NotBeNull();
-        }
-
-        [Fact]
-        public async void Given_GetIsNotOK_When_GetTeamLeagueMatchLineupEntry_Then_ReturnNull()
-        {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Get(
-                It.IsAny<string>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.NotFound
-            });
-
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
-
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-
-            //Act
-            var query = new GetTeamLeagueMatchLineupEntryQuery();
-            var result = await sut.GetTeamLeagueMatchLineupEntry(query);
-
-            //Assert
-            result.Should().BeNull();
-        }
-
-        [Fact]
-        public async void Given_PutIsOK_When_UpdateTeamLeagueMatchLineupEntry_Then_ReturnLineupEntryDto()
-        {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Put(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.OK,
-                Content = new JsonContent(new Lineup.LineupEntryDto())
-            });
-
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
-
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-
-            //Act
-            var command = new UpdateTeamLeagueMatchLineupEntryCommand();
-            var result = await sut.UpdateTeamLeagueMatchLineupEntry(command);
-
-            //Assert
-            result.Should().NotBeNull();
-        }
-
-        [Fact]
-        public async void Given_PutIsNotOK_When_UpdateTeamLeagueMatchLineupEntry_Then_ReturnNull()
-        {
-            //Arrange
-            var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
-            mockHttpRequestFactory.Setup(x => x.Put(
-                It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
-            ))
-            .ReturnsAsync(new HttpResponseMessage
-            {
-                StatusCode = HttpStatusCode.NotFound
-            });
-
-            var mockOptions = new Mock<IOptions<ApiSettings>>();
-            mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
-
-            var sut = new CompetitionApi(
-                mockHttpRequestFactory.Object,
-                mockOptions.Object
-            );
-
-            //Act
-            var command = new UpdateTeamLeagueMatchLineupEntryCommand();
-            var result = await sut.UpdateTeamLeagueMatchLineupEntry(command);
-
-            //Assert
-            result.Should().BeNull();
+                //Assert
+                result.Should().BeNull();
+            }
         }
     }
 }

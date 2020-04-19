@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using LeagueManager.Application.TeamLeagueMatches.Goals;
+using MediatR;
 using System;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchGoal
 {
-    public class AddTeamLeagueMatchGoalCommand : IRequest<Unit>
+    public class AddTeamLeagueMatchGoalCommand : IRequest<GoalDto>
     {
         public string LeagueName { get; set; }
         public Guid MatchGuid { get; set; }
