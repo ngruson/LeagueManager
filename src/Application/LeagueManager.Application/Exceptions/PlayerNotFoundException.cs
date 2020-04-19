@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace LeagueManager.Application.Exceptions
 {
     [Serializable]
-    public class PlayerNotFoundException : Exception
+    public class PlayerNotFoundException : LeagueManagerException
     {
         public PlayerNotFoundException(string name) : base($"Player \"{name}\" not found.")
         {

@@ -22,6 +22,11 @@ using LeagueManager.Application.TeamCompetitor.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
+using LeagueManager.Application.TeamLeagueMatches.Goals;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchGoal;
 
 namespace LeagueManager.Infrastructure.Api
 {
@@ -153,13 +158,46 @@ namespace LeagueManager.Infrastructure.Api
                 PlayerNumber = command.PlayerNumber,
                 PlayerName = command.PlayerName
             };
-        var response = await httpRequestFactory.Put(
+            var response = await httpRequestFactory.Put(
                 $"{teamLeagueApiUrl}/{command.LeagueName}/match/{command.MatchGuid}/{command.TeamName}/lineup/{command.LineupEntryGuid}",
                 dto
             );
 
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<Application.TeamLeagueMatches.Lineup.Dto.LineupEntryDto>();
+            return null;
+        }
+
+        public async Task<MatchEventsDto> GetTeamLeagueMatchEvents(GetTeamLeagueMatchEventsQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/match/{query.MatchGuid}/{query.TeamName}/events");
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<MatchEventsDto>();
+            return null;
+        }
+
+        public async Task<GoalDto> GetTeamLeagueMatchGoal(GetTeamLeagueMatchGoalQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/match/{query.MatchGuid}/goal/{query.GoalGuid}");
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<GoalDto>();
+            return null;
+        }
+
+        public async Task<GoalDto> UpdateTeamLeagueMatchGoal(UpdateTeamLeagueMatchGoalCommand command)
+        {
+            var dto = new AddTeamLeagueMatchGoalDto
+            {
+                Minute = command.Minute,
+                PlayerName = command.PlayerName
+            };
+            var response = await httpRequestFactory.Put(
+                $"{teamLeagueApiUrl}/{command.LeagueName}/match/{command.MatchGuid}/team/{command.TeamName}/goal/{command.GoalGuid}",
+                dto
+            );
+
+            if (response.IsSuccessStatusCode)
+                return response.ContentAsType<GoalDto>();
             return null;
         }
     }

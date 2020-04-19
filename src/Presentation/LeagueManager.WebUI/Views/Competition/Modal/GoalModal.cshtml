@@ -1,0 +1,32 @@
+﻿<div class="modal fade" id="goalModal" tabindex="-1" role="dialog" aria-labelledby="goalModalTitle">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="goalModalTitle">Add Scored Goal</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" />
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col">
+                            <label for="goal-minute" class="col-form-label">Minute :</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <input type="text" class="form-control" id="goal-minute">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="player" class="col-form-label">Player :</label>
+                    <select id="player" class="form-control js-select-player"></select>
+                </div>
+            </div>
+            <div class="modal-footer" id="goal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary js-save-goal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>

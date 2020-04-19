@@ -297,3 +297,41 @@ function getPlayers(dropdowns, url) {
         });
     });
 }
+
+async function addScoredGoal(minute, player, url) {
+    var req = {
+        minute: minute,
+        playerName: player
+    };
+    var result = false;
+
+    await $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: url,
+        dataType: "json",
+        data: JSON.stringify(req),
+        success: function () {
+            result = true;
+        },
+        error: function (jqXHR) {
+            result = false;
+        }
+    });
+
+    return result;
+}
+
+async function updateTeamLeagueMatchGoal(url, minute, playerName) {
+    var req = {
+        minute: minute,
+        playerName: playerName
+    };
+
+    var result = await $.ajax({
+        type: "PUT",
+        url: url,
+        data: req
+    });
+    return result;
+}

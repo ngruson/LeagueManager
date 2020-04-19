@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace LeagueManager.Application.Exceptions
 {
     [Serializable]
-    public class CompetitionAlreadyExistsException : Exception
+    public class CompetitionAlreadyExistsException : LeagueManagerException
     {
         public CompetitionAlreadyExistsException(string name)
             : base($"Competition \"{name}\" already exists.")

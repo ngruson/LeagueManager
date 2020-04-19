@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace LeagueManager.Application.Exceptions
 {
-    public class CountryNotFoundException : Exception
+    public class CountryNotFoundException : LeagueManagerException
     {
         public CountryNotFoundException(string name) : base($"Country \"{name}\" not found.")
         {

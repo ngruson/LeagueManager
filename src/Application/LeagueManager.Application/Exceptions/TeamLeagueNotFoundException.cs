@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace LeagueManager.Application.Exceptions
 {
     [Serializable]
-    public class TeamLeagueNotFoundException : Exception
+    public class TeamLeagueNotFoundException : LeagueManagerException
     {
         public TeamLeagueNotFoundException(string name)
             : base($"Team league \"{name}\" not found.")

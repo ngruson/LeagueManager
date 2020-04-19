@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace LeagueManager.Application.Exceptions
 {
     [Serializable]
-    public class MatchNotFoundException : Exception
+    public class MatchNotFoundException : LeagueManagerException
     {
         public MatchNotFoundException(Guid guid)
             : base($"Match \"{guid}\" not found.")

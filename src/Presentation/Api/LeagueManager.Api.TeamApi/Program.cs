@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace LeagueManager.Api.TeamApi
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateWebHostBuilder(args).Build();
 
@@ -24,7 +25,7 @@ namespace LeagueManager.Api.TeamApi
                     var concreteContext = (LeagueManagerDbContext)context;
                     concreteContext.Database.Migrate();
                     var initializer = scope.ServiceProvider.GetService<DbInitializer>();
-                    initializer.Initialize(concreteContext);
+                    await initializer.Initialize(concreteContext);
                 }
                 catch (Exception ex)
                 {

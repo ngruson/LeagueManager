@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace LeagueManager.Application.Exceptions
 {
     [Serializable]
-    public class MatchEntryNotFoundException : Exception
+    public class MatchEntryNotFoundException : LeagueManagerException
     {
         public MatchEntryNotFoundException(string team)
             : base($"No match entry found for team \"{team}\".")

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace LeagueManager.Application.Exceptions
 {
     [Serializable]
-    public class TeamAlreadyExistsException : Exception
+    public class TeamAlreadyExistsException : LeagueManagerException
     {
         public TeamAlreadyExistsException(string name)
             : base($"Team \"{name}\" already exists.")

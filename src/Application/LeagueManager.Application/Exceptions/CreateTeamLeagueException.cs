@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace LeagueManager.Application.Exceptions
 {
-    public class CreateTeamLeagueException : Exception
+    public class CreateTeamLeagueException : LeagueManagerException
     {
         public CreateTeamLeagueException(string name)
             : base($"Team league \"{name}\" could not be created.")

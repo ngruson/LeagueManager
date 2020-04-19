@@ -13,6 +13,7 @@ namespace LeagueManager.Domain.Match
         public HomeAway HomeAway { get; set; }
         public IntegerScore Score { get; set; }
         public IEnumerable<TeamMatchEntryLineupEntry> Lineup { get; set; } = new List<TeamMatchEntryLineupEntry>();
+        public IEnumerable<TeamMatchEntryGoal> Goals { get; set; } = new List<TeamMatchEntryGoal>();
 
         public void CreateLineup(int amountOfPlayers)
         {
