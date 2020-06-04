@@ -1,13 +1,10 @@
-﻿using AutoMapper;
-using FluentAssertions;
-using LeagueManager.Application.AutoMapper;
+﻿using FluentAssertions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
 using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.Match;
-using LeagueManager.Domain.Round;
 using LeagueManager.Domain.Score;
 using LeagueManager.Domain.Sports;
 using MockQueryable.Moq;
@@ -28,27 +25,6 @@ namespace LeagueManager.Application.UnitTests
             var mockContext = new Mock<ILeagueManagerDbContext>();
             mockContext.Setup(c => c.TeamLeagues).Returns(leaguesDbSet.Object);
             return mockContext;
-        }
-
-        private List<TeamLeagueMatch> CreateMatches()
-        {
-            return new List<TeamLeagueMatch>
-            {
-                new TeamLeagueMatch
-                {
-                    MatchEntries = new List<TeamMatchEntry>
-                    {
-                        new TeamMatchEntry
-                        {
-                            HomeAway = HomeAway.Home
-                        },
-                        new TeamMatchEntry
-                        {
-                            HomeAway = HomeAway.Away
-                        }
-                    }
-                }
-            };
         }
 
         [Fact]
@@ -77,10 +53,10 @@ namespace LeagueManager.Application.UnitTests
                     foreach (var match in round.Matches)
                     {
                         var score = scores[counter];
-                        match.Home.Team = score.Item1.Item1;
-                        match.Home.Score = new IntegerScore { Value = score.Item1.Item2 };
-                        match.Away.Team = score.Item2.Item1;
-                        match.Away.Score = new IntegerScore { Value = score.Item2.Item2 };
+                        match.MatchEntries.ToList()[0].Team = score.Item1.Item1;
+                        match.MatchEntries.ToList()[0].Score = new IntegerScore { Value = score.Item1.Item2 };
+                        match.MatchEntries.ToList()[1].Team = score.Item2.Item1;
+                        match.MatchEntries.ToList()[1].Score = new IntegerScore { Value = score.Item2.Item2 };
                         counter++;
                         if (counter == scores.Count)
                             return;
@@ -133,17 +109,17 @@ namespace LeagueManager.Application.UnitTests
 
             //Assert
             result.Should().NotBeNull();
-            result.Items.Should().NotBeNull();
-            result.Items.Count.Should().Be(4);
-            result.Items[0].Position.Should().Be(1);
-            result.Items[0].GamesPlayed.Should().Be(2);
-            result.Items[0].GamesWon.Should().Be(2);
-            result.Items[0].GamesDrawn.Should().Be(0);
-            result.Items[0].GamesLost.Should().Be(0);
-            result.Items[0].GoalsFor.Should().Be(3);
-            result.Items[0].GoalsAgainst.Should().Be(1);
-            result.Items[0].GoalDifference.Should().Be(2);
-            result.Items[0].Points.Should().Be(6);
+            result.Table.Items.Should().NotBeNull();
+            result.Table.Items.Count.Should().Be(4);
+            result.Table.Items[0].Position.Should().Be(1);
+            result.Table.Items[0].GamesPlayed.Should().Be(2);
+            result.Table.Items[0].GamesWon.Should().Be(2);
+            result.Table.Items[0].GamesDrawn.Should().Be(0);
+            result.Table.Items[0].GamesLost.Should().Be(0);
+            result.Table.Items[0].GoalsFor.Should().Be(3);
+            result.Table.Items[0].GoalsAgainst.Should().Be(1);
+            result.Table.Items[0].GoalDifference.Should().Be(2);
+            result.Table.Items[0].Points.Should().Be(6);
         }
     }
 }

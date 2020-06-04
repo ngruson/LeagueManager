@@ -1,5 +1,4 @@
-﻿using LeagueManager.Application.TeamLeagueMatches.Goals;
-using MediatR;
+﻿using MediatR;
 using System;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal

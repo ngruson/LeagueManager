@@ -21,7 +21,7 @@ namespace LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompe
 
         public async Task<Unit> Handle(AddPlayerToTeamCompetitorCommand request, CancellationToken cancellationToken)
         {
-            var player = await context.Players.SingleOrDefaultAsync(p => p.FullName == request.PlayerName);
+            var player = context.Players.AsEnumerable().SingleOrDefault(p => p.FullName == request.PlayerName);
             if (player == null)
                 throw new PlayerNotFoundException(request.PlayerName);
 

@@ -75,7 +75,7 @@ namespace LeagueManager.Application.UnitTests
 
             //Assert
             goal.Minute.Should().Be("1");
-            goal.Player.FullName.Should().Be(player.FullName);
+            goal.PlayerFullName.Should().Be(player.FullName);
         }
 
         [Fact]

@@ -1,17 +1,12 @@
-﻿using AutoMapper;
-using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagues.Commands;
-using LeagueManager.WebUI.ViewModels;
+﻿using LeagueManager.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using LeagueManager.Infrastructure.Api;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
 using System.Linq;
-using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using System;
 using System.Net;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
@@ -19,12 +14,16 @@ using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
-using LeagueManager.Application.TeamLeagueMatches.Dto;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagues.Commands.CreateTeamLeague;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueCompetitors;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupEntry;
+using LeagueManager.WebUI.ViewModels;
+using System.IO;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeague;
 
 namespace LeagueManager.WebUI.Controllers
 {
@@ -35,22 +34,20 @@ namespace LeagueManager.WebUI.Controllers
         private readonly ICountryApi countryApi;
         private readonly ITeamApi teamApi;
         private readonly ICompetitionApi competitionApi;
-        private readonly IMapper mapper;
 
         public CompetitionController(
             IOptions<ApiSettings> apiSettings,
             ISportApi sportApi,
             ICountryApi countryApi,
             ITeamApi teamApi,
-            ICompetitionApi competitionApi,
-            IMapper mapper)
+            ICompetitionApi competitionApi
+        )
         {
             this.apiSettings = apiSettings.Value;
             this.sportApi = sportApi;
             this.countryApi = countryApi;
             this.teamApi = teamApi;
             this.competitionApi = competitionApi;
-            this.mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -58,60 +55,48 @@ namespace LeagueManager.WebUI.Controllers
             var competitions = await competitionApi.GetCompetitions(
                 new GetCompetitionsQuery()
             );
-            var viewModel = mapper.Map<IEnumerable<CompetitionViewModel>>(competitions);
 
-            return View(viewModel);
+            return View(competitions);
         }
 
+        [HttpGet("CreateTeamLeague")]
         public async Task<IActionResult> CreateTeamLeague()
         {
             var viewModel = new CreateTeamLeagueViewModel
             {
                 AllTeams = await teamApi.GetTeams(),
-                SelectedTeams = new List<Application.Teams.Queries.GetTeams.TeamDto>(),
-                TeamApiUrl = apiSettings.TeamApiUrl,
-                CountryApiUrl = apiSettings.CountryApiUrl,
                 TeamSports = await sportApi.GetTeamSports(),
                 Countries = await countryApi.GetCountries()
             };
 
+            ViewData["TeamApiUrl"] = apiSettings.TeamApiUrl;
+            ViewData["CountryApiUrl"] = apiSettings.CountryApiUrl;
+
             return View(viewModel);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateTeamLeague(CreateTeamLeagueViewModel model)
+        [HttpPost("CreateTeamLeague")]
+        public async Task<IActionResult> CreateTeamLeague(CreateTeamLeagueViewModel vm)
         {
-            var command = mapper.Map<CreateTeamLeagueCommand>(model);
-            await competitionApi.CreateTeamLeague(command);
+            using (var memoryStream = new MemoryStream())
+            {
+                vm.LogoFormFile.CopyTo(memoryStream);
+                vm.Logo = memoryStream.ToArray();
+            }
+
+            await competitionApi.CreateTeamLeague(vm);
             return RedirectToAction("Index");
         }
 
-        [Route("{controller}/{leagueName}", Name = "ViewTeamLeague")]
+        //[Route("[controller]/{leagueName}", Name = "ViewTeamLeague")]
+        [Route("[controller]/{leagueName}")]
         public async Task<IActionResult> ViewTeamLeague(string leagueName)
         {
-            var table = await competitionApi.GetTeamLeagueTable(
-                new GetTeamLeagueTableQuery
-                {
-                    LeagueName = leagueName
-                });
-            var rounds = await competitionApi.GetTeamLeagueRounds(
-                new GetTeamLeagueRoundsQuery
-                {
-                    LeagueName = leagueName
-                });
-
-            var viewModel = new ViewTeamLeagueViewModel
-            {
-                Name = leagueName,
-                Table = mapper.Map<TeamLeagueTableViewModel>(table),
-                Rounds = mapper.Map<IEnumerable<TeamLeagueRoundViewModel>>(rounds),
-            };
-
-            viewModel.SelectedRound = viewModel.Rounds.ToList()[0].Name;
-            return View(viewModel);
+            var vm = await competitionApi.GetTeamLeague(leagueName);
+            return View(vm);
         }
 
-        [Route("{controller}/{leagueName}/viewTeamLeagueTable")]
+        [Route("[controller]/{leagueName}/viewTeamLeagueTable")]
         public async Task<IActionResult> ViewTeamLeagueTable(string leagueName)
         {
             var table = await competitionApi.GetTeamLeagueTable(
@@ -121,30 +106,22 @@ namespace LeagueManager.WebUI.Controllers
                 }
             );
 
-            var viewModel = mapper.Map<TeamLeagueTableViewModel>(table);
-            return PartialView(viewModel);
+            return PartialView(table);
         }
 
-        [Route("{controller}/{leagueName}/matches", Name = "ViewMatches")]
+        [Route("[controller]/{leagueName}/matches", Name = "ViewMatches")]
         public async Task<IActionResult> ViewMatches(string leagueName, string round)
         {
-            var rounds = await competitionApi.GetTeamLeagueRounds(
+            var vm = await competitionApi.GetTeamLeagueRounds(
                 new GetTeamLeagueRoundsQuery
                 {
                     LeagueName = leagueName
                 });
 
-            var viewModel = new ViewTeamLeagueViewModel
-            {
-                Name = leagueName,
-                Rounds = mapper.Map<IEnumerable<TeamLeagueRoundViewModel>>(rounds),
-                SelectedRound = round
-            };
-
-            return PartialView(viewModel);
+            return PartialView(vm);
         }
 
-        [Route("{controller}/{leagueName}/viewmatch/{guid}")]
+        [Route("[controller]/{leagueName}/matches/{guid}")]
         public async Task<IActionResult> ViewMatch(string leagueName, string guid)
         {
             var match = await competitionApi.GetTeamLeagueMatch(
@@ -155,21 +132,18 @@ namespace LeagueManager.WebUI.Controllers
                 }
             );
 
-            var viewModel = mapper.Map<TeamMatchViewModel>(match);
-            return PartialView(viewModel);
+            return PartialView(match);
         }
 
-        [Route("{controller}/{leagueName}/editmatch/{guid}")]
+        [Route("[controller]/{leagueName}/editmatch/{guid}")]
         public async Task<IActionResult> EditMatch(string leagueName, string guid)
         {
-            var teamLeague = await competitionApi.GetCompetition(
-                new GetCompetitionQuery
+            var competitors = await competitionApi.GetCompetitors(
+                new GetTeamLeagueCompetitorsQuery
                 {
-                    Name = leagueName
+                    LeagueName = leagueName
                 });
-            ViewData["Teams"] = teamLeague.Competitors
-                .Select(c => new TeamViewModel { Name = c })
-                .OrderBy(t => t.Name);
+            ViewData["Teams"] = competitors;
 
             var match = await competitionApi.GetTeamLeagueMatch(
                 new GetTeamLeagueMatchQuery
@@ -179,42 +153,33 @@ namespace LeagueManager.WebUI.Controllers
                 }
             );
 
-            var viewModel = mapper.Map<TeamMatchViewModel>(match);
-            return PartialView(viewModel);
+            return PartialView(match);
         }
 
-        [HttpPut("{controller}/{leagueName}/match/{guid}")]
-        public async Task<IActionResult> UpdateTeamLeagueMatch(string leagueName, string guid, UpdateTeamLeagueMatchDto dto)
+        [HttpPut("[controller]/{leagueName}/matches/{guid}")]
+        public async Task<IActionResult> UpdateTeamLeagueMatch(string leagueName, Guid guid, UpdateTeamLeagueMatchDto dto)
         {
             var match = await competitionApi.UpdateTeamLeagueMatch(
                 new UpdateTeamLeagueMatchCommand
                 {
                     LeagueName = WebUtility.HtmlDecode(leagueName),
-                    Guid = new Guid(guid),
+                    Guid = guid,
                     HomeTeam = dto.HomeTeam,
                     AwayTeam = dto.AwayTeam,
                     StartTime = dto.StartTime
                 });
 
-            return PartialView("ViewMatch", mapper.Map<TeamMatchViewModel>(match));
+            return PartialView("ViewMatch", match);
         }
 
-        [HttpPut("{controller}/{leagueName}/match/{guid}/score")]
-        public async Task<IActionResult> UpdateTeamLeagueMatchScore(string leagueName, string guid, UpdateScoreDto dto)
+        [HttpPut("[controller]/{leagueName}/matches/{guid}/score")]
+        public async Task<IActionResult> UpdateTeamLeagueMatchScore(string leagueName, Guid guid, UpdateTeamLeagueMatchScoreDto dto)
         {
-            var match = await competitionApi.UpdateTeamLeagueMatchScore(
-                new UpdateTeamLeagueMatchScoreCommand
-                {
-                    LeagueName = WebUtility.HtmlDecode(leagueName),
-                    Guid = new Guid(guid),
-                    HomeMatchEntry = dto.HomeMatchEntry,
-                    AwayMatchEntry = dto.AwayMatchEntry
-                });
-
-            return PartialView("ViewMatch", mapper.Map<TeamMatchViewModel>(match));
+            var match = await competitionApi.UpdateTeamLeagueMatchScore(leagueName, guid, dto);
+            return PartialView("ViewMatch", match);
         }
 
-        [HttpGet("{controller}/{leagueName}/match/{guid}/score")]
+        [HttpGet("[controller]/{leagueName}/matches/{guid}/score")]
         public async Task<IActionResult> SetScore(string leagueName, string guid)
         {
             var match = await competitionApi.GetTeamLeagueMatch(
@@ -225,11 +190,10 @@ namespace LeagueManager.WebUI.Controllers
                }
            );
 
-            var viewModel = mapper.Map<TeamMatchViewModel>(match);
-            return PartialView(viewModel);
+            return PartialView(match);
         }
 
-        [HttpGet("{controller}/{leagueName}/match/details/{guid}")]
+        [HttpGet("[controller]/{leagueName}/matches/{guid}/details")]
         public async Task<IActionResult> ViewMatchDetails(string leagueName, string guid)
         {
             var match = await competitionApi.GetTeamLeagueMatchDetails(
@@ -240,15 +204,14 @@ namespace LeagueManager.WebUI.Controllers
                 }
             );
 
-            var viewModel = mapper.Map<TeamMatchViewModel>(match);
             ViewData["TeamLeagueApiUrl"] = apiSettings.TeamLeagueApiUrl;
             ViewData["PlayerApiUrl"] = apiSettings.PlayerApiUrl;
-            ViewData["GetPlayerBaseUrl"] = $"{apiSettings.TeamLeagueApiUrl}/{leagueName}/competitor/";
-            ViewData["MatchBaseUrl"] = $"{apiSettings.TeamLeagueApiUrl}/{leagueName}/match/{guid}/";
-            return View(viewModel);
+            ViewData["GetPlayerBaseUrl"] = $"{apiSettings.TeamLeagueApiUrl}/{leagueName}/competitors";
+            ViewData["MatchBaseUrl"] = $"{apiSettings.TeamLeagueApiUrl}/{leagueName}/matches/{guid}";
+            return View(match);
         }
 
-        [HttpGet("{controller}/{leagueName}/match/{matchGuid}/lineup/{teamName}/{lineupEntryGuid}/view")]
+        [HttpGet("[controller]/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/lineup/{lineupEntryGuid}")]
         public async Task<IActionResult> ViewMatchLineupEntry(string leagueName, Guid matchGuid, string teamName, Guid lineupEntryGuid)
         {
             var lineupEntry = await competitionApi.GetTeamLeagueMatchLineupEntry(
@@ -260,11 +223,10 @@ namespace LeagueManager.WebUI.Controllers
                 }
             );
 
-            var viewModel = mapper.Map<TeamMatchEntryLineupEntryViewModel>(lineupEntry);
-            return PartialView(viewModel);
+            return PartialView(lineupEntry);
         }
 
-        [HttpGet("{controller}/{leagueName}/match/{matchGuid}/lineup/{teamName}/{lineupEntryGuid}/edit")]
+        [HttpGet("[controller]/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/lineup/{lineupEntryGuid}/edit")]
         public async Task<IActionResult> EditMatchLineupEntry(string leagueName, Guid matchGuid, string teamName, Guid lineupEntryGuid)
         {
             var lineupEntry = await competitionApi.GetTeamLeagueMatchLineupEntry(
@@ -281,31 +243,25 @@ namespace LeagueManager.WebUI.Controllers
                 LeagueName = leagueName,
                 TeamName = teamName
             });
-            ViewData["Players"] = mapper.Map<IEnumerable<PlayerViewModel>>(players.Select(p => p.Player));
+            ViewData["Players"] = players.Select(p => p.Player);
 
-            var viewModel = mapper.Map<TeamMatchEntryLineupEntryViewModel>(lineupEntry);
-            return PartialView(viewModel);
+            return PartialView(lineupEntry);
         }
 
-        [HttpPut("{controller}/{leagueName}/match/{matchGuid}/lineup/{teamName}/{lineupEntryGuid}")]
-        public async Task<IActionResult> UpdateMatchLineupEntry(string leagueName, Guid matchGuid, string teamName, Guid lineupEntryGuid, UpdateLineupEntryDto dto)
+        [HttpPut("[controller]/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/lineup/{lineupEntryGuid}")]
+        public async Task<IActionResult> UpdateMatchLineupEntry(string leagueName, Guid matchGuid, string teamName, Guid lineupEntryGuid, UpdateTeamLeagueMatchLineupEntryCommand command)
         {
-            var lineupEntry = await competitionApi.UpdateTeamLeagueMatchLineupEntry(
-                new UpdateTeamLeagueMatchLineupEntryCommand
-                {
-                    LeagueName = WebUtility.HtmlDecode(leagueName),
-                    MatchGuid = matchGuid,
-                    TeamName = teamName,
-                    LineupEntryGuid = lineupEntryGuid,
-                    PlayerNumber = dto.PlayerNumber,
-                    PlayerName = dto.PlayerName
-                });
+            command.LeagueName = WebUtility.HtmlDecode(leagueName);
+            command.MatchGuid = matchGuid;
+            command.TeamName = teamName;
+            command.LineupEntryGuid = lineupEntryGuid;
 
-            var viewModel = mapper.Map<TeamMatchEntryLineupEntryViewModel>(lineupEntry);
-            return PartialView("ViewMatchLineupEntry", viewModel);
+            var lineupEntry = await competitionApi.UpdateTeamLeagueMatchLineupEntry(command);
+
+            return PartialView("ViewMatchLineupEntry", lineupEntry);
         }
 
-        [HttpGet("{controller}/{leagueName}/match/{matchGuid}/{teamName}/events")]
+        [HttpGet("[controller]/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/events")]
         public async Task<IActionResult> ViewTeamMatchEvents(string leagueName, Guid matchGuid, string teamName)
         {
             var events = await competitionApi.GetTeamLeagueMatchEvents(
@@ -317,11 +273,10 @@ namespace LeagueManager.WebUI.Controllers
                     }
                 );
 
-            var viewModel = mapper.Map<IEnumerable<TeamMatchEntryGoalEventViewModel>>(events.Goals);
-            return PartialView(viewModel);
+            return PartialView(events);
         }
 
-        [HttpGet("{controller}/{leagueName}/match/{matchGuid}/team/{teamName}/goal/{goalGuid}/edit")]
+        [HttpGet("[controller]/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/goals/{goalGuid}/edit")]
         public async Task<IActionResult> EditMatchGoal(string leagueName, Guid matchGuid, string teamName, Guid goalGuid)
         {
             var goal = await competitionApi.GetTeamLeagueMatchGoal(
@@ -338,14 +293,13 @@ namespace LeagueManager.WebUI.Controllers
                 LeagueName = leagueName,
                 TeamName = teamName
             });
-            ViewData["Players"] = mapper.Map<IEnumerable<PlayerViewModel>>(players.Select(p => p.Player));
+            ViewData["Players"] = players.Select(p => p.Player);
 
-            var viewModel = mapper.Map<TeamMatchEntryGoalEventViewModel>(goal);
-            return PartialView(viewModel);
+            return PartialView(goal);
         }
 
-        [HttpPut("{controller}/{leagueName}/match/{matchGuid}/team/{teamName}/goal/{goalGuid}")]
-        public async Task<IActionResult> UpdateMatchGoal(string leagueName, Guid matchGuid, string teamName, Guid goalGuid, UpdateTeamLeagueMatchGoalDto dto)
+        [HttpPut("[controller]/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/goals/{goalGuid}")]
+        public async Task<IActionResult> UpdateMatchGoal(string leagueName, Guid matchGuid, string teamName, Guid goalGuid, UpdateTeamLeagueMatchGoalCommand command)
         {
             var goal = await competitionApi.UpdateTeamLeagueMatchGoal(
                 new UpdateTeamLeagueMatchGoalCommand
@@ -353,16 +307,13 @@ namespace LeagueManager.WebUI.Controllers
                     LeagueName = WebUtility.HtmlDecode(leagueName),
                     MatchGuid = matchGuid,
                     TeamName = teamName,
-                    GoalGuid = goalGuid,
-                    Minute = dto.Minute,
-                    PlayerName = dto.PlayerName
+                    GoalGuid = goalGuid
                 });
 
-            var viewModel = mapper.Map<TeamMatchEntryGoalEventViewModel>(goal);
-            return PartialView("ViewGoalMatchEvent", viewModel);
+            return PartialView("ViewGoalMatchEvent", goal);
         }
 
-        [HttpGet("{controller}/{leagueName}/match/{matchGuid}/goal/{goalGuid}")]
+        [HttpGet("[controller]/{leagueName}/matches/{matchGuid}/goals/{goalGuid}")]
         public async Task<IActionResult> ViewGoalMatchEvent(string leagueName, Guid matchGuid, Guid goalGuid)
         {
             var goal = await competitionApi.GetTeamLeagueMatchGoal(
@@ -374,8 +325,7 @@ namespace LeagueManager.WebUI.Controllers
                 }
             );
 
-            var viewModel = mapper.Map<TeamMatchEntryGoalEventViewModel>(goal);
-            return PartialView(viewModel);
+            return PartialView(goal);
         }
     }
 }

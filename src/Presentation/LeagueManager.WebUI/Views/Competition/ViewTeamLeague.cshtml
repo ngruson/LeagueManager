@@ -1,6 +1,6 @@
-﻿@model LeagueManager.WebUI.ViewModels.ViewTeamLeagueViewModel
+﻿@model LeagueManager.Application.TeamLeagues.Queries.GetTeamLeague.GetTeamLeagueVm
 @{
-    ViewData["Title"] = @Model.Name;
+    ViewData["Title"] = @Model.LeagueName;
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -22,11 +22,11 @@
                     <div class="form-group row">
                         <label for="rounds" class="col-sm-2 col-form-label">Round:</label>
                         <div class="col-sm-10">
-                            @Html.DropDownListFor(m => m.SelectedRound, new SelectList(Model.Rounds, "Name", "Name"), new { id = "rounds-dropdown", @class = "form-control" })
+                            @Html.DropDownListFor(m => m.Rounds.SelectedRound, new SelectList(Model.Rounds.Rounds, "Name", "Name"), new { id = "rounds-dropdown", @class = "form-control" })
                         </div>
                     </div>
                     <div id="matches">
-                        @await Html.PartialAsync("ViewMatches", Model)
+                        @await Html.PartialAsync("ViewMatches", Model.Rounds)
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
             $(".js-edit-match").click(function (e) {
                 var guid = $(e.target).attr("data-match-guid");
                 var url = "@Url.Action("EditMatch", new { leagueName = "js-leaguename", guid = "js-guid" })"
-                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-leaguename", "@Model.LeagueName")
                     .replace("js-guid", guid);
 
                 $.ajax({
@@ -74,7 +74,7 @@
             $(".js-set-score").click(function (e) {
                 var guid = $(e.target).attr("data-match-guid");
                 var url = "@Url.Action("SetScore", new { leagueName = "js-leaguename", guid = "js-guid" })"
-                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-leaguename", "@Model.LeagueName")
                     .replace("js-guid", guid);
 
                 $.ajax({
@@ -101,7 +101,7 @@
                         leagueName = "js-leaguename",
                         guid = "js-guid"
                     })"
-                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-leaguename", "@Model.LeagueName")
                     .replace("js-guid", guid);
 
                 var result = await updateTeamLeagueMatch(
@@ -129,7 +129,7 @@
                         leagueName = "js-leaguename",
                         guid = "js-guid"
                     })"
-                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-leaguename", "@Model.LeagueName")
                     .replace("js-guid", guid);
 
                 var result = await updateTeamLeagueMatchScore(
@@ -139,6 +139,7 @@
                     awayTeam,
                     awayScore
                 );
+
                 $('#match-' + guid).html(result);
                 editMatch();
                 setScore();
@@ -150,7 +151,7 @@
             $(".js-cancel-edit-match").click(async function (e) {
                 var guid = $(e.target).attr("data-match-guid");
                 var url = "@Url.Action("ViewMatch", new { leagueName = "js-leaguename", guid = "js-guid" })"
-                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-leaguename", "@Model.LeagueName")
                     .replace("js-guid", guid);
 
                 $.ajax({
@@ -169,7 +170,7 @@
             $(".js-cancel-edit-score").click(async function (e) {
                 var guid = $(e.target).attr("data-match-guid");
                 var url = "@Url.Action("ViewMatch", new { leagueName = "js-leaguename", guid = "js-guid" })"
-                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-leaguename", "@Model.LeagueName")
                     .replace("js-guid", guid);
 
                 $.ajax({
@@ -178,6 +179,7 @@
                     success: function (result) {
                         $('#match-' + guid).html(result);
                         editMatch();
+                        setScore();
                     }
                 });
             });
@@ -185,7 +187,7 @@
 
         function updateTable() {
             var url = "@Url.Action("ViewTeamLeagueTable", new { leagueName = "js-leaguename" })"
-                .replace("js-leaguename", "@Model.Name");
+                .replace("js-leaguename", "@Model.LeagueName");
 
             $.ajax({
                     type: 'GET',
@@ -200,7 +202,7 @@
             $("#rounds-dropdown").change(function () {
                 var round = $('#rounds-dropdown').val();
                 var url = "@Url.Action("ViewMatches", new { leagueName = "js-leaguename", round = "js-round" })"
-                    .replace("js-leaguename", "@Model.Name")
+                    .replace("js-leaguename", "@Model.LeagueName")
                     .replace("js-round", round);
 
                 $.ajax({

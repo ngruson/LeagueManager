@@ -1,9 +1,8 @@
-﻿using LeagueManager.Application.TeamCompetitor.Dto;
-using MediatR;
+﻿using MediatR;
 
 namespace LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor
 {
-    public class GetPlayerForTeamCompetitorQuery : IRequest<TeamCompetitorPlayerDto>
+    public class GetPlayerForTeamCompetitorQuery : IRequest<CompetitorPlayerDto>
     {
         public string LeagueName { get; set; }
         public string TeamName { get; set; }

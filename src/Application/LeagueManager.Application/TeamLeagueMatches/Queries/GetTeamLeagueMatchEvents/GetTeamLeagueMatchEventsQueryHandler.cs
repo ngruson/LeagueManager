@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagueMatches.Goals;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents
 {
-    public class GetTeamLeagueMatchEventsQueryHandler : IRequestHandler<GetTeamLeagueMatchEventsQuery, MatchEventsDto>
+    public class GetTeamLeagueMatchEventsQueryHandler : IRequestHandler<GetTeamLeagueMatchEventsQuery, MatchEventsVm>
     {
         private readonly ILeagueManagerDbContext context;
         private readonly IConfigurationProvider config;
@@ -23,7 +22,7 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
                 ILogger<GetTeamLeagueMatchEventsQueryHandler> logger
             ) => (this.context, this.config, this.logger) = (context, config, logger);
 
-        public async Task<MatchEventsDto> Handle(GetTeamLeagueMatchEventsQuery request, CancellationToken cancellationToken)
+        public async Task<MatchEventsVm> Handle(GetTeamLeagueMatchEventsQuery request, CancellationToken cancellationToken)
         {
             string methodName = nameof(Handle);
             logger.LogInformation($"{methodName}: Request received");
@@ -36,11 +35,11 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
                 .SelectMany(m => m.MatchEntries.Where(me => me.Team.Name == request.TeamName))
                 .SelectMany(me => me.Goals)
                 ))
-                .ProjectTo<GoalDto>(config)
+                .ProjectTo<GoalVm>(config)
                 .ToListAsync();
             
             logger.LogInformation($"{methodName}: Returning match events");
-            return new MatchEventsDto { Goals = goals };
+            return new MatchEventsVm { Goals = goals };
         }
     }
 }

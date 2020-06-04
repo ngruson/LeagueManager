@@ -1,6 +1,8 @@
-﻿@model LeagueManager.WebUI.ViewModels.TeamMatchViewModel
+﻿@model LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails.TeamMatchDto
+@using LeagueManager.Application.Interfaces.Dto
+
 @{
-    ViewData["Title"] = $"{Model.Home.Team.Name} - {Model.Away.Team.Name}";
+    ViewData["Title"] = $"{Model.Home().Team.Name} - {Model.Away().Team.Name}";
     var playerUrl = ViewData["GetPlayerBaseUrl"] as string;
 }
 
@@ -63,7 +65,7 @@
                 var teamName = $(e.target).attr("data-team-name");
                 var guid = $(e.target).attr("data-lineup-player-guid");
                 var url = "@Url.Action("EditMatchLineupEntry",
-                          new { leagueName = Model.TeamLeague, matchGuid = Model.Guid, teamName = "js-team-name", lineupEntryGuid = "js-guid" })"
+                          new { leagueName = Model.TeamLeagueName, matchGuid = Model.Guid, teamName = "js-team-name", lineupEntryGuid = "js-guid" })"
                     .replace("js-team-name", teamName)
                     .replace("js-guid", guid);
 
@@ -78,7 +80,7 @@
             });
 
             $(".edit-lineup-entry .js-select-player").change(async function (e) {
-                var url = "@playerUrl" + $(e.target).attr("data-team-name") + "/player/" + $(this).val();
+                var url = "@playerUrl/" + $(e.target).attr("data-team-name") + "/players/" + $(this).val();
                 var guid = $(e.target).attr("data-guid");
                 var number = await getPlayerNumber(url);
                 $('#number-' + guid).val(number);
@@ -97,7 +99,7 @@
                         teamName = "js-team-name",
                         lineupEntryGuid = "js-lineup-entry-guid"
                     })"
-                    .replace("js-leaguename", "@Model.TeamLeague")
+                    .replace("js-leaguename", "@Model.TeamLeagueName")
                     .replace("js-match-guid", "@Model.Guid")
                     .replace("js-team-name", teamName)
                     .replace("js-lineup-entry-guid", guid);
@@ -122,7 +124,7 @@
                         teamName = "js-team-name",
                         lineupEntryGuid = "js-lineup-entry-guid"
                     })"
-                    .replace("js-leaguename", "@Model.TeamLeague")
+                    .replace("js-leaguename", "@Model.TeamLeagueName")
                     .replace("js-match-guid", "@Model.Guid")
                     .replace("js-team-name", teamName)
                     .replace("js-lineup-entry-guid", guid);
@@ -142,7 +144,7 @@
                 var teamName = $(e.target).attr("data-team-name");
 
                 var url = "@Url.Action("EditMatchGoal",
-                          new { leagueName = Model.TeamLeague, matchGuid = Model.Guid, teamName = "js-team-name", goalGuid = "js-guid" })"
+                          new { leagueName = Model.TeamLeagueName, matchGuid = Model.Guid, teamName = "js-team-name", goalGuid = "js-guid" })"
                     .replace("js-team-name", teamName)
                     .replace("js-guid", guid);
 
@@ -169,7 +171,7 @@
                         teamName = "js-team-name",
                         goalGuid = "js-goal-guid"
                     })"
-                    .replace("js-leaguename", "@Model.TeamLeague")
+                    .replace("js-leaguename", "@Model.TeamLeagueName")
                     .replace("js-match-guid", "@Model.Guid")
                     .replace("js-team-name", teamName)
                     .replace("js-goal-guid", guid);
@@ -192,7 +194,7 @@
                         matchGuid = "js-match-guid",
                         goalGuid = "js-goal-guid"
                     })"
-                    .replace("js-leaguename", "@Model.TeamLeague")
+                    .replace("js-leaguename", "@Model.TeamLeagueName")
                     .replace("js-match-guid", "@Model.Guid")
                     .replace("js-goal-guid", guid);
 
@@ -221,11 +223,11 @@
 
                 if (success) {
                     success = await addPlayerToTeamCompetitor(
-                        "@Model.TeamLeague",
+                        "@Model.TeamLeagueName",
                         teamName,
                         $('#player-number').val(),
                         constructFullName($('#player-first-name').val(), $('#player-middle-name').val(), $('#player-last-name').val()),
-                        "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeague/competitor/players"
+                        "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeagueName/competitors/players"
                     );
                 }
 
@@ -233,7 +235,7 @@
                     success = await addPlayerToLineup(
                         $('#player-number'),
                         constructFullName($('#player-first-name').val(), $('#player-middle-name').val(), $('#player-last-name').val()),
-                        "@ViewData["MatchBaseUrl"]js-team-name/lineup"
+                        "@ViewData["MatchBaseUrl"]/matchEntries/js-team-name/lineup"
                             .replace("js-team-name", teamName)
                     );
                 }
@@ -242,8 +244,13 @@
                     $('#playerModal').modal('toggle');
                     getPlayers(
                         $('.js-select-player'),
-                        "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeague/competitor/js-team-name/players".replace("js-team-name", teamName)
+                        "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeagueName/competitors/js-team-name/players".replace("js-team-name", teamName)
                     );
+
+                    $('#player-number').val('');
+                    $('#player-first-name').val('');
+                    $('#player-middle-name').val('');
+                    $('#player-last-name').val('');
                 }
             });
 
@@ -254,7 +261,7 @@
                 var success = await addScoredGoal(
                     $('#goal-minute').val(),
                     $('.js-select-player').val(),
-                    "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeague/match/js-match-guid/js-team-name/goals"
+                    "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeagueName/matches/js-match-guid/matchEntries/js-team-name/goals"
                         .replace("js-match-guid", matchGuid)
                         .replace("js-team-name", teamName)
                 );
@@ -268,7 +275,7 @@
                             matchGuid = "js-match-guid",
                             teamName = "js-team-name",
                         })"
-                        .replace("js-leaguename", "@Model.TeamLeague")
+                        .replace("js-leaguename", "@Model.TeamLeagueName")
                         .replace("js-match-guid", "@Model.Guid")
                         .replace("js-team-name", teamName);
 
@@ -298,7 +305,7 @@
                 var teamName = button.data('team-name');
                 modal.find('.js-save-goal').attr('data-team-name', teamName);
                 getPlayers(modal.find('.js-select-player'),
-                        "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeague/competitor/js-team-name/players".replace("js-team-name", teamName));
+                        "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeagueName/competitors/js-team-name/players".replace("js-team-name", teamName));
             });
         });
     </script>

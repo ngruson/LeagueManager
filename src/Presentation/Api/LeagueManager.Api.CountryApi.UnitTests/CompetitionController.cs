@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
 using LeagueManager.Application.Exceptions;
@@ -18,9 +17,9 @@ using LeagueManager.Application.Match.Commands.AddPlayerToLineup;
 using LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor;
-using LeagueManager.Application.TeamLeagueMatches.Dto;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagues.Commands.CreateTeamLeague;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupEntry;
 
 namespace LeagueManager.Api.CompetitionApi.Controllers
 {
@@ -65,11 +64,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 await mediator.Send(command);
                 return Created($"/competition/{command.Name}", new { command.Name });
             }
-            catch (CompetitionAlreadyExistsException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (TeamNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -199,7 +194,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var rounds = await mediator.Send(new GetTeamLeagueRoundsQuery { LeagueName = name });
                 return Ok(rounds);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -256,7 +251,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 });
                 return Ok(lineupPlayer);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -278,11 +273,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var match = await mediator.Send(command);
                 return Ok(match);
             }
-            catch (MatchNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (TeamNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -293,17 +284,14 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         }
 
         // PUT api/competition/teamleague/Premier League 2019-2020/match/{guid}/score
-        [HttpPut("teamleague/{name}/match/{guid}/score")]
+        [HttpPut("teamleague/{leagueName}/match/{guid}/score")]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> UpdateTeamLeagueMatchScore(string name, string guid, [FromBody]UpdateScoreDto dto)
+        public async Task<IActionResult> UpdateTeamLeagueMatchScore(string leagueName, Guid guid, [FromBody]UpdateTeamLeagueMatchScoreCommand command)
         {
             try
             {
-                var command = mapper.Map<UpdateTeamLeagueMatchScoreCommand>(dto, opt =>
-                {
-                    opt.Items["leagueName"] = name;
-                    opt.Items["guid"] = guid;
-                });
+                command.LeagueName = leagueName;
+                command.Guid = guid;
 
                 var match = await mediator.Send(command);
                 return Ok(match);
@@ -338,23 +326,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var match = await mediator.Send(command);
                 return Ok(match);
             }
-            catch (TeamLeagueNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch (MatchNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (MatchEntryNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (PlayerNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }
@@ -363,38 +339,18 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         // PUT api/competition/teamleague/Premier League 2019-2020/match/{guid}/{team}/lineup
         [HttpPut("teamleague/{leagueName}/match/{matchGuid}/{teamName}/lineup/{lineupEntryGuid}")]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> UpdateTeamLeagueMatchLineupEntry(string leagueName, Guid matchGuid, string teamName, Guid lineupEntryGuid, [FromBody]UpdateLineupEntryDto dto)
+        public async Task<IActionResult> UpdateTeamLeagueMatchLineupEntry(string leagueName, Guid matchGuid, string teamName, Guid lineupEntryGuid, [FromBody]UpdateTeamLeagueMatchLineupEntryCommand command)
         {
             try
             {
-                var command = mapper.Map<UpdateTeamLeagueMatchLineupEntryCommand>(dto, opt =>
-                {
-                    opt.Items["leagueName"] = leagueName;
-                    opt.Items["matchGuid"] = matchGuid;
-                    opt.Items["teamName"] = teamName;
-                    opt.Items["lineupEntryGuid"] = lineupEntryGuid;
-                });
-
                 var match = await mediator.Send(command);
                 return Ok(match);
             }
-            catch (TeamLeagueNotFoundException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch (MatchNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (MatchEntryNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (PlayerNotFoundException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }

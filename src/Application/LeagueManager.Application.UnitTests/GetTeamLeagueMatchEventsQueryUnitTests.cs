@@ -56,7 +56,7 @@ namespace LeagueManager.Application.UnitTests
 
             // Assert
             result.Goals.Count().Should().Be(2);
-            result.Goals.ForEach(g => int.Parse(g.Minute).Should().BeInRange(1, 90));
+            result.Goals.ToList().ForEach(g => int.Parse(g.Minute).Should().BeInRange(1, 90));
         }
 
         [Fact]

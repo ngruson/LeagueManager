@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public TeamSportsOptions Options { get; set; }
+        public virtual TeamSportsOptions Options { get; set; }
     }
 }

@@ -6,6 +6,7 @@ namespace LeagueManager.Application.Exceptions
     [Serializable]
     public class PlayerNotFoundException : LeagueManagerException
     {
+        public PlayerNotFoundException() { }
         public PlayerNotFoundException(string name) : base($"Player \"{name}\" not found.")
         {
         }

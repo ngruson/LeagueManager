@@ -5,6 +5,7 @@ namespace LeagueManager.Application.Exceptions
 {
     public class CreateTeamLeagueException : LeagueManagerException
     {
+        public CreateTeamLeagueException() { }
         public CreateTeamLeagueException(string name)
             : base($"Team league \"{name}\" could not be created.")
         {

@@ -20,7 +20,7 @@ namespace LeagueManager.Domain.Competition
         public byte[] Logo { get; set; }
         public PointSystem PointSystem { get; set; } = new PointSystem();
         public List<TeamCompetitor> Competitors { get; set; } = new List<TeamCompetitor>();
-        public List<TeamLeagueRound> Rounds { get; set; } = new List<TeamLeagueRound>();
+        public virtual List<TeamLeagueRound> Rounds { get; set; } = new List<TeamLeagueRound>();
         public TeamLeagueTable Table { get; private set; } = new TeamLeagueTable();
 
         public void CalculateTable()

@@ -6,6 +6,10 @@ namespace LeagueManager.Application.Exceptions
     [Serializable]
     public class CompetitionAlreadyExistsException : LeagueManagerException
     {
+        public CompetitionAlreadyExistsException()
+        {
+
+        }
         public CompetitionAlreadyExistsException(string name)
             : base($"Competition \"{name}\" already exists.")
         {

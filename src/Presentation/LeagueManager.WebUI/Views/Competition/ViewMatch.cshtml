@@ -1,26 +1,27 @@
-﻿@model LeagueManager.WebUI.ViewModels.TeamMatchViewModel
+﻿@model LeagueManager.Application.Interfaces.Dto.ITeamMatchDto<ITeamMatchEntryDto>
+@using LeagueManager.Application.Interfaces.Dto
 
 @if (Model.StartTime.HasValue)
 {
     <div class="row">
         <div class="col">
             @Model.StartTime.Value.ToShortDateString()
-        </div>        
+        </div>
     </div>
 }
 <div class="row mt-2">
-    @if ((Model.Home.Team != null) && (!string.IsNullOrEmpty(Model.Home.Team.Logo)))
+    @if ((Model.Home().Team != null) && (!string.IsNullOrEmpty(Model.Home().Team.Logo)))
     {
         <div class="col-1">
-            <img src="@Model.Home.Team.Logo" style="height:24px; width:24px" />
+            <img src="@Model.Home().Team.Logo" style="height:24px; width:24px" />
         </div>
     }
     <div class="col-5">
 
-        @if (Model.Home.Team != null)
+        @if (Model.Home().Team != null)
         {
             <div class="match-team-name match-team-name--home">
-                @Model.Home.Team.Name
+                @Model.Home().Team.Name
             </div>
         }
         else
@@ -32,19 +33,19 @@
     </div>
     <div class="col-6 match-col-score">
         <div class="match-score match-score--home">
-            <p>@(Model.Home.Score != null ? @Model.Home.Score.Value.ToString() : "-")</p>
-        </div >
+            <p>@(Model.Home().Score != null ? @Model.Home().Score.Value.ToString() : "-")</p>
+        </div>
     </div>
 </div>
 <div class="row">
-    @if ((Model.Away.Team != null) && (!string.IsNullOrEmpty(Model.Away.Team.Logo)))
+    @if ((Model.Away().Team != null) && (!string.IsNullOrEmpty(Model.Away().Team.Logo)))
     {
         <div class="col-1">
-            <img src="@Model.Away.Team.Logo" style="height:24px; width:24px" />
+            <img src="@Model.Away().Team.Logo" style="height:24px; width:24px" />
         </div>
     }
     <div class="col-5">
-        @if (Model.Away.Team == null)
+        @if (Model.Away().Team == null)
         {
             <div class="match-team-name match-team-name--away">
                 Away team not set
@@ -53,23 +54,23 @@
         else
         {
             <div class="match-team-name match-team-name--away">
-                @Model.Away.Team.Name
+                @Model.Away().Team.Name
             </div>
         }
     </div>
     <div class="col-6 match-col-score">
         <div class="match-score match-score--away">
-            <p>@(Model.Away.Score != null ? @Model.Away.Score.Value.ToString() : "-")</p>
+            <p>@(Model.Away().Score != null ? @Model.Away().Score.Value.ToString() : "-")</p>
         </div>
     </div>
- </div>
+</div>
 
 <div class="row mt-2">
     <div class="col">
         @if (User.Identity.IsAuthenticated)
         {
             <button data-match-guid="@Model.Guid" class="btn btn-default fa fa-edit js-edit-match" data-toggle="tooltip" data-placement="top" title="Edit fixture"></button>
-            @if ((Model.Home.Team == null) || (Model.Away.Team == null))
+            @if ((Model.Home().Team == null) || (Model.Away().Team == null))
             {
                 <button data-match-guid="@Model.Guid" class="btn btn-default fa fa-futbol disabled" data-toggle="tooltip" data-placement="top" title="Set score'"></button>
             }
@@ -78,13 +79,13 @@
                 <button data-match-guid="@Model.Guid" class="btn btn-default fa fa-futbol js-set-score" data-toggle="tooltip" data-placement="top" title="Set score"></button>
             }
         }
-        @if ((Model.Home.Team == null) || (Model.Away.Team == null))
+        @if ((Model.Home().Team == null) || (Model.Away().Team == null))
         {
-            <a href="@Url.Action("ViewMatchDetails", new { leagueName = Model.TeamLeague,  guid = Model.Guid })" class="btn btn-default fa fa-glasses disabled" data-toggle="tooltip" data-placement="top" title="View match details"></a>
+            <a href="@Url.Action("ViewMatchDetails", new { leagueName = Model.TeamLeagueName,  guid = Model.Guid })" class="btn btn-default fa fa-glasses disabled" data-toggle="tooltip" data-placement="top" title="View match details"></a>
         }
         else
         {
-            <a href="@Url.Action("ViewMatchDetails", new { leagueName = Model.TeamLeague,  guid = Model.Guid })" class="btn btn-default fa fa-glasses" data-toggle="tooltip" data-placement="top" title="View details"></a>
+            <a href="@Url.Action("ViewMatchDetails", new { leagueName = Model.TeamLeagueName,  guid = Model.Guid })" class="btn btn-default fa fa-glasses" data-toggle="tooltip" data-placement="top" title="View details"></a>
         }
     </div>
 </div>

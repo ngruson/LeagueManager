@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Interfaces;
+using LeagueManager.Application.Interfaces.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails;
 using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
@@ -34,7 +35,7 @@ namespace LeagueManager.Application.UnitTests
             var leagues = Enumerable.Repeat(league, 1);
             var contextMock = MockDbContext(leagues.AsQueryable());
             var handler = new GetTeamLeagueMatchDetailsQueryHandler(
-                contextMock.Object, Mapper.MapperConfig()
+                contextMock.Object//, Mapper.MapperConfig()
             );
 
             //Act
@@ -61,7 +62,7 @@ namespace LeagueManager.Application.UnitTests
             var leagues = Enumerable.Repeat(league, 1);
             var contextMock = MockDbContext(leagues.AsQueryable());
             var handler = new GetTeamLeagueMatchDetailsQueryHandler(
-                contextMock.Object, Mapper.MapperConfig()
+                contextMock.Object//, Mapper.MapperConfig()
             );
 
             //Act
@@ -76,6 +77,9 @@ namespace LeagueManager.Application.UnitTests
             //Assert
             result.Should().NotBeNull();
             result.Guid.Should().Be(guid);
+            result.RoundName.Should().Be("Round 1");
+            result.Home().Should().NotBeNull();
+            result.Away().Should().NotBeNull();
             result.MatchEntries[0].Lineup.Count.Should().Be(11);
             result.MatchEntries[1].Lineup.Count.Should().Be(11);
         }

@@ -4,6 +4,9 @@ using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Player.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,8 +25,8 @@ namespace LeagueManager.Application.Player.Commands.CreatePlayer
 
         public async Task<PlayerDto> Handle(CreatePlayerCommand request, CancellationToken cancellationToken)
         {
-            var newPlayer = mapper.Map<Domain.Player.Player>(request); 
-            var player = await context.Players.SingleOrDefaultAsync(x => x.FullName == newPlayer.FullName);
+            var newPlayer = mapper.Map<Domain.Player.Player>(request);
+            var player = context.Players.AsEnumerable().SingleOrDefault(p => p.FullName == newPlayer.FullName);
             if (player != null)
                 throw new PlayerAlreadyExistsException(player.FullName);
 

@@ -6,6 +6,7 @@ namespace LeagueManager.Application.Exceptions
     [Serializable]
     public class GoalNotFoundException : LeagueManagerException
     {
+        public GoalNotFoundException() { }
         public GoalNotFoundException(Guid guid)
             : base($"No goal found with id \"{guid}\".")
         {

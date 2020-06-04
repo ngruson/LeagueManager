@@ -29,7 +29,7 @@ namespace LeagueManager.Api.TeamApi.Controllers
                 var teams = await mediator.Send(new GetTeamsQuery());
                 return Ok(teams);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return BadRequest("Something went wrong!");
             }

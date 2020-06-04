@@ -1,5 +1,4 @@
-﻿using LeagueManager.Application.Competitions.Queries.Dto;
-using MediatR;
+﻿using MediatR;
 using System.Collections.Generic;
 
 namespace LeagueManager.Application.Competitions.Queries.GetCompetitions

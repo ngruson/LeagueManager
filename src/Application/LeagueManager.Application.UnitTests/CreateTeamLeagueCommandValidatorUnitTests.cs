@@ -2,6 +2,7 @@
 using Xunit;
 using System.Collections.Generic;
 using LeagueManager.Application.TeamLeagues.Commands;
+using LeagueManager.Application.TeamLeagues.Commands.CreateTeamLeague;
 
 namespace LeagueManager.Application.UnitTests
 {
@@ -13,7 +14,7 @@ namespace LeagueManager.Application.UnitTests
             var command = new CreateTeamLeagueCommand
             {
                 Name = "",
-                Teams = new List<string> { "Team A", "Team B" }
+                SelectedTeams = new List<string> { "Team A", "Team B" }
             };
             var validator = new CreateTeamLeagueCommandValidator();
             validator.ShouldHaveValidationErrorFor(x => x.Name, command);
@@ -25,7 +26,7 @@ namespace LeagueManager.Application.UnitTests
             var command = new CreateTeamLeagueCommand
             {
                 Name = "Premier League 2019/2020",
-                Teams = new List<string> { "Team A", "Team B" }
+                SelectedTeams = new List<string> { "Team A", "Team B" }
             };
             var validator = new CreateTeamLeagueCommandValidator();
             validator.ShouldHaveValidationErrorFor(x => x.Name, command);
@@ -37,7 +38,7 @@ namespace LeagueManager.Application.UnitTests
             var command = new CreateTeamLeagueCommand
             {
                 Name = "Premier LeaguePremier LeaguePremier LeaguePremier LeaguePremier LeaguePremier LeaguePremier LeaguePremier LeaguePremier League",
-                Teams = new List<string> {  "Team A", "Team B" }
+                SelectedTeams = new List<string> {  "Team A", "Team B" }
             };
             var validator = new CreateTeamLeagueCommandValidator();
             validator.ShouldHaveValidationErrorFor(x => x.Name, command);
@@ -50,7 +51,7 @@ namespace LeagueManager.Application.UnitTests
             {
                 Name = "Premier League",
                 Sports = "",
-                Teams = new List<string> { "Team A", "Team B" }
+                SelectedTeams = new List<string> { "Team A", "Team B" }
             };
             var validator = new CreateTeamLeagueCommandValidator();
             validator.ShouldHaveValidationErrorFor(x => x.Sports, command);
@@ -62,10 +63,10 @@ namespace LeagueManager.Application.UnitTests
             var command = new CreateTeamLeagueCommand
             {
                 Name = "Premier League 2019-2020",
-                Teams = null
+                SelectedTeams = null
             };
             var validator = new CreateTeamLeagueCommandValidator();
-            validator.ShouldHaveValidationErrorFor(x => x.Teams, command);
+            validator.ShouldHaveValidationErrorFor(x => x.SelectedTeams, command);
         }
     }
 }

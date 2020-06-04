@@ -1,4 +1,4 @@
-﻿using LeagueManager.Application.TeamLeagueMatches.Dto;
+﻿using LeagueManager.Application.Interfaces.Dto;
 using MediatR;
 using System;
 

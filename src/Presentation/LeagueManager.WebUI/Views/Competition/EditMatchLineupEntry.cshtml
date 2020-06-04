@@ -1,13 +1,13 @@
-﻿@model LeagueManager.WebUI.ViewModels.TeamMatchEntryLineupEntryViewModel
+﻿@model LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry.LineupEntryDto
 
 @{
-    var players = ViewData["Players"] as IEnumerable<LeagueManager.WebUI.ViewModels.PlayerViewModel>;    
+    var players = ViewData["Players"] as IEnumerable<LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor.PlayerDto>;
 }
 
 <div class="row edit-lineup-entry">
-    <div class="col-2 form-group">
-        @Html.LabelFor(m => m.Number)
-        @Html.TextBoxFor(m => m.Number, new { id = $"number-{Model.Guid}", @class = "form-control"} )
+    <div class="col-3 form-group">
+        @Html.LabelFor(m => m.PlayerNumber, "Number")
+        @Html.TextBoxFor(m => m.PlayerNumber, new { id = $"number-{Model.Guid}", @class = "form-control"} )
     </div>
     <div class="col form-group">
         @Html.LabelFor(m => m.Player)

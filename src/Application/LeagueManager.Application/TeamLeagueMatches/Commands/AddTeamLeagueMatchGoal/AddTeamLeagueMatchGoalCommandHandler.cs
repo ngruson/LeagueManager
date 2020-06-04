@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagueMatches.Goals;
 using LeagueManager.Domain.Match;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -63,7 +62,7 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatc
             }
             logger.LogInformation($"{methodName}: Match entry for team {request.TeamName} was found");
 
-            var player = await context.Players.SingleOrDefaultAsync(p => p.FullName == request.PlayerName);
+            var player = context.Players.AsEnumerable().SingleOrDefault(p => p.FullName == request.PlayerName);
             if (player == null)
             {
                 var ex = new PlayerNotFoundException(request.PlayerName);

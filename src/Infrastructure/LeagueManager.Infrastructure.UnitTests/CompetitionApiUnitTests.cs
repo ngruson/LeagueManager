@@ -1,19 +1,12 @@
 using FluentAssertions;
-using LeagueManager.Application.Competitions.Queries.Dto;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using LeagueManager.Application.Competitions.Queries.GetCompetitions;
 using LeagueManager.Application.Exceptions;
-using LeagueManager.Application.Player.Dto;
-using LeagueManager.Application.TeamCompetitor.Dto;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
-using LeagueManager.Application.TeamLeagueMatches.Dto;
-using Lineup = LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails;
-using LeagueManager.Application.TeamLeagues.Commands;
-using LeagueManager.Application.TeamLeagues.Dto;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
 using LeagueManager.Infrastructure.Api;
@@ -27,12 +20,13 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
-using LeagueManager.Application.TeamLeagueMatches.Goals;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagues.Commands.CreateTeamLeague;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeague;
 
 namespace LeagueManager.Infrastructure.UnitTests
 {
@@ -154,14 +148,14 @@ namespace LeagueManager.Infrastructure.UnitTests
             public async void Given_GetIsOK_When_GetCompetitions_Then_ReturnList()
             {
                 //Arrange
-                var list = new List<CompetitionDto>
+                var list = new List<Application.Competitions.Queries.GetCompetitions.CompetitionDto>
             {
-                new CompetitionDto
+                new Application.Competitions.Queries.GetCompetitions.CompetitionDto
                 {
                     Country = "England",
                     Name = "Premier League"
                 },
-                new CompetitionDto
+                new Application.Competitions.Queries.GetCompetitions.CompetitionDto
                 {
                     Country = "Spain",
                     Name = "Primera Division"
@@ -229,7 +223,7 @@ namespace LeagueManager.Infrastructure.UnitTests
             public async void Given_GetIsOK_When_GetCompetition_Then_ReturnCompetition()
             {
                 //Arrange
-                var dto = new CompetitionDto
+                var dto = new Application.Competitions.Queries.GetCompetition.CompetitionDto
                 {
                     Country = "England",
                     Name = "Premier League"
@@ -297,21 +291,21 @@ namespace LeagueManager.Infrastructure.UnitTests
             public async void Given_GetIsOK_When_GetPlayersForTeamCompetitor_Then_ReturnList()
             {
                 //Arrange
-                var list = new List<TeamCompetitorPlayerDto>
+                var list = new List<CompetitorPlayerDto>
             {
-                new TeamCompetitorPlayerDto
+                new CompetitorPlayerDto
                 {
                     Number = "1",
-                    Player = new PlayerDto
+                    Player = new Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor.PlayerDto
                     {
                         FirstName = "John",
                         LastName = "Doe"
                     }
                 },
-                new TeamCompetitorPlayerDto
+                new CompetitorPlayerDto
                 {
                     Number = "2",
-                    Player = new PlayerDto
+                    Player = new Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor.PlayerDto
                     {
                         FirstName = "Jane",
                         LastName = "Doe"
@@ -375,13 +369,13 @@ namespace LeagueManager.Infrastructure.UnitTests
             }
         }
 
-        public class GetTeamLeagueTable
+        public class GetTeamLeague
         {
             [Fact]
-            public async void Given_GetIsOK_When_GetTeamLeagueTable_Then_ReturnTeamLeagueTableDto()
+            public async void Given_GetIsOK_When_GetTeamLeague_Then_ReturnTeamLeagueDto()
             {
                 //Arrange
-                var dto = new TeamLeagueTableDto();
+                var vm = new GetTeamLeagueVm();
 
                 var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
                 mockHttpRequestFactory.Setup(x => x.Get(
@@ -390,7 +384,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(dto)
+                    Content = new JsonContent(vm)
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
@@ -402,14 +396,13 @@ namespace LeagueManager.Infrastructure.UnitTests
                 );
 
                 //Act
-                var query = new GetTeamLeagueTableQuery();
-                var result = await sut.GetTeamLeagueTable(query);
+                var result = await sut.GetTeamLeague("LeagueName");
 
                 //Assert
                 result.Should().NotBeNull();
             }
             [Fact]
-            public async void Given_GetIsNotOK_When_GetTeamLeagueTable_Then_ReturnNull()
+            public async void Given_GetIsNotOK_When_GetTeamLeague_Then_ReturnNull()
             {
                 //Arrange
                 var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
@@ -430,8 +423,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 );
 
                 //Act
-                var query = new GetTeamLeagueTableQuery();
-                var result = await sut.GetTeamLeagueTable(query);
+                var result = await sut.GetTeamLeague("LeagueName");
 
                 //Assert
                 result.Should().BeNull();
@@ -444,11 +436,11 @@ namespace LeagueManager.Infrastructure.UnitTests
             public async void Given_GetIsOK_When_GetTeamLeagueRounds_Then_ReturnList()
             {
                 //Arrange
-                var list = new List<TeamLeagueRoundDto>
+                var list = new List<Application.TeamLeagues.Queries.GetTeamLeagueRounds.RoundDto>
             {
-                new TeamLeagueRoundDto(),
-                new TeamLeagueRoundDto(),
-                new TeamLeagueRoundDto(),
+                new Application.TeamLeagues.Queries.GetTeamLeagueRounds.RoundDto(),
+                new Application.TeamLeagues.Queries.GetTeamLeagueRounds.RoundDto(),
+                new Application.TeamLeagues.Queries.GetTeamLeagueRounds.RoundDto(),
             };
 
                 var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
@@ -458,8 +450,11 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(list)
-                });
+                    Content = new JsonContent(new GetTeamLeagueRoundsVm
+                    {
+                        Rounds = list
+                    })
+                }); ; ;
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
                 mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
@@ -475,7 +470,7 @@ namespace LeagueManager.Infrastructure.UnitTests
 
                 //Assert
                 result.Should().NotBeNull();
-                result.ToList().Count().Should().Be(3);
+                result.Rounds.ToList().Count().Should().Be(3);
             }
             [Fact]
             public async void Given_GetIsNotOK_When_GetTeamLeagueRounds_Then_ReturnNull()
@@ -513,7 +508,7 @@ namespace LeagueManager.Infrastructure.UnitTests
             public async void Given_GetIsOK_When_GetTeamLeagueMatch_Then_ReturnTeamLeagueMatchDto()
             {
                 //Arrange
-                var dto = new TeamMatchDto();
+                var dto = new Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch.TeamMatchDto();
 
                 var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
                 mockHttpRequestFactory.Setup(x => x.Get(
@@ -583,7 +578,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new TeamMatchDto())
+                    Content = new JsonContent(new Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails.TeamMatchDto())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
@@ -644,7 +639,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new TeamMatchDto())
+                    Content = new JsonContent(new Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch.TeamMatchDto())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
@@ -705,7 +700,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new TeamMatchDto())
+                    Content = new JsonContent(new Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore.TeamMatchDto())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
@@ -717,8 +712,8 @@ namespace LeagueManager.Infrastructure.UnitTests
                 );
 
                 //Act
-                var command = new UpdateTeamLeagueMatchScoreCommand();
-                var result = await sut.UpdateTeamLeagueMatchScore(command);
+                var dto = new UpdateTeamLeagueMatchScoreDto();
+                var result = await sut.UpdateTeamLeagueMatchScore(null, Guid.NewGuid(), dto);
 
                 //Assert
                 result.Should().NotBeNull();
@@ -745,8 +740,8 @@ namespace LeagueManager.Infrastructure.UnitTests
                 );
 
                 //Act
-                var command = new UpdateTeamLeagueMatchScoreCommand();
-                var result = await sut.UpdateTeamLeagueMatchScore(command);
+                var dto = new UpdateTeamLeagueMatchScoreDto();
+                var result = await sut.UpdateTeamLeagueMatchScore(null, Guid.NewGuid(), dto);
 
                 //Assert
                 result.Should().BeNull();
@@ -766,7 +761,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new Lineup.LineupEntryDto())
+                    Content = new JsonContent(new Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry.LineupEntryDto())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
@@ -827,7 +822,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new Lineup.LineupEntryDto())
+                    Content = new JsonContent(new Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry.LineupEntryDto())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
@@ -888,7 +883,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new MatchEventsDto())
+                    Content = new JsonContent(new MatchEventsVm())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
@@ -905,7 +900,7 @@ namespace LeagueManager.Infrastructure.UnitTests
 
                 //Assert
                 result.Should().NotBeNull();
-                result.Should().BeAssignableTo<MatchEventsDto>();
+                result.Should().BeAssignableTo<MatchEventsVm>();
             }
             [Fact]
             public async void Given_GetIsNotOK_When_GetTeamLeagueMatchEvents_Then_ReturnNull()
@@ -950,7 +945,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new MatchEventsDto())
+                    Content = new JsonContent(new MatchEventsVm())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
@@ -967,7 +962,7 @@ namespace LeagueManager.Infrastructure.UnitTests
 
                 //Assert
                 result.Should().NotBeNull();
-                result.Should().BeAssignableTo<GoalDto>();
+                result.Should().BeAssignableTo<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal.GoalDto>();
             }
             [Fact]
             public async void Given_GetIsNotOK_When_GetTeamLeagueMatchGoal_Then_ReturnNull()
@@ -1012,7 +1007,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new GoalDto())
+                    Content = new JsonContent(new Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal.GoalDto())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();

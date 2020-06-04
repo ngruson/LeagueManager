@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagues.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable
 {
-    public class GetTeamLeagueTableQueryHandler : IRequestHandler<GetTeamLeagueTableQuery, TeamLeagueTableDto>
+    public class GetTeamLeagueTableQueryHandler : IRequestHandler<GetTeamLeagueTableQuery, GetTeamLeagueTableVm>
     {
         private readonly ILeagueManagerDbContext context;
         private readonly IMapper mapper;
@@ -21,7 +21,7 @@ namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable
             this.mapper = mapper;
         }
 
-        public async Task<TeamLeagueTableDto> Handle(GetTeamLeagueTableQuery request, CancellationToken cancellationToken)
+        public async Task<GetTeamLeagueTableVm> Handle(GetTeamLeagueTableQuery request, CancellationToken cancellationToken)
         {
             var teamLeague = await context.TeamLeagues
                 .Include(t => t.Country)
@@ -37,8 +37,11 @@ namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable
                 return null;
 
             teamLeague.CalculateTable();
-            return mapper.Map<TeamLeagueTableDto>(teamLeague.Table);
-
+            
+            return new GetTeamLeagueTableVm {
+                LeagueName = teamLeague.Name,
+                Table = mapper.Map<TableDto>(teamLeague.Table)
+            };
         }
     }
 }

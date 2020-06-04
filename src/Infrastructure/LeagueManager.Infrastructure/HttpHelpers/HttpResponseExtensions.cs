@@ -9,8 +9,16 @@ namespace LeagueManager.Infrastructure.HttpHelpers
         {
             var data = response.Content.ReadAsStringAsync().Result;
             return string.IsNullOrEmpty(data) ?
-                            default(T) :
-                            JsonConvert.DeserializeObject<T>(data);
+                default :
+                JsonConvert.DeserializeObject<T>(data);
+        }
+
+        public static T ContentAsType<T>(this HttpResponseMessage response, JsonSerializerSettings settings)
+        {
+            var data = response.Content.ReadAsStringAsync().Result;
+            return string.IsNullOrEmpty(data) ?
+                default :
+                JsonConvert.DeserializeObject<T>(data, settings);
         }
 
         public static string ContentAsJson(this HttpResponseMessage response)

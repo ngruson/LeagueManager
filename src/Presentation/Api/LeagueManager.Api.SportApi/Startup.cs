@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using AutoMapper;
 using LeagueManager.Api.Shared;
+using LeagueManager.Application.Common.Mappings;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Sports.Queries.GetTeamSports;
 using LeagueManager.Infrastructure.Configuration;
@@ -13,7 +16,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace LeagueManager.Api.SportApi
@@ -38,35 +42,36 @@ namespace LeagueManager.Api.SportApi
                     options.Audience = "sportapi";
                 });
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(options =>
-                {
-                    options.SerializerSettings.Formatting = Formatting.Indented;
-                })
+            services.AddMvc(opt => opt.EnableEndpointRouting = false)
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+                //.AddJsonOptions(options =>
+                //{
+                //    options.SerializerSettings.Formatting = Formatting.Indented;
+                //})
                 .AddApplicationPart(typeof(ConfigurationController).Assembly).AddControllersAsServices();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Sport API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Sport API", Version = "v1" });
                 c.CustomSchemaIds(x => x.FullName);
             });
 
             services.AddDbContext<ILeagueManagerDbContext, LeagueManagerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("LeagueManager")));
 
-            services.AddScoped<ServiceFactory>(p => p.GetService);
-            services.Scan(scan => scan
-                .FromAssembliesOf(typeof(IMediator), typeof(GetTeamSportsQueryHandler))
-                .AddClasses()
-                .AsImplementedInterfaces());
+            services.AddAutoMapper(new Assembly[] {
+                typeof(MappingProfile).Assembly
+            });
+            services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddMediatR(typeof(ILeagueManagerDbContext).Assembly);
+
             services.AddScoped<DbInitializer>();
             services.ConfigureWritable<ConnectionStrings>(Configuration.GetSection("ConnectionStrings"));
             services.AddScoped<IDbConfigurator, DbConfigurator>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -81,17 +86,7 @@ namespace LeagueManager.Api.SportApi
             app.UseHttpsRedirection();
             app.UseMvc();
 
-            app.UseSwagger(c =>
-            {
-                c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
-                {
-                    swaggerDoc.Host = httpReq.Host.Value;
-                    swaggerDoc.Schemes = new List<string>
-                    {
-                        "https"
-                    };
-                });
-            });
+            app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.

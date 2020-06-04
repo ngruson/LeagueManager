@@ -64,7 +64,7 @@ function createTeam(team, country, listBox, url) {
             listBox.append(option);
             sortListbox(listBox);
 
-            $('.modal .alert-success').text('Team \"' + teamName + '\" has been created');
+            $('.modal .alert-success').text('Team "' + teamName + '" has been created');
             $('.modal .alert-success').removeClass('invisible');
             $('.modal .alert-danger').addClass('invisible');
             $(team).val('');
@@ -94,7 +94,7 @@ function createTeamLeague(leagueName, selectedTeams) {
         dataType: "json",
         data: JSON.stringify(req),
         success: function () {
-            $('#create-league-alert-success').text('League \"' + teamName + '\" has been created');
+            $('#create-league-alert-success').text('League "' + teamName + '" has been created');
             $('.modal .alert-success').removeClass('invisible');
             $('.modal .alert-danger').addClass('invisible');
             $(team).val('');
@@ -134,24 +134,16 @@ async function updateTeamLeagueMatch(url, homeTeam, awayTeam, startTime) {
 
 async function updateTeamLeagueMatchScore(url, homeTeam, homeScore, awayTeam, awayScore) {
     var req = {
-        homeMatchEntry: {
-            team: {
-                name: homeTeam
+        matchEntries: [
+            {
+                team: homeTeam,
+                score: homeScore
             },
-            homeAway: "Home",
-            score: {
-                value: homeScore
+            {
+                team: awayTeam,
+                score: awayScore
             }
-        },
-        awayMatchEntry: {
-            team: {
-                name: awayTeam
-            },
-            homeAway: "Away",
-            score: {
-                value: awayScore
-            }
-        }
+        ]
     };
 
     var result = await $.ajax({

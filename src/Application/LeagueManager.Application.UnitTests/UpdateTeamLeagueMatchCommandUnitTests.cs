@@ -1,10 +1,7 @@
-﻿using AutoMapper;
-using FluentAssertions;
-using LeagueManager.Application.AutoMapper;
+﻿using FluentAssertions;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
-using LeagueManager.Application.TeamLeagueMatches.Dto;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.Match;
@@ -105,7 +102,7 @@ namespace LeagueManager.Application.UnitTests
             var result = await handler.Handle(request, CancellationToken.None);
 
             //Assert
-            result. Should().BeOfType(typeof(TeamMatchDto));
+            result. Should().BeOfType(typeof(TeamLeagueMatches.Commands.UpdateTeamLeagueMatch.TeamMatchDto));
             contextMock.Verify(mock => mock.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once());
         }
 

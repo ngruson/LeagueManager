@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamCompetitor.Dto;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
 using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
@@ -48,7 +47,8 @@ namespace LeagueManager.Application.UnitTests
             );
             var handler = new GetPlayersForTeamCompetitorQueryHandler(
                 contextMock.Object,
-                Mapper.CreateMapper());
+                Mapper.MapperConfig()
+            );
 
             //Act
             var command = new GetPlayersForTeamCompetitorQuery
@@ -59,7 +59,7 @@ namespace LeagueManager.Application.UnitTests
             var result = await handler.Handle(command, CancellationToken.None);
 
             //Assert
-            result.Should().BeOfType<List<TeamCompetitorPlayerDto>>();
+            result.Should().BeOfType<List<CompetitorPlayerDto>>();
             result.ToList().Count.Should().Be(2);
         }
 
@@ -81,7 +81,8 @@ namespace LeagueManager.Application.UnitTests
             );
             var handler = new GetPlayersForTeamCompetitorQueryHandler(
                 contextMock.Object,
-                Mapper.CreateMapper());
+                Mapper.MapperConfig()
+            );
 
             //Act
             var command = new GetPlayersForTeamCompetitorQuery
@@ -113,7 +114,8 @@ namespace LeagueManager.Application.UnitTests
             );
             var handler = new GetPlayersForTeamCompetitorQueryHandler(
                 contextMock.Object,
-                Mapper.CreateMapper());
+                Mapper.MapperConfig()
+            );
 
             //Act
             var command = new GetPlayersForTeamCompetitorQuery

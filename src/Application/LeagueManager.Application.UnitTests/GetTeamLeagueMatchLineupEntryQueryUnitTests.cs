@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Queries.GetTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
 using MockQueryable.Moq;
@@ -54,6 +54,7 @@ namespace LeagueManager.Application.UnitTests
             //Assert
             result.Should().NotBeNull();
             result.Guid.Should().Be(lineupEntryGuid);
+            result.TeamName.Should().NotBeNullOrEmpty();
         }
 
         [Fact]

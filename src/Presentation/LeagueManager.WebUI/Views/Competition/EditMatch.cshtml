@@ -1,22 +1,23 @@
-﻿@model LeagueManager.WebUI.ViewModels.TeamMatchViewModel
+﻿@model LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch.TeamMatchDto
+@using LeagueManager.Application.Interfaces.Dto
 
 @{
-    var teams = ViewData["Teams"] as IEnumerable<LeagueManager.WebUI.ViewModels.TeamViewModel>;
+    var teams = ViewData["Teams"] as IEnumerable<LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueCompetitors.CompetitorDto>;
 }
 
 <div class="row">
     <div class="col">
         <div class="form-group">
-            @Html.LabelFor(m => m.Home.Team, "Home team")
-            @Html.DropDownListFor(m => m.Home.Team.Name, new SelectList(teams, "Name", "Name"), "--No team selected--", new { id = $"home-team-{Model.Guid}", @class = "form-control w-50" })
+            @Html.LabelFor(m => m.Home().Team, "Home team")
+            @Html.DropDownListFor(m => m.Home().Team.Name, new SelectList(teams, "TeamName", "TeamName"), "--No team selected--", new { id = $"home-team-{Model.Guid}", @class = "form-control w-50" })
         </div>
     </div>
 </div>
 <div class="row">
     <div class="col">
         <div class="form-group">
-            @Html.LabelFor(m => m.Away.Team, "Away team")
-            @Html.DropDownListFor(m => m.Away.Team.Name, new SelectList(teams, "Name", "Name"), "--No team selected--", new { id = $"away-team-{Model.Guid}", @class = "form-control w-50" })
+            @Html.LabelFor(m => m.Away().Team, "Away team")
+            @Html.DropDownListFor(m => m.Away().Team.Name, new SelectList(teams, "TeamName", "TeamName"), "--No team selected--", new { id = $"away-team-{Model.Guid}", @class = "form-control w-50" })
         </div>
     </div>
 </div>
@@ -24,7 +25,7 @@
     <div class="match-col">
         <div class="form-group match-col-status">
             @Html.LabelFor(m => m.StartTime, "Date")
-            @Html.TextBoxFor(m => m.StartTime, "{0:dd/MM/yyyy}", new {  id = $"date-{Model.Guid}", @class="form-control", placeholder = "dd/mm/yyyy" })
+            @Html.TextBoxFor(m => m.StartTime, "{0:dd/MM/yyyy}", new { id = $"date-{Model.Guid}", @class = "form-control", placeholder = "dd/mm/yyyy" })
         </div>
     </div>
 </div>
