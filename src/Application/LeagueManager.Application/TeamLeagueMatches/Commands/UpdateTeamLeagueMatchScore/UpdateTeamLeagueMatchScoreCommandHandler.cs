@@ -16,16 +16,15 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueM
 
         public UpdateTeamLeagueMatchScoreCommandHandler(
             ILeagueManagerDbContext context,
-            IMapper mapper)
-        {
-            this.context = context;
-            this.mapper = mapper;
-        }
+            IMapper mapper) => (this.context, this.mapper) = (context, mapper);
         
         public async Task<TeamMatchDto> Handle(UpdateTeamLeagueMatchScoreCommand request, CancellationToken cancellationToken)
         {
             var league = await context.TeamLeagues
                 .SingleOrDefaultAsync(x => x.Name == request.LeagueName, cancellationToken);
+
+            if (league == null)
+                throw new TeamLeagueNotFoundException(request.LeagueName);
 
             var match = league.GetMatch(request.Guid);
             if (match == null)
@@ -41,7 +40,7 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueM
                     me.Score.Value = matchEntry.Score;
                 }
                 else
-                    throw new TeamNotFoundException(matchEntry.Team);
+                    throw new MatchEntryNotFoundException(matchEntry.Team);
             }
 
             // Save changes

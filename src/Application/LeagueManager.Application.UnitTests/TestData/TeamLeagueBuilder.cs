@@ -121,6 +121,8 @@ namespace LeagueManager.Application.UnitTests.TestData
                 list.Add(new TeamMatchEntryLineupEntry
                 {
                     Guid = new Guid(guidValue),
+                    Player = new Domain.Player.Player(),
+                    Number = (i + 1).ToString(),
                     TeamMatchEntry = matchEntry,
                 });
             }
