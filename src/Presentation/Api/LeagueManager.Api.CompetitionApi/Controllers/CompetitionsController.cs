@@ -22,7 +22,6 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             this.mediator = mediator;
         }
 
-        // GET api/competition?country={country}
         [HttpGet]
         public async Task<IActionResult> GetCompetitions([FromQuery]string country)
         {

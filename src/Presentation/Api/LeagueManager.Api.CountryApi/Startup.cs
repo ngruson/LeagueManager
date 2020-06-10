@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
 using LeagueManager.Api.Shared;
 using LeagueManager.Application.Common.Mappings;
-using LeagueManager.Application.Countries.Queries.GetCountries;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Infrastructure.Configuration;
 using LeagueManager.Infrastructure.WritableOptions;
 using LeagueManager.Persistence.EntityFramework;
@@ -16,8 +14,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.Swagger;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace LeagueManager.Api.CountryApi
@@ -44,10 +40,6 @@ namespace LeagueManager.Api.CountryApi
 
             services.AddMvc(opt => opt.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-                //.AddJsonOptions(options =>
-                //{
-                //    options.SerializerSettings.Formatting = Formatting.Indented;
-                //})
                 .AddApplicationPart(typeof(ConfigurationController).Assembly).AddControllersAsServices();
 
             services.AddSwaggerGen(c =>
