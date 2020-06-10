@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagueMatches.Dto;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -25,13 +25,7 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
         public async Task<TeamMatchDto> Handle(GetTeamLeagueMatchQuery request, CancellationToken cancellationToken)
         {
             var teamLeague = await context.TeamLeagues
-                .Include(t => t.Country)
-                .Include(t => t.Competitors)
-                    .ThenInclude(c => c.Team)
-                .Include(t => t.Rounds)
-                    .ThenInclude(r => r.Matches)
-                        .ThenInclude(m => m.MatchEntries)
-                            .ThenInclude(m => m.Score)
+                .ProjectTo<TeamLeagueDto>(mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync(l => l.Name == request.LeagueName, cancellationToken);
 
             if (teamLeague != null)
@@ -39,18 +33,11 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
                 var match = teamLeague.Rounds.SelectMany(x => x.Matches).SingleOrDefault(m => m.Guid == request.Guid);
                 if (match != null)
                 {
-                    match.MatchEntries.ToList().ForEach(me =>
-                    {
-                        var competitor = teamLeague.Competitors.SingleOrDefault(c => c.Team.Id == me.TeamId);
-                        if (competitor != null && competitor.Team != null)
-                            me.Team = competitor.Team;
-                    });
-
                     match.MatchEntries = match.MatchEntries
-                        .OrderByDescending(me => me.HomeAway.ToString())
-                        .ToList();
+                    .OrderByDescending(me => me.HomeAway.ToString())
+                    .ToList();
 
-                    return mapper.Map<TeamMatchDto>(match);
+                    return match;
                 }
             }
 

@@ -1,50 +1,51 @@
-﻿@model LeagueManager.WebUI.ViewModels.TeamMatchViewModel
+﻿@model LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch.TeamMatchDto
+@using LeagueManager.Application.Interfaces.Dto
 
 <div class="row">
-    @if ((Model.Home.Team != null) && (!string.IsNullOrEmpty(Model.Home.Team.Logo)))
+    @if ((Model.Home().Team != null) && (!string.IsNullOrEmpty(Model.Home().Team.Logo)))
     {
         <div class="col-1">
-            <img src="@Model.Home.Team.Logo" style="height:24px; width:24px" />
+            <img src="@Model.Home().Team.Logo" style="height:24px; width:24px" />
         </div>
     }
     <div class="col-5">
         <div id="home-team-@Model.Guid" class="match-team-name match-team-name--home">
-            @Model.Home.Team.Name
+            @Model.Home().Team.Name
         </div>
     </div>
     <div class="col">
         <div class="match-score match-score--home">
             <div class="form-group row">
                 <div class="col">
-                    @Html.LabelFor(m => m.Home.Score.Value, "Home score")
+                    @Html.LabelFor(m => m.Home().Score.Value, "Home score")
                 </div>
                 <div class="col">
-                    @Html.EditorFor(m => m.Home.Score.Value, null, $"home-score-{Model.Guid}")
+                    @Html.EditorFor(m => m.Home().Score.Value, null, $"home-score-{Model.Guid}")
                 </div>
             </div>
         </div>
     </div>
 </div>
 <div class="row">
-    @if ((Model.Away.Team != null) && (!string.IsNullOrEmpty(Model.Away.Team.Logo)))
+    @if ((Model.Away().Team != null) && (!string.IsNullOrEmpty(Model.Away().Team.Logo)))
     {
         <div class="col-1">
-            <img src="@Model.Away.Team.Logo" style="height:24px; width:24px" />
+            <img src="@Model.Away().Team.Logo" style="height:24px; width:24px" />
         </div>
     }
-<div class="col-5">
-    <div id="away-team-@Model.Guid" class="match-team-name match-team-name--away">
-        @Model.Away.Team.Name
+    <div class="col-5">
+        <div id="away-team-@Model.Guid" class="match-team-name match-team-name--away">
+            @Model.Away().Team.Name
+        </div>
     </div>
-</div>
     <div class="col">
         <div class="match-score match-score--away">
             <div class="form-group row">
                 <div class="col">
-                    @Html.LabelFor(m => m.Away.Score.Value, "Away score")
+                    @Html.LabelFor(m => m.Away().Score.Value, "Away score")
                 </div>
                 <div class="col">
-                    @Html.EditorFor(m => m.Away.Score.Value, null, $"away-score-{Model.Guid}")
+                    @Html.EditorFor(m => m.Away().Score.Value, null, $"away-score-{Model.Guid}")
                 </div>
             </div>
         </div>

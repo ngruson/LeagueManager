@@ -29,7 +29,7 @@ namespace LeagueManager.Api.PlayerApi.Controllers
                 var player = await mediator.Send(command);
                 return Created($"/player/{player.FullName}", new { player });
             }
-            catch (PlayerAlreadyExistsException ex)
+            catch (LeagueManagerException ex)
             {
                 return BadRequest(ex.Message);
             }

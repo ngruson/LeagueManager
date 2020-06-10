@@ -1,9 +1,9 @@
-﻿@model LeagueManager.WebUI.ViewModels.ViewTeamLeagueViewModel
-
+﻿@model LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds.GetTeamLeagueRoundsVm
 @foreach (var round in Model.Rounds)
 {
     if (round.Name == Model.SelectedRound)
     {
+
         <div>
             <h3>@round.Name</h3>
         </div>

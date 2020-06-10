@@ -1,17 +1,9 @@
-﻿@model List<LeagueManager.WebUI.ViewModels.TeamMatchEntryViewModel>
+﻿@model List<LeagueManager.Application.Interfaces.Dto.ITeamMatchEntryWithDetailsDto>
 
 <div class="row">
     @foreach (var entry in Model)
     {
         <div class="col-6">
-            <div class="row">
-                <div class="col-2">
-                    <img src="@entry.Team.Logo" style="height:48px; width:48px" />
-                </div>
-                <div class="col">
-                    <h3>@entry.Team.Name</h3>
-                </div>
-            </div>
             <div class="py-5">
                 @foreach (var lineupEntry in entry.Lineup)
                 {

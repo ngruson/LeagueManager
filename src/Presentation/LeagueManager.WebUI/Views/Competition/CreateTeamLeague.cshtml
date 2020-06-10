@@ -23,7 +23,7 @@
                 </div>
                 <div class="'form-group">
                     <label for="logo">Logo</label>
-                    <input asp-for="Logo" type="file" name="logo" class="form-control">
+                    <input asp-for="LogoFormFile" type="file" name="LogoFormFile" class="form-control">
                 </div>
             </div>
         </div>
@@ -37,7 +37,7 @@
             <div class="col">
                 <div class="form-group">
                     @Html.LabelFor(m => m.SelectedTeams)
-                    @Html.ListBoxFor(m => m.SelectedTeamIds, new SelectList(Model.SelectedTeams, "Name", "Name"), new { id = "selected-teams", @class = "form-control", size = 10 })
+                    @Html.ListBoxFor(m => m.SelectedTeams, new SelectList(Model.SelectedTeams, "Name", "Name"), new { id = "selected-teams", @class = "form-control", size = 10 })
                 </div>
             </div>
         </div>
@@ -97,15 +97,15 @@
     <script>
         $(document).ready(function () {
 
-            getCountries($('#country-dropdown'), "@Model.CountryApiUrl/country");
-            getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl/team");
+            getCountries($('#country-dropdown'), "@ViewData["CountryApiUrl"]/country");
+            getTeams($('#teams-to-add'), $('#selected-teams'), "@ViewData["TeamApiUrl"]/team");
 
             $('#country').change(function () {
                 if (this.value == "--No country selected--") {
-                    getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl/team");
+                    getTeams($('#teams-to-add'), $('#selected-teams'), "@ViewData["TeamApiUrl"]/team");
                 }
                 else {
-                    getTeams($('#teams-to-add'), $('#selected-teams'), "@Model.TeamApiUrl/team/" + this.value);
+                    getTeams($('#teams-to-add'), $('#selected-teams'), "@ViewData["TeamApiUrl"]/team/" + this.value);
                     $('#country-dropdown').val(this.value).change();
                 }
             });
@@ -135,7 +135,7 @@
                     $('#team-name'),
                     $('#country-dropdown option:selected'),
                     $('#teams-to-add'),
-                    "@Model.TeamApiUrl/team"
+                    "@ViewData["TeamApiUrl"]/team"
                 );
             });
         });

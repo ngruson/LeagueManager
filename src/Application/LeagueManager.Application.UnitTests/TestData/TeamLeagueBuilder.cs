@@ -47,7 +47,7 @@ namespace LeagueManager.Application.UnitTests.TestData
             {
                 new TeamLeagueRound
                 {
-                    Name = "Round 1"
+                    Name = "Round 1",
                 }
             };
             rounds[0].Matches = CreateMatches(rounds[0], competitors);
@@ -85,7 +85,7 @@ namespace LeagueManager.Application.UnitTests.TestData
             var matchEntry = new TeamMatchEntry
             {
                 HomeAway = HomeAway.Home,
-                Team = competitors[0].Team
+                Team = competitors[0].Team,
             };
             matchEntry.Lineup = CreateLineup(matchEntry, 0);
             matchEntries.Add(matchEntry);
@@ -93,20 +93,20 @@ namespace LeagueManager.Application.UnitTests.TestData
             matchEntry = new TeamMatchEntry
             {
                 HomeAway = HomeAway.Away,
-                Team = competitors[1].Team
+                Team = competitors[1].Team,
             };
             matchEntry.Lineup = CreateLineup(matchEntry, 11);
             matchEntries.Add(matchEntry);
 
-            return new List<TeamLeagueMatch>
+            var match = new TeamLeagueMatch
             {
-                new TeamLeagueMatch
-                {
-                    Guid = new Guid("00000000-0000-0000-0000-000000000000"),
-                    TeamLeagueRound = round,
-                    MatchEntries = matchEntries
-                }
+                Guid = new Guid("00000000-0000-0000-0000-000000000000"),
+                TeamLeagueRound = round,
+                MatchEntries = matchEntries
             };
+            match.MatchEntries.ToList().ForEach(me => me.TeamLeagueMatch = match);
+
+            return new List<TeamLeagueMatch> { match };
         }
 
         private static List<TeamMatchEntryLineupEntry> CreateLineup(TeamMatchEntry matchEntry, int totalCounter)
@@ -121,7 +121,9 @@ namespace LeagueManager.Application.UnitTests.TestData
                 list.Add(new TeamMatchEntryLineupEntry
                 {
                     Guid = new Guid(guidValue),
-                    TeamMatchEntry = matchEntry
+                    Player = new Domain.Player.Player(),
+                    Number = (i + 1).ToString(),
+                    TeamMatchEntry = matchEntry,
                 });
             }
             return list;

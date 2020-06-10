@@ -6,6 +6,7 @@ namespace LeagueManager.Application.Exceptions
     [Serializable]
     public class TeamNotFoundException : LeagueManagerException
     {
+        public TeamNotFoundException() { }
         public TeamNotFoundException(string name)
             : base($"Team \"{name}\" not found.")
         {

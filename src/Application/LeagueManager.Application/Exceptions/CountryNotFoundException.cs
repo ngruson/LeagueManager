@@ -5,6 +5,8 @@ namespace LeagueManager.Application.Exceptions
 {
     public class CountryNotFoundException : LeagueManagerException
     {
+        public CountryNotFoundException() { }
+
         public CountryNotFoundException(string name) : base($"Country \"{name}\" not found.")
         {
         }

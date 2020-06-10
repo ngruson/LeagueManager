@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using LeagueManager.Application.AutoMapper;
-using LeagueManager.Application.TeamLeagueMatches.Lineup;
+using LeagueManager.Application.Common.Mappings;
 
 namespace LeagueManager.Application.UnitTests
 {
@@ -10,8 +9,7 @@ namespace LeagueManager.Application.UnitTests
         {
             return new MapperConfiguration(opts =>
             {
-                opts.AddProfile<ApplicationProfile>();
-                opts.AddProfile<LineupProfile>();
+                opts.AddProfile<MappingProfile>();
             });
         }
 

@@ -1,9 +1,7 @@
 ﻿using FluentAssertions;
-using LeagueManager.Application.TeamLeagues.Commands;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
-using MediatR;
 using MockQueryable.Moq;
 using Moq;
 using System.Collections.Generic;
@@ -16,7 +14,7 @@ using LeagueManager.Application.Exceptions;
 using LeagueManager.Domain.Sports;
 using LeagueManager.Domain.Common;
 using LeagueManager.Application.UnitTests.TestData;
-using LeagueManager.Application.TeamLeagues.Dto;
+using LeagueManager.Application.TeamLeagues.Commands.CreateTeamLeague;
 
 namespace LeagueManager.Application.UnitTests
 {
@@ -63,7 +61,7 @@ namespace LeagueManager.Application.UnitTests
             var request = new CreateTeamLeagueCommand {
                 Sports = "Soccer",
                 Name = "Premier League",
-                Teams = teams.Select(t => t.Name).ToList()
+                SelectedTeams = teams.Select(t => t.Name).ToList()
             };
             var result = await handler.Handle(request, CancellationToken.None);
 
@@ -102,7 +100,7 @@ namespace LeagueManager.Application.UnitTests
             var request = new CreateTeamLeagueCommand
             {
                 Name = "Premier League",
-                Teams = teams.Select(t => t.Name).ToList()
+                SelectedTeams = teams.Select(t => t.Name).ToList()
             };
             Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 
@@ -131,7 +129,7 @@ namespace LeagueManager.Application.UnitTests
             {
                 Sports = "DoesNotExist",
                 Name = "Premier League",
-                Teams = teams.Select(t => t.Name).ToList()
+                SelectedTeams = teams.Select(t => t.Name).ToList()
             };
             Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 
@@ -161,7 +159,7 @@ namespace LeagueManager.Application.UnitTests
                 Sports = "Soccer",
                 Country = "DoesNotExist",
                 Name = "Premier League",
-                Teams = teams.Select(t => t.Name).ToList()
+                SelectedTeams = teams.Select(t => t.Name).ToList()
             };
             Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 
@@ -191,7 +189,7 @@ namespace LeagueManager.Application.UnitTests
                 Sports = "Soccer",
                 Country = "England",
                 Name = "Premier League",
-                Teams = new TeamsBuilder().Build().Select(t => t.Name).ToList()
+                SelectedTeams = new TeamsBuilder().Build().Select(t => t.Name).ToList()
             };
             Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 

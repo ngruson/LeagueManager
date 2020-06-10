@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Exceptions;
-using LeagueManager.Application.TeamLeagueMatches.Dto;
+using LeagueManager.Application.Teams.Queries.GetTeams;
 using LeagueManager.Infrastructure.Api;
 using LeagueManager.Infrastructure.HttpHelpers;
 using Microsoft.Extensions.Options;

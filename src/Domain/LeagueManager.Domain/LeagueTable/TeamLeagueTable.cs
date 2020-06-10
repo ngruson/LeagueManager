@@ -9,7 +9,7 @@ namespace LeagueManager.Domain.LeagueTable
 {
     public class TeamLeagueTable : ILeagueTable
     {
-        public List<TeamLeagueTableItem> Items { get; set; } = new List<TeamLeagueTableItem>();
+        public virtual List<TeamLeagueTableItem> Items { get; set; } = new List<TeamLeagueTableItem>();
 
         public void CalculateTable(
             List<TeamCompetitor> teams, 

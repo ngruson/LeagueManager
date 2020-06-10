@@ -1,6 +1,6 @@
-﻿@model LeagueManager.WebUI.ViewModels.TeamMatchEntryGoalEventViewModel
+﻿@model LeagueManager.Application.Interfaces.Dto.IGoalDto
 @{
-    var players = ViewData["Players"] as IEnumerable<LeagueManager.WebUI.ViewModels.PlayerViewModel>;
+    var players = ViewData["Players"] as IEnumerable<LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor.PlayerDto>;
 }
 
 <div class="row edit-goal">
@@ -10,7 +10,7 @@
     </div>
     <div class="col form-group">
         @Html.LabelFor(m => m.Player)
-        <button type="button" class="btn btn-default fa fa-save js-edit-save-goal" data-guid="@Model.Guid" data-team-name="@Model.TeamName" data-toggle="tooltip" data-placement="top" title="Save"></button>
+        <button type="button" class="btn btn-default fa fa-save js-edit-save-goal" data-guid="@Model.Guid" data-team-name="@Model.TeamMatchEntryTeamName" data-toggle="tooltip" data-placement="top" title="Save"></button>
         <button type="button" class="btn btn-default fa fa-window-close js-cancel-goal" data-guid="@Model.Guid" data-toggle="tooltip" data-placement="top" title="Cancel"></button>
         @Html.DropDownListFor(m => m.Player.FullName, new SelectList(players, "FullName", "FullName"), "--Select player--", new { id = $"player-{Model.Guid}", @class = "form-control js-select-player", @data_guid = $"{Model.Guid}" })
     </div>

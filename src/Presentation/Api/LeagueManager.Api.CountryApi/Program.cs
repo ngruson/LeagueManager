@@ -1,18 +1,19 @@
 ﻿using LeagueManager.Application.Interfaces;
 using LeagueManager.Persistence.EntityFramework;
-using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace LeagueManager.Api.CountryApi
 {
     public class Program
     {
-        public static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            var host = CreateWebHostBuilder(args).Build();
+            var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
             {
@@ -22,7 +23,7 @@ namespace LeagueManager.Api.CountryApi
 
                     var concreteContext = (LeagueManagerDbContext)context;
                     var initializer = scope.ServiceProvider.GetService<DbInitializer>();
-                    initializer.Initialize(concreteContext);
+                    await initializer.Initialize(concreteContext);
                 }
                 catch (Exception ex)
                 {
@@ -34,9 +35,11 @@ namespace LeagueManager.Api.CountryApi
             host.Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseIISIntegration()
-                .UseStartup<Startup>();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
     }
 }

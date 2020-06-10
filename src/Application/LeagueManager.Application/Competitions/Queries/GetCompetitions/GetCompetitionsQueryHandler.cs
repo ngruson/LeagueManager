@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using LeagueManager.Domain.Competition;
 using Microsoft.EntityFrameworkCore;
-using LeagueManager.Application.Competitions.Queries.Dto;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 
 namespace LeagueManager.Application.Competitions.Queries.GetCompetitions
 {
@@ -24,7 +24,7 @@ namespace LeagueManager.Application.Competitions.Queries.GetCompetitions
             this.mapper = mapper;
         }
 
-        private async Task<List<TeamLeague>> GetTeamLeagues(string country)
+        private async Task<List<CompetitionDto>> GetTeamLeagues(string country)
         {
             IQueryable<TeamLeague> query = context.TeamLeagues
                 .Include(c => c.Country)
@@ -34,7 +34,10 @@ namespace LeagueManager.Application.Competitions.Queries.GetCompetitions
             if (!string.IsNullOrEmpty(country))
                 query = query.Where(l => l.Country != null && l.Country.Name == country);
 
-            var leagues = await query.ToListAsync();
+            var leagues = await query
+                .ProjectTo<CompetitionDto>(mapper.ConfigurationProvider)
+                .ToListAsync();
+
             return leagues;
                 
         }
@@ -42,7 +45,7 @@ namespace LeagueManager.Application.Competitions.Queries.GetCompetitions
         public async Task<IEnumerable<CompetitionDto>> Handle(GetCompetitionsQuery request, CancellationToken cancellationToken)
         {
             var list = await GetTeamLeagues(request.Country);
-            return mapper.Map<IEnumerable<CompetitionDto>>(list);
+            return list;
         }
     }
 }

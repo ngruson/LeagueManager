@@ -2,7 +2,6 @@
 using AutoMapper.QueryableExtensions;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagueMatches.Goals;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

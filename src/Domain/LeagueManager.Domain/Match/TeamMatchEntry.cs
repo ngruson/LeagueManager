@@ -8,12 +8,13 @@ namespace LeagueManager.Domain.Match
     public class TeamMatchEntry
     {
         public int Id { get; set; }
+        public virtual TeamLeagueMatch TeamLeagueMatch { get; set; }
         public int? TeamId { get; set; }
-        public Team Team { get; set; }
+        public virtual Team Team { get; set; }
         public HomeAway HomeAway { get; set; }
-        public IntegerScore Score { get; set; }
-        public IEnumerable<TeamMatchEntryLineupEntry> Lineup { get; set; } = new List<TeamMatchEntryLineupEntry>();
-        public IEnumerable<TeamMatchEntryGoal> Goals { get; set; } = new List<TeamMatchEntryGoal>();
+        public virtual IntegerScore Score { get; set; }
+        public virtual IEnumerable<TeamMatchEntryLineupEntry> Lineup { get; set; } = new List<TeamMatchEntryLineupEntry>();
+        public virtual IEnumerable<TeamMatchEntryGoal> Goals { get; set; } = new List<TeamMatchEntryGoal>();
 
         public void CreateLineup(int amountOfPlayers)
         {

@@ -6,6 +6,7 @@ namespace LeagueManager.Application.Exceptions
     [Serializable]
     public class MatchEntryNotFoundException : LeagueManagerException
     {
+        public MatchEntryNotFoundException() { }
         public MatchEntryNotFoundException(string team)
             : base($"No match entry found for team \"{team}\".")
         {

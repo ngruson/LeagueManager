@@ -5,6 +5,10 @@ namespace LeagueManager.Application.Exceptions
 {
     public abstract class LeagueManagerException : Exception
     {
+        protected LeagueManagerException() : base()
+        {
+        }
+
         public LeagueManagerException(string message) : base(message)
         {
         }

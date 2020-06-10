@@ -1,10 +1,8 @@
-﻿using LeagueManager.Application.TeamLeagues.Dto;
-using MediatR;
-using System.Collections.Generic;
+﻿using MediatR;
 
 namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds
 {
-    public class GetTeamLeagueRoundsQuery : IRequest<IEnumerable<TeamLeagueRoundDto>>
+    public class GetTeamLeagueRoundsQuery : IRequest<GetTeamLeagueRoundsVm>
     {
         public string LeagueName { get; set; }
     }

@@ -11,25 +11,9 @@ namespace LeagueManager.Domain.Match
     {
         public int Id { get; set; }
         public Guid Guid { get; set; }
-        public TeamLeagueRound TeamLeagueRound { get; set; }
+        public virtual TeamLeagueRound TeamLeagueRound { get; set; }
         public DateTime? StartTime { get; set; }
-        public IEnumerable<TeamMatchEntry> MatchEntries { get; set; } = new List<TeamMatchEntry>();
-
-        public TeamMatchEntry Home
-        {
-            get
-            {
-                return MatchEntries.SingleOrDefault(me => me.HomeAway == HomeAway.Home);
-            }
-        }
-
-        public TeamMatchEntry Away
-        {
-            get
-            {
-                return MatchEntries.SingleOrDefault(me => me.HomeAway == HomeAway.Away);
-            }
-        }
+        public virtual IEnumerable<TeamMatchEntry> MatchEntries { get; set; } = new List<TeamMatchEntry>();
 
         public Team Winner
         {
@@ -75,9 +59,11 @@ namespace LeagueManager.Domain.Match
 
         public void CreateMatchEntries(int amountOfPlayers)
         {
-            var list = new List<TeamMatchEntry>();
-            list.Add(CreateMatchEntry(HomeAway.Home, amountOfPlayers));
-            list.Add(CreateMatchEntry(HomeAway.Away, amountOfPlayers));
+            var list = new List<TeamMatchEntry>
+            {
+                CreateMatchEntry(HomeAway.Home, amountOfPlayers),
+                CreateMatchEntry(HomeAway.Away, amountOfPlayers)
+            };
             MatchEntries = list;
         }
 

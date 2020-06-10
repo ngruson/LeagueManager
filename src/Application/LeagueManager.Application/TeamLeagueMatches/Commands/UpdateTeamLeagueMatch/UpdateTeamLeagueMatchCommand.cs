@@ -1,5 +1,4 @@
-﻿using LeagueManager.Application.TeamLeagueMatches.Dto;
-using MediatR;
+﻿using MediatR;
 using System;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch

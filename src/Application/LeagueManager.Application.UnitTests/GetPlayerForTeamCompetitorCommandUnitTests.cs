@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamCompetitor.Dto;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor;
 using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
@@ -48,7 +47,7 @@ namespace LeagueManager.Application.UnitTests
             );
             var handler = new GetPlayerForTeamCompetitorQueryHandler(
                 contextMock.Object,
-                Mapper.CreateMapper());
+                Mapper.MapperConfig());
 
             //Act
             var command = new GetPlayerForTeamCompetitorQuery
@@ -60,7 +59,7 @@ namespace LeagueManager.Application.UnitTests
             var result = await handler.Handle(command, CancellationToken.None);
 
             //Assert
-            result.Should().BeOfType<TeamCompetitorPlayerDto>();
+            result.Should().BeOfType<CompetitorPlayerDto>();
             result.Player.Should().NotBeNull();
             result.Player.FirstName.Should().Be("John");
             result.Player.LastName.Should().Be("Doe");
@@ -85,7 +84,7 @@ namespace LeagueManager.Application.UnitTests
             );
             var handler = new GetPlayerForTeamCompetitorQueryHandler(
                 contextMock.Object,
-                Mapper.CreateMapper());
+                Mapper.MapperConfig());
 
             //Act
             var command = new GetPlayerForTeamCompetitorQuery
@@ -118,7 +117,7 @@ namespace LeagueManager.Application.UnitTests
             );
             var handler = new GetPlayerForTeamCompetitorQueryHandler(
                 contextMock.Object,
-                Mapper.CreateMapper());
+                Mapper.MapperConfig());
 
             //Act
             var command = new GetPlayerForTeamCompetitorQuery
@@ -151,7 +150,7 @@ namespace LeagueManager.Application.UnitTests
             );
             var handler = new GetPlayerForTeamCompetitorQueryHandler(
                 contextMock.Object,
-                Mapper.CreateMapper());
+                Mapper.MapperConfig());
 
             //Act
             var command = new GetPlayerForTeamCompetitorQuery

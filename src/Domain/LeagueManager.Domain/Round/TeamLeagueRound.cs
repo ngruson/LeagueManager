@@ -8,7 +8,7 @@ namespace LeagueManager.Domain.Round
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<TeamLeagueMatch> Matches { get; set; } = new List<TeamLeagueMatch>();
-        public TeamLeague TeamLeague { get; set; }
+        public virtual List<TeamLeagueMatch> Matches { get; set; } = new List<TeamLeagueMatch>();
+        public virtual TeamLeague TeamLeague { get; set; }
     }
 }

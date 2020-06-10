@@ -45,9 +45,9 @@ namespace LeagueManager.Persistence.EntityFramework
 
             Console.WriteLine($"DesignTimeDbContextFactoryBase.Create(string): Connection string: '{connectionString}'.");
 
-            var optionsBuilder = new DbContextOptionsBuilder<TContext>();
-
-            optionsBuilder.UseSqlServer(connectionString);
+            var optionsBuilder = new DbContextOptionsBuilder<TContext>()
+                .UseLazyLoadingProxies()
+                .UseSqlServer(connectionString);
 
             return CreateNewInstance(optionsBuilder.Options);
         }

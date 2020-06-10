@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using LeagueManager.Domain.Competition;
 using AutoMapper;
-using LeagueManager.Application.Competitions.Queries.Dto;
 using Microsoft.Extensions.Logging;
+using AutoMapper.QueryableExtensions;
 
 namespace LeagueManager.Application.Competitions.Queries.GetCompetition
 {
@@ -31,12 +31,13 @@ namespace LeagueManager.Application.Competitions.Queries.GetCompetition
         public async Task<CompetitionDto> Handle(GetCompetitionQuery request, CancellationToken cancellationToken)
         {
             logger.LogInformation("Getting team leagues with name '{Name}'", request.Name);
-            var list = new List<TeamLeague>();
+            var list = new List<CompetitionDto>();
             var teamLeague = await context.TeamLeagues
                 .Include(t => t.Sports)
                 .Include(t => t.Country)
                 .Include(t => t.Competitors)
                     .ThenInclude(c => c.Team)
+                .ProjectTo<CompetitionDto>(mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync(l => l.Name == request.Name, cancellationToken);
 
             if (teamLeague != null)
@@ -53,7 +54,7 @@ namespace LeagueManager.Application.Competitions.Queries.GetCompetition
             if (competition != null)
             {
                 logger.LogInformation($"Returning competition with name = '{request.Name}' ");
-                return mapper.Map<CompetitionDto>(competition);
+                return competition;
             }
 
             logger.LogInformation($"Returning null");

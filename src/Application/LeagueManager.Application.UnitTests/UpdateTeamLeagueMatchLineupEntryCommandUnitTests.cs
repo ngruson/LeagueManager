@@ -1,13 +1,8 @@
 ﻿using FluentAssertions;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Dto;
-using LeagueManager.Application.TeamLeagueMatches.Lineup.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.UnitTests.TestData;
-using MediatR;
 using Moq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -15,6 +10,7 @@ using LeagueManager.Application.Interfaces;
 using LeagueManager.Domain.Competition;
 using MockQueryable.Moq;
 using LeagueManager.Application.Exceptions;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupEntry;
 
 namespace LeagueManager.Application.UnitTests
 {

@@ -1,9 +1,8 @@
-﻿using LeagueManager.Application.TeamLeagues.Dto;
-using MediatR;
+﻿using MediatR;
 
 namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable
 {
-    public class GetTeamLeagueTableQuery : IRequest<TeamLeagueTableDto>
+    public class GetTeamLeagueTableQuery : IRequest<GetTeamLeagueTableVm>
     {
         public string LeagueName { get; set; }
     }

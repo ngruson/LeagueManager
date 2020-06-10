@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using FluentAssertions;
-using LeagueManager.Application.AutoMapper;
+using LeagueManager.Application.Common.Mappings;
 using LeagueManager.Application.Competitions.Queries.GetCompetition;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Domain.Common;
@@ -30,7 +30,7 @@ namespace LeagueManager.Application.UnitTests
         {
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile<ApplicationProfile>();
+                opts.AddProfile<MappingProfile>();
             });
 
             return config.CreateMapper();

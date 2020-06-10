@@ -2,7 +2,6 @@
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchGoal;
-using LeagueManager.Application.TeamLeagueMatches.Goals;
 using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;

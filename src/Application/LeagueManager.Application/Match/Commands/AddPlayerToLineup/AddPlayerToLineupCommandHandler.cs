@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using LeagueManager.Application.Exceptions;
+﻿using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -22,17 +21,20 @@ namespace LeagueManager.Application.Match.Commands.AddPlayerToLineup
         {
             var lineup = await context.TeamLeagues
                 .Where(t => t.Name == request.LeagueName)
-                .Select(l => l.Rounds.SelectMany(r =>
+                .SelectMany(l => l.Rounds.SelectMany(r =>
                         r.Matches.Where(m => m.Guid == request.Guid)
-                    ).FirstOrDefault())
-                .SelectMany(m => m.MatchEntries.SelectMany(me => me.Lineup))
-                .Where(l => l.TeamMatchEntry.Team.Name == request.Team)
+                        .SelectMany(m => m.MatchEntries
+                            .Where(me => me.Team.Name == request.Team)
+                            .SelectMany(me => me.Lineup)
+                        )
+                    )
+                )
                 .ToListAsync();
 
             if ((lineup == null) || (lineup.Count == 0))
                 throw new MatchEntryNotFoundException(request.Team);
 
-            var player = await context.Players.SingleOrDefaultAsync(p => p.FullName == request.Player);
+            var player = context.Players.AsEnumerable().SingleOrDefault(p => p.FullName == request.Player);
             if (player == null)
                 throw new PlayerNotFoundException(request.Player);
 

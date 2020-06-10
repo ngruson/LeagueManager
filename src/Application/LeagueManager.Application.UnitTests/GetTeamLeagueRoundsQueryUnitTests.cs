@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using FluentAssertions;
-using LeagueManager.Application.AutoMapper;
+using LeagueManager.Application.Common.Mappings;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
+using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
 using LeagueManager.Domain.Competitor;
 using LeagueManager.Domain.Match;
@@ -30,7 +31,7 @@ namespace LeagueManager.Application.UnitTests
         {
             var config = new MapperConfiguration(opts =>
             {
-                opts.AddProfile<ApplicationProfile>();
+                opts.AddProfile<MappingProfile>();
             });
 
             return config.CreateMapper();
@@ -134,9 +135,13 @@ namespace LeagueManager.Application.UnitTests
         public async void Given_TeamLeagueExist_When_GetTeamLeagueRounds_Then_ReturnRounds()
         {
             // Arrange
+            var teamLeague = new TeamLeagueBuilder()
+                .WithCompetitors(new TeamsBuilder().Build())
+                .WithRounds()
+                .Build();
+
             var leagues = new List<TeamLeague> {
-                CreateTeamLeagueWithRoundsAndMatches("Premier League"),
-                CreateTeamLeagueWithRoundsAndMatches("Primera Division")
+                teamLeague
             };
 
             var contextMock = MockDbContext(leagues.AsQueryable());
@@ -148,21 +153,8 @@ namespace LeagueManager.Application.UnitTests
 
             //Assert
             result.Should().NotBeNull();
-            result.Count().Should().Be(2);
-            result.Should().BeInAscendingOrder(x => x.Name);
-            result.ToList().ForEach(r =>
-            {
-                r.Matches.Should().NotBeNull();
-                r.Matches.ToList().ForEach(m =>
-                {
-                    m.MatchEntries.SingleOrDefault(me =>
-                            me.HomeAway == TeamLeagueMatches.Dto.HomeAway.Home)
-                        .Should().NotBeNull();
-                    m.MatchEntries.SingleOrDefault(me =>
-                        me.HomeAway == TeamLeagueMatches.Dto.HomeAway.Away)
-                    .Should().NotBeNull();
-                });
-            });
+            result.Rounds.Count().Should().Be(1);
+            result.Rounds.Should().BeInAscendingOrder(x => x.Name);
         }
     }
 }

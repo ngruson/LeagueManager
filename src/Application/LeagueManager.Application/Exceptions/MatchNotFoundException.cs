@@ -6,6 +6,7 @@ namespace LeagueManager.Application.Exceptions
     [Serializable]
     public class MatchNotFoundException : LeagueManagerException
     {
+        public MatchNotFoundException() { }
         public MatchNotFoundException(Guid guid)
             : base($"Match \"{guid}\" not found.")
         {

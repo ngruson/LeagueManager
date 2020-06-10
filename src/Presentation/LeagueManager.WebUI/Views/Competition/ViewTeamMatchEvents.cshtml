@@ -1,8 +1,12 @@
-﻿@model IEnumerable<LeagueManager.WebUI.ViewModels.IMatchEventViewModel>
+﻿@model IEnumerable<LeagueManager.Application.Interfaces.Dto.IMatchEventDto>
+@using LeagueManager.Application.Interfaces.Dto; 
 
 @foreach (var matchEvent in Model)
 {
     <div id="match-event-@matchEvent.Guid">
-        @await Html.PartialAsync(matchEvent.ViewName, matchEvent)
+        @if (matchEvent is IGoalDto)
+        {
+            @await Html.PartialAsync("ViewGoalMatchEvent", matchEvent);
+        }
     </div>
 }

@@ -6,6 +6,7 @@ namespace LeagueManager.Application.Exceptions
     [Serializable]
     public class TeamAlreadyExistsException : LeagueManagerException
     {
+        public TeamAlreadyExistsException() { }
         public TeamAlreadyExistsException(string name)
             : base($"Team \"{name}\" already exists.")
         {

@@ -1,4 +1,5 @@
-﻿@model LeagueManager.WebUI.ViewModels.TeamLeagueTableViewModel
+﻿@model LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable.GetTeamLeagueTableVm;
+
     <table class="table table-striped">
         <thead>
             <tr>
@@ -16,7 +17,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Items)
+            @foreach (var item in Model.Table.Items)
             {
                 <tr>
                     <td>@item.Position</td>
