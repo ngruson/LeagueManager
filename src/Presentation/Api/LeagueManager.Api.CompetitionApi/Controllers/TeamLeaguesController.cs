@@ -37,6 +37,18 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         public TeamLeaguesController(IMediator mediator, ILogger<TeamLeaguesController> logger, IMapper mapper) => 
             (this.mediator, this.logger, this.mapper) = (mediator, logger, mapper);
 
+        private IActionResult LogException(string methodName, Exception ex)
+        {
+            logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+            return BadRequest(ex.Message);
+        }
+
+        private IActionResult LogException(string methodName, Exception ex, string error)
+        {
+            logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
+            return BadRequest(error);
+        }
+
         [HttpGet("{leagueName}")]
         public async Task<IActionResult> GetTeamLeague(string leagueName)
         {
@@ -53,13 +65,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -83,13 +93,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -110,13 +118,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -137,13 +143,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -168,13 +172,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -200,13 +202,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -225,13 +225,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -256,13 +254,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -283,15 +279,13 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 logger.LogInformation("{methodName}: Returning match {match}", methodName, match);
                 return Ok(match);
             }
-            catch (LeagueManagerException ex)
+            catch(LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -315,13 +309,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -346,13 +338,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }        
 
@@ -378,13 +368,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -408,13 +396,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -439,13 +425,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -469,13 +453,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -501,13 +483,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -530,15 +510,13 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 logger.LogInformation($"{methodName}: Returning goal {goal}");
                 return Ok(goal);
             }
-            catch (LeagueManagerException ex)
+            catch(LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
 
@@ -564,13 +542,11 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
             }
             catch (LeagueManagerException ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest(ex.Message);
+                return LogException(methodName, ex);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"{methodName}: Exception {ex.GetType().Name} thrown: {ex.Message}");
-                return BadRequest("Something went wrong!");
+                return LogException(methodName, ex, "Something went wrong!");
             }
         }
     }
