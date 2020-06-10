@@ -1,8 +1,4 @@
-﻿using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
-using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
-using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using MediatR;
 
 namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeague
 {

@@ -12,11 +12,8 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
     public class GetTeamLeagueMatchDetailsQueryHandler : IRequestHandler<GetTeamLeagueMatchDetailsQuery, TeamMatchDto>
     {
         private readonly ILeagueManagerDbContext context;
-        //private readonly IConfigurationProvider config;
 
-        public GetTeamLeagueMatchDetailsQueryHandler(
-            ILeagueManagerDbContext context)
-            //IConfigurationProvider config) 
+        public GetTeamLeagueMatchDetailsQueryHandler(ILeagueManagerDbContext context)
             => (this.context) = (context);
 
         public async Task<TeamMatchDto> Handle(GetTeamLeagueMatchDetailsQuery request, CancellationToken cancellationToken)

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable
+﻿namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable
 {
     public class GetTeamLeagueTableVm
     {

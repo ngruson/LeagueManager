@@ -41,9 +41,6 @@ namespace LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds
                         m.MatchEntries = m.MatchEntries
                             .OrderByDescending(me => me.HomeAway.ToString())
                             .ToList();
-
-                        //m.Home = m.MatchEntries.SingleOrDefault(me => me.HomeAway == Interfaces.Dto.HomeAway.Home);
-                        //m.Away = m.MatchEntries.SingleOrDefault(me => me.HomeAway == Interfaces.Dto.HomeAway.Away);
                     });
                 });
 

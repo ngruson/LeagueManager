@@ -8,8 +8,6 @@ namespace LeagueManager.Application.TeamLeagues.Commands.CreateTeamLeague
 {
     public class TeamMatchEntryDto : IMapFrom<TeamMatchEntry>
     {
-        //public TeamMatchDto TeamMatch { get; set; }
-        //public string Team { get; set; }
         public HomeAway HomeAway { get; set; }
         public List<LineupEntryDto> Lineup { get; set; }
 

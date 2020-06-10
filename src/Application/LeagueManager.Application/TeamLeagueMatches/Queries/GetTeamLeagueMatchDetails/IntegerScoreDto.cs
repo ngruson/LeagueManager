@@ -1,18 +1,9 @@
-﻿using AutoMapper;
-using LeagueManager.Application.Common.Mappings;
-using LeagueManager.Application.Interfaces.Dto;
-using LeagueManager.Domain.Score;
+﻿using LeagueManager.Application.Interfaces.Dto;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails
 {
-    public class IntegerScoreDto : /*IMapFrom<Domain.Score.IntegerScore>,*/ IIntegerScoreDto
+    public class IntegerScoreDto : IIntegerScoreDto
     {
-        public int? Value { get; set; }
-
-        //public void Mapping(Profile profile)
-        //{
-        //    profile.CreateMap<IntegerScore, IIntegerScoreDto>()
-        //        .As<IntegerScoreDto>();
-        //}
+        public int? Value { get; set; }        
     }
 }

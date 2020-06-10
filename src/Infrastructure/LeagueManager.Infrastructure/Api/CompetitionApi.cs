@@ -171,10 +171,6 @@ namespace LeagueManager.Infrastructure.Api
             var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/matches/{query.Guid}/details");
             if (response.IsSuccessStatusCode)
             {
-                //var resolver = new IgnorableSerializerContractResolver();
-                //resolver.Ignore(typeof(ITeamMatchEntryWithDetailsDto), "Events");
-                //resolver.Ignore(typeof(List<IMatchEventDto>));
-
                 var settings = new JsonSerializerSettings
                 {
                     Converters =

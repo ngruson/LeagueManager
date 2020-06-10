@@ -7,7 +7,7 @@ namespace LeagueManager.Infrastructure.Json
     {
         public override bool CanConvert(Type objectType) => objectType == typeof(TIntf);
 
-        public override object ReadJson(JsonReader reader, Type type, object value, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             => serializer.Deserialize<TImpl>(reader);
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer) 

@@ -35,12 +35,9 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     new Application.Competitions.Queries.GetCompetitions.CompetitionDto { Name = "Ligue 1", Country = "France" },
                     new Application.Competitions.Queries.GetCompetitions.CompetitionDto { Name = "Primera Division", Country = "Spain" },
                     });
-                var mockLogger = new Mock<ILogger<CompetitionsController>>();
 
                 var controller = new CompetitionsController(
-                    mockMediator.Object,
-                    Mapper.CreateMapper(),
-                    mockLogger.Object
+                    mockMediator.Object
                 );
 
                 //Act
@@ -60,7 +57,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             public async void Given_Exception_When_GetCompetitions_Then_ReturnBadRequest()
             {
                 //Arrange
-                var controller = new CompetitionsController(null, null, null);
+                var controller = new CompetitionsController(null);
 
                 //Act
                 var result = await controller.GetCompetitions(null);
@@ -84,12 +81,9 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     .ReturnsAsync(
                         new Application.Competitions.Queries.GetCompetition.CompetitionDto { Name = "Premier League", Country = "England" }
                     );
-                var mockLogger = new Mock<ILogger<CompetitionsController>>();
 
                 var controller = new CompetitionsController(
-                    mockMediator.Object,
-                    Mapper.CreateMapper(),
-                    mockLogger.Object
+                    mockMediator.Object
                 );
 
                 //Act
@@ -105,7 +99,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             public async void Given_Exception_When_GetCompetition_Then_ReturnBadRequest()
             {
                 //Arrange
-                var controller = new CompetitionsController(null, null, null);
+                var controller = new CompetitionsController(null);
 
                 //Act
                 var result = await controller.GetCompetition(null);
@@ -122,11 +116,8 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             {
                 //Arrange
                 var mockMediator = new Mock<IMediator>();
-                var mockLogger = new Mock<ILogger<CompetitionsController>>();
                 var controller = new CompetitionsController(
-                    mockMediator.Object,
-                    Mapper.CreateMapper(),
-                    mockLogger.Object
+                    mockMediator.Object
                 );
 
                 var command = new CreateTeamLeagueCommand
@@ -152,12 +143,9 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                         It.IsAny<CancellationToken>()
                     ))
                     .Throws(new CompetitionAlreadyExistsException("Premier League"));
-                var mockLogger = new Mock<ILogger<CompetitionsController>>();
 
                 var controller = new CompetitionsController(
-                    mockMediator.Object,
-                    Mapper.CreateMapper(),
-                    mockLogger.Object
+                    mockMediator.Object
                 );
 
                 var command = new CreateTeamLeagueCommand
@@ -187,9 +175,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                 var mockLogger = new Mock<ILogger<CompetitionsController>>();
 
                 var controller = new CompetitionsController(
-                    mockMediator.Object,
-                    Mapper.CreateMapper(),
-                    mockLogger.Object
+                    mockMediator.Object
                 );
 
                 var command = new CreateTeamLeagueCommand();
@@ -215,9 +201,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                 var mockLogger = new Mock<ILogger<CompetitionsController>>();
 
                 var controller = new CompetitionsController(
-                    mockMediator.Object,
-                    Mapper.CreateMapper(),
-                    mockLogger.Object
+                    mockMediator.Object
                 );
                 var command = new CreateTeamLeagueCommand();
 

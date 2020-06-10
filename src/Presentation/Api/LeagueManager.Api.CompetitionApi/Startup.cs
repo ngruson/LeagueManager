@@ -1,21 +1,17 @@
-﻿using FluentValidation.AspNetCore;
-using LeagueManager.Application.Interfaces;
+﻿using LeagueManager.Application.Interfaces;
 using LeagueManager.Infrastructure.WritableOptions;
 using LeagueManager.Persistence.EntityFramework;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
 using System.Reflection;
 using LeagueManager.Infrastructure.Configuration;
-using LeagueManager.Api.Shared;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using LeagueManager.Application.TeamLeagues.Commands.CreateTeamLeague;
 using LeagueManager.Application.Common.Mappings;
 
 namespace LeagueManager.Api.CompetitionApi
@@ -41,14 +37,6 @@ namespace LeagueManager.Api.CompetitionApi
                 });
 
             services.AddControllers();
-            //services.AddMvc()
-            //    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-            //    //.AddJsonOptions(options =>
-            //    //{
-            //    //    options.SerializerSettings.Formatting = Formatting.Indented;
-            //    //})
-            //    .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CreateTeamLeagueCommandValidator>())
-            //    .AddApplicationPart(typeof(ConfigurationController).Assembly).AddControllersAsServices();
 
             services.AddSwaggerGen(c =>
             {
@@ -83,22 +71,11 @@ namespace LeagueManager.Api.CompetitionApi
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
-            //app.UseMvc();
 
             app.UseEndpoints(endpoints =>
                 endpoints.MapControllers());
 
-            app.UseSwagger(c =>
-            {
-                c.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
-                {
-                    //swaggerDoc.Host = httpReq.Host.Value;
-                    //swaggerDoc.Schemes = new List<string>
-                    //{
-                        //"https"
-                    //};
-                });
-            });
+            app.UseSwagger();
 
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
             // specifying the Swagger JSON endpoint.

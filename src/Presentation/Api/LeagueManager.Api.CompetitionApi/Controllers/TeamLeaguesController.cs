@@ -40,7 +40,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         [HttpGet("{leagueName}")]
         public async Task<IActionResult> GetTeamLeague(string leagueName)
         {
-            string methodName = "GetTeamLeague";
+            string methodName = nameof(GetTeamLeague);
             logger.LogInformation($"{methodName}: Request received");
 
             try
@@ -66,7 +66,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         [HttpGet("{leagueName}/competitors")]
         public async Task<IActionResult> GetCompetitors(string leagueName)
         {
-            string methodName = "GetCompetitors";
+            string methodName = nameof(GetCompetitors);
             logger.LogInformation($"{methodName}: Request received");
 
             try

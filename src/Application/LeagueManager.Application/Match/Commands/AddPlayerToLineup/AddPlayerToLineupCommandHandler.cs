@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using LeagueManager.Application.Exceptions;
+﻿using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -20,15 +19,6 @@ namespace LeagueManager.Application.Match.Commands.AddPlayerToLineup
 
         public async Task<Unit> Handle(AddPlayerToLineupCommand request, CancellationToken cancellationToken)
         {
-            //var lineup = await context.TeamLeagues
-            //    .Where(t => t.Name == request.LeagueName)
-            //    .Select(l => l.Rounds.SelectMany(r =>
-            //            r.Matches.Where(m => m.Guid == request.Guid)
-            //        ).FirstOrDefault())
-            //    .SelectMany(m => m.MatchEntries.SelectMany(me => me.Lineup))
-            //    .Where(l => l.TeamMatchEntry.Team.Name == request.Team)
-            //    .ToListAsync();
-
             var lineup = await context.TeamLeagues
                 .Where(t => t.Name == request.LeagueName)
                 .SelectMany(l => l.Rounds.SelectMany(r =>
@@ -39,8 +29,6 @@ namespace LeagueManager.Application.Match.Commands.AddPlayerToLineup
                         )
                     )
                 )
-                //.Include(l => l.TeamMatchEntry)
-                    //.ThenInclude(e => e.Team)
                 .ToListAsync();
 
             if ((lineup == null) || (lineup.Count == 0))

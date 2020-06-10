@@ -27,6 +27,8 @@ using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.Interfaces.Dto;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueCompetitors;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
 
 namespace LeagueManager.Api.CompetitionApi.UnitTests
 {
@@ -63,6 +65,33 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             }
 
             [Fact]
+            public async void Given_LeagueManagerExceptionIsThrown_When_GetTeamLeague_Then_ReturnBadRequest()
+            {
+                //Arrange
+                var mockMediator = new Mock<IMediator>();
+                mockMediator.Setup(x => x.Send(
+                        It.IsAny<GetTeamLeagueQuery>(),
+                        It.IsAny<CancellationToken>()
+                    ))
+                    .Throws(
+                        new TeamLeagueNotFoundException("Premier League")
+                    );
+                var mockLogger = new Mock<ILogger<TeamLeaguesController>>();
+
+                var controller = new TeamLeaguesController(
+                    mockMediator.Object,
+                    mockLogger.Object,
+                    Mapper.CreateMapper()
+                );
+
+                //Act
+                var result = await controller.GetTeamLeague("Premier League");
+
+                //Assert
+                result.Should().BeAssignableTo<BadRequestObjectResult>();
+            }
+
+            [Fact]
             public async void Given_ExceptionIsThrown_When_GetTeamLeague_Then_ReturnBadRequest()
             {
                 //Arrange
@@ -84,6 +113,97 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
 
                 //Act
                 var result = await controller.GetTeamLeague("Premier League");
+
+                //Assert
+                var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
+                var errorMessage = badRequest.Value.Should().BeAssignableTo<string>().Subject;
+                errorMessage.Should().Be("Something went wrong!");
+            }
+        }
+
+        public class GetCompetitors
+        {
+            [Fact]
+            public async void Given_CompetitorsExist_When_GetCompetitors_Then_ReturnCompetitors()
+            {
+                //Arrange
+                var mockLogger = new Mock<ILogger<TeamLeaguesController>>();
+                var mockMediator = new Mock<IMediator>();
+                mockMediator.Setup(x => x.Send(
+                        It.IsAny<GetTeamLeagueCompetitorsQuery>(),
+                        It.IsAny<CancellationToken>()
+                    ))
+                    .ReturnsAsync(
+                        new List<CompetitorDto>
+                        {
+                            new CompetitorDto { TeamName = "Team 1 " },
+                            new CompetitorDto { TeamName = "Team 2 " }
+                        }
+                    );
+
+                var controller = new TeamLeaguesController(
+                    mockMediator.Object,
+                    mockLogger.Object,
+                    Mapper.CreateMapper()
+                );
+
+                //Act
+                var result = await controller.GetCompetitors("Premier League");
+
+                //Assert
+                var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+                okResult.Value.Should().BeAssignableTo<IEnumerable<CompetitorDto>>();
+            }
+
+            [Fact]
+            public async void Given_LeagueManagerExceptionIsThrown_When_GetCompetitors_Then_ReturnBadRequest()
+            {
+                //Arrange
+                var mockMediator = new Mock<IMediator>();
+                mockMediator.Setup(x => x.Send(
+                        It.IsAny<GetTeamLeagueCompetitorsQuery>(),
+                        It.IsAny<CancellationToken>()
+                    ))
+                    .Throws(
+                        new TeamLeagueNotFoundException("Premier League")
+                    );
+                var mockLogger = new Mock<ILogger<TeamLeaguesController>>();
+
+                var controller = new TeamLeaguesController(
+                    mockMediator.Object,
+                    mockLogger.Object,
+                    Mapper.CreateMapper()
+                );
+
+                //Act
+                var result = await controller.GetCompetitors("Premier League");
+
+                //Assert
+                result.Should().BeAssignableTo<BadRequestObjectResult>();
+            }
+
+            [Fact]
+            public async void Given_ExceptionIsThrown_When_GetCompetitors_Then_ReturnBadRequest()
+            {
+                //Arrange
+                var mockMediator = new Mock<IMediator>();
+                mockMediator.Setup(x => x.Send(
+                        It.IsAny<GetTeamLeagueCompetitorsQuery>(),
+                        It.IsAny<CancellationToken>()
+                    ))
+                    .Throws(
+                        new Exception()
+                    );
+                var mockLogger = new Mock<ILogger<TeamLeaguesController>>();
+
+                var controller = new TeamLeaguesController(
+                    mockMediator.Object,
+                    mockLogger.Object,
+                    Mapper.CreateMapper()
+                );
+
+                //Act
+                var result = await controller.GetCompetitors("Premier League");
 
                 //Assert
                 var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
@@ -418,6 +538,34 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             }
 
             [Fact]
+            public async void Given_LeagueManagerExceptionIsThrown_When_GetPlayerForTeamCompetitor_Then_ReturnBadRequest()
+            {
+                //Arrange
+                string leagueName = "Premier League";
+                var mockMediator = new Mock<IMediator>();
+                mockMediator.Setup(x => x.Send(
+                        It.IsAny<GetTeamLeagueRoundsQuery>(),
+                        It.IsAny<CancellationToken>()
+                    ))
+                    .Throws(new TeamLeagueNotFoundException(leagueName));
+                var mockLogger = new Mock<ILogger<TeamLeaguesController>>();
+
+                var controller = new TeamLeaguesController(
+                    mockMediator.Object,
+                    mockLogger.Object,
+                    Mapper.CreateMapper()
+                );
+
+                //Act
+                var result = await controller.GetTeamLeagueRounds(null);
+
+                //Assert
+                var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
+                var errorMessage = badRequest.Value.Should().BeAssignableTo<string>().Subject;
+                errorMessage.Should().Be($"Team league \"{leagueName}\" not found.");
+            }
+
+            [Fact]
             public async void Given_ExceptionIsThrown_When_GetTeamLeagueRounds_Then_ReturnBadRequest()
             {
                 //Arrange
@@ -447,6 +595,95 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
             }
         }
 
+        public class GetTeamLeagueTable
+        {
+            [Fact]
+            public async void Given_TableExist_When_GetTeamLeagueTable_Then_ReturnTable()
+            {
+                //Arrange
+                var mockLogger = new Mock<ILogger<TeamLeaguesController>>();
+                var mockMediator = new Mock<IMediator>();
+                mockMediator.Setup(x => x.Send(
+                        It.IsAny<GetTeamLeagueTableQuery>(),
+                        It.IsAny<CancellationToken>()
+                    ))
+                    .ReturnsAsync(
+                        new GetTeamLeagueTableVm {  Table = new TableDto() }
+                    );
+
+                var controller = new TeamLeaguesController(
+                    mockMediator.Object,
+                    mockLogger.Object,
+                    Mapper.CreateMapper()
+                );
+
+                //Act
+                var result = await controller.GetTeamLeagueTable("Premier League");
+
+                //Assert
+                var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+                var vm = okResult.Value.Should().BeOfType<GetTeamLeagueTableVm>().Subject;
+                vm.Table.Should().BeAssignableTo<TableDto>();
+            }
+
+            [Fact]
+            public async void Given_LeagueManagerExceptionIsThrown_When_GetTeamLeagueTable_Then_ReturnBadRequest()
+            {
+                //Arrange
+                string leagueName = "Premier League";
+                var mockMediator = new Mock<IMediator>();
+                mockMediator.Setup(x => x.Send(
+                        It.IsAny<GetTeamLeagueTableQuery>(),
+                        It.IsAny<CancellationToken>()
+                    ))
+                    .Throws(new TeamLeagueNotFoundException(leagueName));
+                var mockLogger = new Mock<ILogger<TeamLeaguesController>>();
+
+                var controller = new TeamLeaguesController(
+                    mockMediator.Object,
+                    mockLogger.Object,
+                    Mapper.CreateMapper()
+                );
+
+                //Act
+                var result = await controller.GetTeamLeagueTable(null);
+
+                //Assert
+                var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
+                var errorMessage = badRequest.Value.Should().BeAssignableTo<string>().Subject;
+                errorMessage.Should().Be($"Team league \"{leagueName}\" not found.");
+            }
+
+            [Fact]
+            public async void Given_ExceptionIsThrown_When_GetTeamLeagueTable_Then_ReturnBadRequest()
+            {
+                //Arrange
+                var mockMediator = new Mock<IMediator>();
+                mockMediator.Setup(x => x.Send(
+                        It.IsAny<GetTeamLeagueTableQuery>(),
+                        It.IsAny<CancellationToken>()
+                    ))
+                    .Throws(
+                        new Exception()
+                    );
+                var mockLogger = new Mock<ILogger<TeamLeaguesController>>();
+
+                var controller = new TeamLeaguesController(
+                    mockMediator.Object,
+                    mockLogger.Object,
+                    Mapper.CreateMapper()
+                );
+
+                //Act
+                var result = await controller.GetTeamLeagueTable("Premier League");
+
+                //Assert
+                var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
+                var errorMessage = badRequest.Value.Should().BeAssignableTo<string>().Subject;
+                errorMessage.Should().Be("Something went wrong!");
+            }
+        }
+
         public class GetTeamLeagueMatch
         {
             [Fact]
@@ -459,7 +696,7 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                         It.IsAny<CancellationToken>()
                     ))
                     .ReturnsAsync(
-                        new LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch.TeamMatchDto()
+                        new Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch.TeamMatchDto()
                     );
                 var mockLogger = new Mock<ILogger<TeamLeaguesController>>();
 

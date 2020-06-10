@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Dto = LeagueManager.Application.Interfaces.Dto;
-using LeagueManager.Domain.Match;
-using LeagueManager.Domain.Round;
 using System;
 using System.Linq;
 using System.Reflection;
-using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
 
 namespace LeagueManager.Application.Common.Mappings
 {

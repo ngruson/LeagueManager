@@ -1,5 +1,4 @@
-﻿using LeagueManager.Application.Interfaces.Dto;
-using MediatR;
+﻿using MediatR;
 using System;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
