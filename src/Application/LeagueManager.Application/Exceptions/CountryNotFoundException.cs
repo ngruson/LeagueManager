@@ -1,7 +1,9 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace LeagueManager.Application.Exceptions
 {
+    [Serializable]
     public class CountryNotFoundException : LeagueManagerException
     {
         public CountryNotFoundException() { }

@@ -86,12 +86,9 @@ namespace LeagueManager.Domain.Match
                 var away = MatchEntries.SingleOrDefault(me =>
                     me.HomeAway == HomeAway.Away);
 
-                if ((home.Score != null) && (away.Score != null))
+                if ((home.Score != null) && (home.Score.Value.HasValue) && (away.Score != null) && (away.Score.Value.HasValue))
                 {
-                    if ((home.Score.Value.HasValue) && (away.Score.Value.HasValue))
-                    {
-                        return home.Score.Value == away.Score.Value;
-                    }
+                    return home.Score.Value == away.Score.Value;
                 }
 
                 return false;

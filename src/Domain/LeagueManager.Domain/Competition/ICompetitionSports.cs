@@ -1,5 +1,4 @@
-﻿using LeagueManager.Domain.Competitor;
-using LeagueManager.Domain.Sports;
+﻿using LeagueManager.Domain.Sports;
 
 namespace LeagueManager.Domain.Competition
 {

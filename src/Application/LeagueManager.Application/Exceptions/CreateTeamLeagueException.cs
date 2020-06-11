@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 namespace LeagueManager.Application.Exceptions
 {
+    [Serializable]
     public class CreateTeamLeagueException : LeagueManagerException
     {
         public CreateTeamLeagueException() { }

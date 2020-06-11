@@ -31,7 +31,7 @@ namespace LeagueManager.Persistence.EntityFramework
             InitializeDb();
         }
 
-        private void InitializeDb()
+        private async void InitializeDb()
         {
             using (var scope = serviceProvider.CreateScope())
             {
@@ -41,7 +41,7 @@ namespace LeagueManager.Persistence.EntityFramework
                     var concreteContext = (LeagueManagerDbContext)context;
                     concreteContext.Database.Migrate();
                     var initializer = scope.ServiceProvider.GetService<DbInitializer>();
-                    initializer.Initialize(concreteContext);
+                    await initializer.Initialize(concreteContext);
                 }
                 catch (Exception ex)
                 {
