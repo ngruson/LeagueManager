@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution;
 using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
 using Microsoft.Extensions.Logging;
@@ -15,7 +15,7 @@ using Xunit;
 
 namespace LeagueManager.Application.UnitTests
 {
-    public class GetTeamLeagueMatchGoalQueryUnitTests
+    public class GetTeamLeagueMatchSubstitutionQueryUnitTests
     {
         private Mock<ILeagueManagerDbContext> MockDbContext(IQueryable<TeamLeague> leagues)
         {
@@ -26,36 +26,37 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public async void Given_GoalExist_When_GetTeamLeagueMatchGoal_Then_ReturnGoal()
+        public async void Given_SubstitutionExist_When_GetTeamLeagueMatchSubstitution_Then_ReturnSubstitution()
         {
             // Arrange
             var teams = new TeamsBuilder().Build();
             var league = new TeamLeagueBuilder()
                 .WithCompetitors(teams)
                 .WithRounds()
-                .WithGoals()
+                .WithSubstitutions()
                 .Build();
 
             var leagues = Enumerable.Repeat(league, 1);
             var matchGuid = new Guid("00000000-0000-0000-0000-000000000000");
             var match = league.GetMatch(matchGuid);
             var matchEntry = match.MatchEntries.SingleOrDefault(me => me.Team.Name == "Tottenham Hotspur");
-            var goalGuid = matchEntry.Goals.ToList()[0].Guid;
+            var substitutionGuid = matchEntry.Substitutions.ToList()[0].Guid;
 
             var contextMock = MockDbContext(leagues.AsQueryable());
-            var loggerMock = new Mock<ILogger<GetTeamLeagueMatchGoalQueryHandler>>();
-            var handler = new GetTeamLeagueMatchGoalQueryHandler(
+            var loggerMock = new Mock<ILogger<GetTeamLeagueMatchSubstitutionQueryHandler>>();
+            var handler = new GetTeamLeagueMatchSubstitutionQueryHandler(
                 contextMock.Object, 
                 Mapper.MapperConfig(), 
                 loggerMock.Object
             );
 
             // Act
-            var request = new GetTeamLeagueMatchGoalQuery
+            var request = new GetTeamLeagueMatchSubstitutionQuery
             {
                 LeagueName = "Premier League",
                 MatchGuid = matchGuid,
-                GoalGuid = goalGuid
+                TeamName = "Tottenham Hotspur",
+                SubstitutionGuid = substitutionGuid
             };
             var result = await handler.Handle(request, CancellationToken.None);
 
@@ -64,41 +65,42 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public void Given_GoalDoesNotExist_When_GetTeamLeagueMatchGoal_Then_GoalNotFoundExceptionIsThrown()
+        public void Given_SubstitutionDoesNotExist_When_GetTeamLeagueMatchSubstitution_Then_SubstitutionNotFoundExceptionIsThrown()
         {
             // Arrange
             var teams = new TeamsBuilder().Build();
             var league = new TeamLeagueBuilder()
                 .WithCompetitors(teams)
                 .WithRounds()
-                .WithGoals()
+                .WithSubstitutions()
                 .Build();
 
             var leagues = Enumerable.Repeat(league, 1);
             var matchGuid = new Guid("00000000-0000-0000-0000-000000000000");
             var match = league.GetMatch(matchGuid);
             var matchEntry = match.MatchEntries.SingleOrDefault(me => me.Team.Name == "Tottenham Hotspur");
-            var goalGuid = matchEntry.Goals.ToList()[0].Guid;
+            var substitutionGuid = matchEntry.Substitutions.ToList()[0].Guid;
 
             var contextMock = MockDbContext(leagues.AsQueryable());
-            var loggerMock = new Mock<ILogger<GetTeamLeagueMatchGoalQueryHandler>>();
-            var handler = new GetTeamLeagueMatchGoalQueryHandler(
+            var loggerMock = new Mock<ILogger<GetTeamLeagueMatchSubstitutionQueryHandler>>();
+            var handler = new GetTeamLeagueMatchSubstitutionQueryHandler(
                 contextMock.Object,
                 Mapper.MapperConfig(),
                 loggerMock.Object
             );
 
             // Act
-            var request = new GetTeamLeagueMatchGoalQuery
+            var request = new GetTeamLeagueMatchSubstitutionQuery
             {
                 LeagueName = "Premier League",
                 MatchGuid = matchGuid,
-                GoalGuid = new Guid("00000000-0000-0000-0000-000000000000")
+                TeamName = "Tottenham Hotspur",
+                SubstitutionGuid = new Guid("00000000-0000-0000-0000-000000000000")
             };
             Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            func.Should().Throw<GoalNotFoundException>();
+            func.Should().Throw<SubstitutionNotFoundException>();
         }
     }
 }

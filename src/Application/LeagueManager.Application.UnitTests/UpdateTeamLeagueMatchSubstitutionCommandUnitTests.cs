@@ -55,7 +55,6 @@ namespace LeagueManager.Application.UnitTests
 
             var handler = new UpdateTeamLeagueMatchSubstitutionCommandHandler(
                 contextMock.Object,
-                Mapper.MapperConfig(),
                 loggerMock.Object
             );
 
@@ -75,8 +74,8 @@ namespace LeagueManager.Application.UnitTests
 
             //Assert
             sub.Minute.Should().Be("1");
-            sub.PlayerOut.Should().Be(players[0].FullName);
-            sub.PlayerIn.Should().Be(players[1].FullName);
+            sub.PlayerOut.FullName.Should().Be(players[0].FullName);
+            sub.PlayerIn.FullName.Should().Be(players[1].FullName);
         }
 
         [Fact]
@@ -105,7 +104,6 @@ namespace LeagueManager.Application.UnitTests
 
             var handler = new UpdateTeamLeagueMatchSubstitutionCommandHandler(
                 contextMock.Object,
-                Mapper.MapperConfig(),
                 loggerMock.Object
             );
 
@@ -152,7 +150,6 @@ namespace LeagueManager.Application.UnitTests
 
             var handler = new UpdateTeamLeagueMatchSubstitutionCommandHandler(
                 contextMock.Object,
-                Mapper.MapperConfig(),
                 loggerMock.Object
             );
 
