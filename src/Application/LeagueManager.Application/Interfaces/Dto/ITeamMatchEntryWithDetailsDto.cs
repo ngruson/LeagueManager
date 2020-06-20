@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LeagueManager.Application.Interfaces.Dto
 {
-    public interface ITeamMatchEntryWithDetailsDto : ITeamMatchEntryDto, ITeamMatchEntryEventsDto
+    public interface ITeamMatchEntryWithDetailsDto : ITeamMatchEntryEventsDto
     {
         new Guid TeamLeagueMatchGuid { get; set; }
         new ITeamDto Team { get; set; }

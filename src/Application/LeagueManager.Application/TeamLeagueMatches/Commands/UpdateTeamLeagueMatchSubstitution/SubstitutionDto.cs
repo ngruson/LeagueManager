@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LeagueManager.Application.Common.Mappings;
 using LeagueManager.Application.Interfaces.Dto;
 using LeagueManager.Domain.Match;
 using System;

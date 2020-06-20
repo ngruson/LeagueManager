@@ -45,7 +45,8 @@ namespace LeagueManager.Application.UnitTests
             var leagues = Enumerable.Repeat(league, 1);
             var matchGuid = new Guid("00000000-0000-0000-0000-000000000000");
             var match = league.GetMatch(matchGuid);
-            var matchEntry = match.MatchEntries.SingleOrDefault(me => me.Team.Name == "Tottenham Hotspur");
+            var teamName = "Tottenham Hotspur";
+            var matchEntry = match.MatchEntries.SingleOrDefault(me => me.Team.Name == teamName);
             var substitutionGuid = matchEntry.Substitutions.ToList()[0].Guid;
             var contextMock = MockDbContext(
                 leagues.AsQueryable(),
@@ -63,7 +64,7 @@ namespace LeagueManager.Application.UnitTests
             {
                 LeagueName = league.Name,
                 MatchGuid = matchGuid,
-                TeamName = "Tottenham Hotspur",
+                TeamName = teamName,
                 SubstitutionGuid = substitutionGuid,
                 Minute = "1",
                 PlayerOut = players[0].FullName,
@@ -73,6 +74,8 @@ namespace LeagueManager.Application.UnitTests
             var sub = await handler.Handle(command, CancellationToken.None);
 
             //Assert
+            sub.Guid.Should().Be(substitutionGuid);
+            sub.TeamMatchEntryTeamName.Should().Be(teamName);
             sub.Minute.Should().Be("1");
             sub.PlayerOut.FullName.Should().Be(players[0].FullName);
             sub.PlayerIn.FullName.Should().Be(players[1].FullName);

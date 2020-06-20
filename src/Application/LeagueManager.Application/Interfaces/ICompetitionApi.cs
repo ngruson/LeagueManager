@@ -18,7 +18,6 @@ using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeague;
 using System;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
-using LeagueManager.Application.Interfaces.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution;
 

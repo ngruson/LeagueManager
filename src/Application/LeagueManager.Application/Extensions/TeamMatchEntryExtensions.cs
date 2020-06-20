@@ -13,7 +13,7 @@ namespace LeagueManager.Application.Interfaces.Dto
             if (matchEntry.Substitutions != null)
                 list.AddRange(matchEntry.Substitutions);
 
-            list = list.OrderBy(x => x.Minute).ToList();
+            list = list.OrderBy(x => int.Parse(x.Minute)).ToList();
 
             return list;
         }
