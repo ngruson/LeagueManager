@@ -28,6 +28,8 @@ using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLine
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeague;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution;
+using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueCompetitors;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution;
 
 namespace LeagueManager.Infrastructure.UnitTests
 {
@@ -62,6 +64,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 //Assert
                 result.Should().BeTrue();
             }
+
             [Fact]
             public async void Given_PutIsNotOK_When_Configure_Then_ReturnFalse()
             {
@@ -255,6 +258,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 //Assert
                 result.Should().NotBeNull();
             }
+
             [Fact]
             public async void Given_GetIsNotOK_When_GetCompetition_Then_ReturnEmptyCompetition()
             {
@@ -285,6 +289,81 @@ namespace LeagueManager.Infrastructure.UnitTests
                 result.Name.Should().BeNull();
             }
         }
+
+        public class GetCompetitors
+        {
+            [Fact]
+            public async void Given_GetIsOK_When_GetCompetitors_Then_ReturnList()
+            {
+                //Arrange
+                var list = new List<CompetitorDto>
+                {
+                    new CompetitorDto
+                    {
+                        TeamName = "Team 1"
+                    },
+                    new CompetitorDto
+                    {
+                        TeamName = "Team 2"
+                    }
+                };
+
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(list)
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueCompetitorsQuery();
+                var result = await sut.GetCompetitors(query);
+
+                //Assert
+                result.Should().NotBeNull();
+                result.ToList().Count().Should().Be(2);
+            }
+
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetCompetitors_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueCompetitorsQuery();
+                var result = await sut.GetCompetitors(query);
+
+                //Assert
+                result.Should().BeNull();
+            }
+        }
         
         public class GetPlayersForTeamCompetitor
         {
@@ -293,26 +372,26 @@ namespace LeagueManager.Infrastructure.UnitTests
             {
                 //Arrange
                 var list = new List<CompetitorPlayerDto>
-            {
-                new CompetitorPlayerDto
                 {
-                    Number = "1",
-                    Player = new Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor.PlayerDto
+                    new CompetitorPlayerDto
                     {
-                        FirstName = "John",
-                        LastName = "Doe"
-                    }
-                },
-                new CompetitorPlayerDto
-                {
-                    Number = "2",
-                    Player = new Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor.PlayerDto
+                        Number = "1",
+                        Player = new Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor.PlayerDto
+                        {
+                            FirstName = "John",
+                            LastName = "Doe"
+                        }
+                    },
+                    new CompetitorPlayerDto
                     {
-                        FirstName = "Jane",
-                        LastName = "Doe"
+                        Number = "2",
+                        Player = new Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor.PlayerDto
+                        {
+                            FirstName = "Jane",
+                            LastName = "Doe"
+                        }
                     }
-                }
-            };
+                };
 
                 var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
                 mockHttpRequestFactory.Setup(x => x.Get(
@@ -340,6 +419,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 result.Should().NotBeNull();
                 result.ToList().Count().Should().Be(2);
             }
+
             [Fact]
             public async void Given_GetIsNotOK_When_GetPlayersForTeamCompetitor_Then_ReturnNull()
             {
@@ -473,6 +553,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 result.Should().NotBeNull();
                 result.Rounds.ToList().Count().Should().Be(3);
             }
+
             [Fact]
             public async void Given_GetIsNotOK_When_GetTeamLeagueRounds_Then_ReturnNull()
             {
@@ -497,6 +578,81 @@ namespace LeagueManager.Infrastructure.UnitTests
                 //Act
                 var query = new GetTeamLeagueRoundsQuery();
                 var result = await sut.GetTeamLeagueRounds(query);
+
+                //Assert
+                result.Should().BeNull();
+            }
+        }
+
+        public class GetTeamLeagueTable
+        {
+            [Fact]
+            public async void Given_GetIsOK_When_GetTeamLeagueTable_Then_ReturnTable()
+            {
+                //Arrange
+                var table = new TableDto
+                {
+                    Items = new List<TableItemDto>
+                    {
+                        new TableItemDto(),
+                        new TableItemDto()
+                    }
+                };
+
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new GetTeamLeagueTableVm
+                    {
+                        Table = table
+                    })
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueTableQuery();
+                var result = await sut.GetTeamLeagueTable(query);
+
+                //Assert
+                result.Should().NotBeNull();
+                result.Table.Items.Count.Should().Be(2);
+            }
+
+            [Fact]
+            public async void Given_GetIsNotOK_When_GetTeamLeagueTable_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Get(
+                    It.IsAny<string>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var query = new GetTeamLeagueTableQuery();
+                var result = await sut.GetTeamLeagueTable(query);
 
                 //Assert
                 result.Should().BeNull();
@@ -1027,6 +1183,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 //Assert
                 result.Should().NotBeNull();
             }
+
             [Fact]
             public async void Given_PutIsNotOK_When_UpdateTeamLeagueMatchGoal_Then_ReturnNull()
             {
@@ -1114,6 +1271,72 @@ namespace LeagueManager.Infrastructure.UnitTests
                 //Act
                 var query = new GetTeamLeagueMatchSubstitutionQuery();
                 var result = await sut.GetTeamLeagueMatchSubstitution(query);
+
+                //Assert
+                result.Should().BeNull();
+            }
+        }
+
+        public class UpdateTeamLeagueMatchSubstitution
+        {
+            [Fact]
+            public async void Given_PutIsOK_When_UpdateTeamLeagueMatchSubstitution_Then_ReturnSubstitutionDto()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new JsonContent(new Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution.SubstitutionDto())
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var result = await sut.UpdateTeamLeagueMatchSubstitution(
+                    "Premier League", Guid.NewGuid(), "Tottenham Hotspur", Guid.NewGuid(), 
+                    new UpdateTeamLeagueMatchSubstitutionDto()
+                );
+
+                //Assert
+                result.Should().NotBeNull();
+            }
+
+            [Fact]
+            public async void Given_PutIsNotOK_When_UpdateTeamLeagueMatchSubstitution_Then_ReturnNull()
+            {
+                //Arrange
+                var mockHttpRequestFactory = new Mock<IHttpRequestFactory>();
+                mockHttpRequestFactory.Setup(x => x.Put(
+                    It.IsAny<string>(), It.IsAny<object>(), It.IsAny<string>()
+                ))
+                .ReturnsAsync(new HttpResponseMessage
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                });
+
+                var mockOptions = new Mock<IOptions<ApiSettings>>();
+                mockOptions.SetupGet(x => x.Value).Returns(new ApiSettings());
+
+                var sut = new CompetitionApi(
+                    mockHttpRequestFactory.Object,
+                    mockOptions.Object
+                );
+
+                //Act
+                var result = await sut.UpdateTeamLeagueMatchSubstitution(
+                    "Premier League", Guid.NewGuid(), "Tottenham Hotspur", Guid.NewGuid(),
+                    new UpdateTeamLeagueMatchSubstitutionDto()
+                );
 
                 //Assert
                 result.Should().BeNull();

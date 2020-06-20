@@ -15,9 +15,7 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueM
 
         public void Mapping(Profile profile)
         {
-            profile.CreateMap<TeamMatchEntrySubstitution, SubstitutionDto>()
-                .ForMember(m => m.PlayerOut, opt => opt.MapFrom(src => src.PlayerOut.FullName))
-                .ForMember(m => m.PlayerIn, opt => opt.MapFrom(src => src.PlayerIn.FullName));
+            profile.CreateMap<TeamMatchEntrySubstitution, SubstitutionDto>();
         }
     }
 }

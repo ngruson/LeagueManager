@@ -28,6 +28,7 @@ using System;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace LeagueManager.Infrastructure.Api
 {
@@ -85,7 +86,7 @@ namespace LeagueManager.Infrastructure.Api
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<IEnumerable<CompetitorDto>>();
 
-            return new List<CompetitorDto>();
+            return null;
         }
 
         public async Task<IEnumerable<CompetitorPlayerDto>> GetPlayersForTeamCompetitor(GetPlayersForTeamCompetitorQuery query)
