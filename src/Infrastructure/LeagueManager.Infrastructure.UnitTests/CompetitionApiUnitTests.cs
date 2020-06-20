@@ -883,7 +883,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new MatchEventsVm())
+                    Content = new JsonContent(new MatchEventsDto())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();
@@ -900,7 +900,7 @@ namespace LeagueManager.Infrastructure.UnitTests
 
                 //Assert
                 result.Should().NotBeNull();
-                result.Should().BeAssignableTo<MatchEventsVm>();
+                result.Should().BeAssignableTo<MatchEventsDto>();
             }
             [Fact]
             public async void Given_GetIsNotOK_When_GetTeamLeagueMatchEvents_Then_ReturnNull()
@@ -945,7 +945,7 @@ namespace LeagueManager.Infrastructure.UnitTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new JsonContent(new MatchEventsVm())
+                    Content = new JsonContent(new MatchEventsDto())
                 });
 
                 var mockOptions = new Mock<IOptions<ApiSettings>>();

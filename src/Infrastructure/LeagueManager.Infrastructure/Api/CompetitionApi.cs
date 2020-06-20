@@ -26,6 +26,8 @@ using LeagueManager.Infrastructure.Json;
 using LeagueManager.Application.Interfaces.Dto;
 using System;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution;
 
 namespace LeagueManager.Infrastructure.Api
 {
@@ -181,7 +183,8 @@ namespace LeagueManager.Infrastructure.Api
                         new JsonInterfaceConverter<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails.IntegerScoreDto, IIntegerScoreDto>(),
                         new JsonInterfaceConverter<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails.LineupEntryDto, ILineupEntryDto>(),
                         new JsonInterfaceConverter<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails.PlayerDto, IPlayerDto>(),
-                        new JsonInterfaceConverter<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails.GoalDto, IGoalDto>()
+                        new JsonInterfaceConverter<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails.GoalDto, IGoalDto>(),
+                        new JsonInterfaceConverter<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails.SubstitutionDto, ISubstitutionDto>()
                     }
                 };
                 return response.ContentAsType<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails.TeamMatchDto>(settings);
@@ -209,7 +212,7 @@ namespace LeagueManager.Infrastructure.Api
                         new JsonInterfaceConverter<UpdateTeamLeagueMatch.IntegerScoreDto, IIntegerScoreDto>()
                     }
                 };
-                return response.ContentAsType<Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch.TeamMatchDto>(settings);
+                return response.ContentAsType<UpdateTeamLeagueMatch.TeamMatchDto>(settings);
             }
                 
             return null;
@@ -235,7 +238,7 @@ namespace LeagueManager.Infrastructure.Api
                     }
                 };
 
-                return response.ContentAsType<Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore.TeamMatchDto>(settings);
+                return response.ContentAsType<UpdateTeamLeagueMatchScore.TeamMatchDto>(settings);
             }
                 
             return null;
@@ -277,11 +280,11 @@ namespace LeagueManager.Infrastructure.Api
             return null;
         }
 
-        public async Task<MatchEventsVm> GetTeamLeagueMatchEvents(GetTeamLeagueMatchEventsQuery query)
+        public async Task<MatchEventsDto> GetTeamLeagueMatchEvents(GetTeamLeagueMatchEventsQuery query)
         {
             var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/matches/{query.MatchGuid}/matchEntries/{query.TeamName}/events");
             if (response.IsSuccessStatusCode)
-                return response.ContentAsType<MatchEventsVm>();
+                return response.ContentAsType<MatchEventsDto>();
             return null;
         }
 
@@ -306,6 +309,52 @@ namespace LeagueManager.Infrastructure.Api
 
             if (response.IsSuccessStatusCode)
                 return response.ContentAsType<Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal.GoalDto>();
+            return null;
+        }
+
+        public async Task<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution.SubstitutionDto> GetTeamLeagueMatchSubstitution(GetTeamLeagueMatchSubstitutionQuery query)
+        {
+            var response = await httpRequestFactory.Get($"{teamLeagueApiUrl}/{query.LeagueName}/matches/{query.MatchGuid}/matchEntries/{query.TeamName}/substitutions/{query.SubstitutionGuid}");
+            if (response.IsSuccessStatusCode)
+            {
+                var settings = new JsonSerializerSettings
+                {
+                    Converters =
+                    {
+                        new JsonInterfaceConverter<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution.SubstitutionDto, ISubstitutionDto>(),
+                        new JsonInterfaceConverter<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution.PlayerDto, IPlayerDto>()
+                    }
+                };
+
+                return response.ContentAsType<Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution.SubstitutionDto>(settings);
+            }
+                
+            return null;
+        }
+
+        public async Task<Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution.SubstitutionDto> UpdateTeamLeagueMatchSubstitution(
+            string leagueName, Guid matchGuid, string teamName, Guid substitutionGuid,
+            UpdateTeamLeagueMatchSubstitutionDto dto)
+        {
+            var response = await httpRequestFactory.Put(
+                $"{teamLeagueApiUrl}/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/substitutions/{substitutionGuid}",
+                dto
+            );
+
+            if (response.IsSuccessStatusCode)
+            {
+                var settings = new JsonSerializerSettings
+                {
+                    Converters =
+                    {
+                        new JsonInterfaceConverter<Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution.SubstitutionDto, ISubstitutionDto>(),
+                        new JsonInterfaceConverter<Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution.PlayerDto, IPlayerDto>()
+                    }
+                };
+
+                return response.ContentAsType<Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution.SubstitutionDto>(settings);
+            }
+                
             return null;
         }
     }

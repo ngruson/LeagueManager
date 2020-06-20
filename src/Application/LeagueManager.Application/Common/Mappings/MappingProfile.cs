@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -10,6 +11,7 @@ namespace LeagueManager.Application.Common.Mappings
         public MappingProfile()
         {
             ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+            CreateMap<UpdateTeamLeagueMatchSubstitutionDto, UpdateTeamLeagueMatchSubstitutionCommand>();
         }
 
         private void ApplyMappingsFromAssembly(Assembly assembly)

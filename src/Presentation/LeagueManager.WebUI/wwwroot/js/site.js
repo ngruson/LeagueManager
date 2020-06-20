@@ -327,3 +327,43 @@ async function updateTeamLeagueMatchGoal(url, minute, playerName) {
     });
     return result;
 }
+
+async function addSubstitution(minute, playerOut, playerIn, url) {
+    var req = {
+        minute: minute,
+        playerOut: playerOut,
+        playerIn: playerIn
+    };
+    var result = false;
+
+    await $.ajax({
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        url: url,
+        dataType: "json",
+        data: JSON.stringify(req),
+        success: function () {
+            result = true;
+        },
+        error: function (jqXHR) {
+            result = false;
+        }
+    });
+
+    return result;
+}
+
+async function updateTeamLeagueMatchSubstitution(url, minute, playerOut, playerIn) {
+    var req = {
+        minute: minute,
+        playerOut: playerOut,
+        playerIn: playerIn
+    };
+
+    var result = await $.ajax({
+        type: "PUT",
+        url: url,
+        data: req
+    });
+    return result;
+}
