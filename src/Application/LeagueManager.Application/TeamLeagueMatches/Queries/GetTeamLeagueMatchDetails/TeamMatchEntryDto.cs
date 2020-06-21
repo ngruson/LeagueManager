@@ -12,5 +12,6 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
         public IIntegerScoreDto Score { get; set; }
         public List<ILineupEntryDto> Lineup { get; set; }
         public List<IGoalDto> Goals { get; set; }
+        public List<ISubstitutionDto> Substitutions { get; set; }
     }
 }

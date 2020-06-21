@@ -1,8 +1,9 @@
 ﻿using LeagueManager.Application.Common.Mappings;
+using LeagueManager.Application.Interfaces.Dto;
 
 namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents
 {
-    public class PlayerDto : IMapFrom<Domain.Player.Player>
+    public class PlayerDto : IMapFrom<Domain.Player.Player>, IPlayerDto
     {
         public string FirstName { get; set; }
         public string MiddleName { get; set; }

@@ -33,7 +33,6 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
                 .As<TeamMatchEntryDto>();
 
             CreateMap<Team, Dto.ITeamDto>()
-                //.ForMember(m => m.Country, opt => opt.MapFrom(src => src.Country != null ? src.Country.Name : null))
                 .ForMember(m => m.Logo, opt => opt.MapFrom(src => src.Logo != null ?
                     $"data:image/gif;base64,{Convert.ToBase64String(src.Logo)}" : null))
                 .As<TeamDto>();
@@ -43,8 +42,6 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
 
             CreateMap<TeamMatchEntryLineupEntry, Dto.ILineupEntryDto>()
                 .ForMember(m => m.PlayerNumber, opt => opt.MapFrom(src => src.Number))
-                //.ForMember(m => m.TeamName, opt => opt.MapFrom(src =>
-                //    src.TeamMatchEntry != null && src.TeamMatchEntry.Team != null ? src.TeamMatchEntry.Team.Name : "notfound"))
                 .As<LineupEntryDto>();
 
             CreateMap<TeamMatchEntryGoal, Dto.IGoalDto>()
@@ -52,6 +49,9 @@ namespace LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch
 
             CreateMap<IntegerScore, Dto.IIntegerScoreDto>()
                 .As<IntegerScoreDto>();
+
+            CreateMap<TeamMatchEntrySubstitution, Dto.ISubstitutionDto>()
+                .As<SubstitutionDto>();
         }
     }
 }

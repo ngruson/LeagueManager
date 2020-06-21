@@ -100,5 +100,73 @@ namespace LeagueManager.Application.UnitTests
                 number++;
             });
         }
+
+        [Fact]
+        public async void Given_MatchHasGoals_When_GetTeamLeagueMatchDetails_Then_ReturnMatchWithGoals()
+        {
+            // Arrange
+            var teams = new TeamsBuilder().Build();
+            var league = new TeamLeagueBuilder()
+                .WithCompetitors(teams)
+                .WithRounds()
+                .WithGoals()
+                .Build();
+            var leagues = Enumerable.Repeat(league, 1);
+            var contextMock = MockDbContext(leagues.AsQueryable());
+            var handler = new GetTeamLeagueMatchDetailsQueryHandler(
+                contextMock.Object
+            );
+
+            //Act
+            var guid = new Guid("00000000-0000-0000-0000-000000000000");
+            var request = new GetTeamLeagueMatchDetailsQuery
+            {
+                LeagueName = "Premier League",
+                Guid = guid
+            };
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Guid.Should().Be(guid);
+            result.MatchEntries[0].Goals.Should().NotBeNull();
+            result.MatchEntries[0].Goals.Count().Should().Be(2);
+            result.MatchEntries[1].Goals.Should().NotBeNull();
+            result.MatchEntries[1].Goals.Count().Should().Be(2);
+        }
+
+        [Fact]
+        public async void Given_MatchHasSubstitutions_When_GetTeamLeagueMatchDetails_Then_ReturnMatchWithSubstitutions()
+        {
+            // Arrange
+            var teams = new TeamsBuilder().Build();
+            var league = new TeamLeagueBuilder()
+                .WithCompetitors(teams)
+                .WithRounds()
+                .WithSubstitutions()
+                .Build();
+            var leagues = Enumerable.Repeat(league, 1);
+            var contextMock = MockDbContext(leagues.AsQueryable());
+            var handler = new GetTeamLeagueMatchDetailsQueryHandler(
+                contextMock.Object
+            );
+
+            //Act
+            var guid = new Guid("00000000-0000-0000-0000-000000000000");
+            var request = new GetTeamLeagueMatchDetailsQuery
+            {
+                LeagueName = "Premier League",
+                Guid = guid
+            };
+            var result = await handler.Handle(request, CancellationToken.None);
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Guid.Should().Be(guid);
+            result.MatchEntries[0].Substitutions.Should().NotBeNull();
+            result.MatchEntries[0].Substitutions.Count().Should().Be(2);
+            result.MatchEntries[1].Substitutions.Should().NotBeNull();
+            result.MatchEntries[1].Substitutions.Count().Should().Be(2);
+        }
     }
 }

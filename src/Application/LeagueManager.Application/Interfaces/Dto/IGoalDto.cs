@@ -6,7 +6,7 @@ namespace LeagueManager.Application.Interfaces.Dto
     {
         new Guid Guid { get; set; }
         new string TeamMatchEntryTeamName { get; set; }
-        string Minute { get; set; }
+        new string Minute { get; set; }
         IPlayerDto Player { get; set; }
     }
 }

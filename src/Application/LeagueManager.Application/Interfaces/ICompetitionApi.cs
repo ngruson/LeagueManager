@@ -18,6 +18,8 @@ using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeague;
 using System;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueTable;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution;
 
 namespace LeagueManager.Application.Interfaces
 {
@@ -37,8 +39,12 @@ namespace LeagueManager.Application.Interfaces
         Task<TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore.TeamMatchDto> UpdateTeamLeagueMatchScore(string leagueName, Guid guid, UpdateTeamLeagueMatchScoreDto dto);
         Task<TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry.LineupEntryDto> GetTeamLeagueMatchLineupEntry(GetTeamLeagueMatchLineupEntryQuery query);
         Task<TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupEntry.LineupEntryDto> UpdateTeamLeagueMatchLineupEntry(UpdateTeamLeagueMatchLineupEntryCommand command);
-        Task<MatchEventsVm> GetTeamLeagueMatchEvents(GetTeamLeagueMatchEventsQuery query);
+        Task<MatchEventsDto> GetTeamLeagueMatchEvents(GetTeamLeagueMatchEventsQuery query);
         Task<TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal.GoalDto> GetTeamLeagueMatchGoal(GetTeamLeagueMatchGoalQuery query);
         Task<TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal.GoalDto> UpdateTeamLeagueMatchGoal(UpdateTeamLeagueMatchGoalCommand command);
+        Task<TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution.SubstitutionDto> GetTeamLeagueMatchSubstitution(GetTeamLeagueMatchSubstitutionQuery query);
+        Task<TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution.SubstitutionDto> UpdateTeamLeagueMatchSubstitution(
+            string leagueName, Guid matchGuid, string teamName, Guid substitutionGuid,            
+            UpdateTeamLeagueMatchSubstitutionDto dto);
     }
 }

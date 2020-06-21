@@ -1,5 +1,7 @@
 ﻿using FluentAssertions;
+using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
+using LeagueManager.Application.Interfaces.Dto;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
 using LeagueManager.Application.UnitTests.TestData;
 using LeagueManager.Domain.Competition;
@@ -7,9 +9,7 @@ using Microsoft.Extensions.Logging;
 using MockQueryable.Moq;
 using Moq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -41,7 +41,7 @@ namespace LeagueManager.Application.UnitTests
             var contextMock = MockDbContext(leagues.AsQueryable());
             var loggerMock = new Mock<ILogger<GetTeamLeagueMatchEventsQueryHandler>>();
             var handler = new GetTeamLeagueMatchEventsQueryHandler(
-                contextMock.Object, Mapper.MapperConfig(), loggerMock.Object
+                contextMock.Object, loggerMock.Object
             );
 
             // Act
@@ -56,11 +56,15 @@ namespace LeagueManager.Application.UnitTests
 
             // Assert
             result.Goals.Count().Should().Be(2);
-            result.Goals.ToList().ForEach(g => int.Parse(g.Minute).Should().BeInRange(1, 90));
+            result.Goals.ToList().ForEach(e =>
+            {
+                var goal = e.Should().BeAssignableTo<IGoalDto>().Subject;
+                int.Parse(goal.Minute).Should().BeInRange(1, 90);
+            });
         }
 
         [Fact]
-        public async void Given_LeagueDoesNotExist_When_GetTeamLeagueMatchEvents_Then_ReturnNull()
+        public void Given_LeagueDoesNotExist_When_GetTeamLeagueMatchEvents_Then_TeamLeagueNotFoundExceptionIsThrown()
         {
             // Arrange
             var teams = new TeamsBuilder().Build();
@@ -74,7 +78,7 @@ namespace LeagueManager.Application.UnitTests
             var contextMock = MockDbContext(leagues.AsQueryable());
             var loggerMock = new Mock<ILogger<GetTeamLeagueMatchEventsQueryHandler>>();
             var handler = new GetTeamLeagueMatchEventsQueryHandler(
-                contextMock.Object, Mapper.MapperConfig(), loggerMock.Object
+                contextMock.Object, loggerMock.Object
             );
 
             // Act
@@ -85,10 +89,10 @@ namespace LeagueManager.Application.UnitTests
                 MatchGuid = guid,
                 TeamName = "Tottenham Hotspur"
             };
-            var result = await handler.Handle(request, CancellationToken.None);
+            Func<Task> func = async () => await handler.Handle(request, CancellationToken.None);
 
             // Assert
-            result.Goals.Count().Should().Be(0);
+            func.Should().Throw<TeamLeagueNotFoundException>();
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿@model IEnumerable<LeagueManager.Application.Interfaces.Dto.IMatchEventDto>
-@using LeagueManager.Application.Interfaces.Dto; 
+﻿@using LeagueManager.Application.Interfaces.Dto;
+@model IEnumerable<IMatchEventDto>
 
 @foreach (var matchEvent in Model)
 {
@@ -7,6 +7,10 @@
         @if (matchEvent is IGoalDto)
         {
             @await Html.PartialAsync("ViewGoalMatchEvent", matchEvent);
+        }
+        else if (matchEvent is ISubstitutionDto)
+        {
+            @await Html.PartialAsync("ViewSubstitutionMatchEvent", matchEvent);
         }
     </div>
 }

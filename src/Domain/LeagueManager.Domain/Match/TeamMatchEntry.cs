@@ -15,6 +15,7 @@ namespace LeagueManager.Domain.Match
         public virtual IntegerScore Score { get; set; }
         public virtual IEnumerable<TeamMatchEntryLineupEntry> Lineup { get; set; } = new List<TeamMatchEntryLineupEntry>();
         public virtual IEnumerable<TeamMatchEntryGoal> Goals { get; set; } = new List<TeamMatchEntryGoal>();
+        public virtual IEnumerable<TeamMatchEntrySubstitution> Substitutions { get; set; } = new List<TeamMatchEntrySubstitution>();
 
         public void CreateLineup(int amountOfPlayers)
         {
