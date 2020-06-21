@@ -26,58 +26,19 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatc
 
         public async Task<SubstitutionDto> Handle(AddTeamLeagueMatchSubstitutionCommand request, CancellationToken cancellationToken)
         {
-            string methodName = nameof(Handle);
-            logger.LogInformation($"{methodName}: Request received");
-
-            var league = await context.TeamLeagues
-                .Include(t => t.Rounds)
-                    .ThenInclude(r => r.Matches)
-                        .ThenInclude(m => m.MatchEntries)
-                            .ThenInclude(me => me.Team)
-                .SingleOrDefaultAsync(x => x.Name == request.LeagueName, cancellationToken);
-
-            if (league == null)
-            {
-                var ex = new TeamLeagueNotFoundException(request.LeagueName);
-                logger.LogError(ex, $"{methodName}: Team league {request.LeagueName} not found");
-                throw ex;
-            }
-            logger.LogInformation($"{methodName}: Team league {request.LeagueName} was found");
-
-            var match = league.GetMatch(request.MatchGuid);
-            if (match == null)
-            {
-                var ex = new MatchNotFoundException(request.MatchGuid);
-                logger.LogError(ex, $"{methodName}: Match {request.MatchGuid} was not found");
-                throw ex;
-            }
-            logger.LogInformation($"{methodName}: Match {request.MatchGuid} was found");
-
-            var matchEntry = match.MatchEntries.SingleOrDefault(me => me.Team.Name == request.TeamName);
-            if (matchEntry == null)
-            {
-                var ex = new MatchEntryNotFoundException(request.TeamName);
-                logger.LogError(ex, $"{methodName}: Match entry for team {request.TeamName} was not found");
-                throw ex;
-            }
-            logger.LogInformation($"{methodName}: Match entry for team {request.TeamName} was found");
+            var matchEntry = await Helper.GetMatchEntry(
+                nameof(Handle),
+                logger,
+                context,
+                request.LeagueName,
+                request.MatchGuid,
+                request.TeamName,
+                cancellationToken
+            );
 
             var players = context.Players.ToList();
-            Domain.Player.Player GetPlayer(string playerName)
-            {
-                var player = players.AsEnumerable().SingleOrDefault(p => p.FullName == playerName);
-                if (player == null)
-                {
-                    var ex = new PlayerNotFoundException(playerName);
-                    logger.LogError(ex, $"{methodName}: Player {playerName} was not found");
-                    throw ex;
-                }
-                logger.LogInformation($"{methodName}: Player {playerName} was found");
-                return player;
-            }
-
-            var playerOut = GetPlayer(request.PlayerOut);
-            var playerIn = GetPlayer(request.PlayerIn);
+            var playerOut = Helper.GetPlayer(nameof(Handle), logger, players, request.PlayerOut);
+            var playerIn = Helper.GetPlayer(nameof(Handle), logger, players, request.PlayerIn);
 
             var subs = matchEntry.Substitutions.ToList();
             var sub = new TeamMatchEntrySubstitution
@@ -90,10 +51,10 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatc
 
             subs.Add(sub);
             matchEntry.Substitutions = subs;
-            logger.LogInformation($"{methodName}: Substitution {sub} was added");
+            logger.LogInformation($"{nameof(Handle)}: Substitution {sub} was added");
 
             await context.SaveChangesAsync(cancellationToken);
-            logger.LogInformation($"{methodName}: Changes are saved");
+            logger.LogInformation($"{nameof(Handle)}: Changes are saved");
 
             return config.CreateMapper().Map<SubstitutionDto>(sub);
         }

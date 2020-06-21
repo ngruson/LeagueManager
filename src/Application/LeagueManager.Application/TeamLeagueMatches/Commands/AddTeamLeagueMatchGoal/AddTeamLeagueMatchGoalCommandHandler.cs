@@ -62,14 +62,7 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatc
             }
             logger.LogInformation($"{methodName}: Match entry for team {request.TeamName} was found");
 
-            var player = context.Players.AsEnumerable().SingleOrDefault(p => p.FullName == request.PlayerName);
-            if (player == null)
-            {
-                var ex = new PlayerNotFoundException(request.PlayerName);
-                logger.LogError(ex, $"{methodName}: Player {request.PlayerName} was not found");
-                throw ex;
-            }
-            logger.LogInformation($"{methodName}: Player {request.PlayerName} was found");
+            var player = Helper.GetPlayer(nameof(Handle), logger, context.Players.ToList(), request.PlayerName);
 
             var goals = matchEntry.Goals.ToList();
             var goal = new TeamMatchEntryGoal
