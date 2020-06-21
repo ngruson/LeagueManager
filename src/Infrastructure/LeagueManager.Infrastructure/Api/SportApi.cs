@@ -1,5 +1,4 @@
 ﻿using LeagueManager.Application.Config;
-using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Sports.Queries.GetTeamSports;
 using LeagueManager.Infrastructure.HttpHelpers;

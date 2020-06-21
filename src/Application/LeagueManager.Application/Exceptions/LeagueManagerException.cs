@@ -9,7 +9,7 @@ namespace LeagueManager.Application.Exceptions
         {
         }
 
-        public LeagueManagerException(string message) : base(message)
+        protected LeagueManagerException(string message) : base(message)
         {
         }
 

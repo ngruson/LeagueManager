@@ -17,13 +17,13 @@ using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetit
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
-using LeagueManager.Application.TeamLeagues.Commands.CreateTeamLeague;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueCompetitors;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.WebUI.ViewModels;
 using System.IO;
-using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeague;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution;
 
 namespace LeagueManager.WebUI.Controllers
 {
@@ -326,6 +326,59 @@ namespace LeagueManager.WebUI.Controllers
             );
 
             return PartialView(goal);
+        }
+
+        [HttpGet("[controller]/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/substitutions/{substitutionGuid}/edit")]
+        public async Task<IActionResult> EditMatchSubstitution(string leagueName, Guid matchGuid, string teamName, Guid substitutionGuid)
+        {
+            var sub = await competitionApi.GetTeamLeagueMatchSubstitution(
+                new GetTeamLeagueMatchSubstitutionQuery
+                {
+                    LeagueName = leagueName,
+                    MatchGuid = matchGuid,
+                    TeamName = teamName,
+                    SubstitutionGuid = substitutionGuid
+                }
+            );
+
+            var players = await competitionApi.GetPlayersForTeamCompetitor(new GetPlayersForTeamCompetitorQuery
+            {
+                LeagueName = leagueName,
+                TeamName = teamName
+            });
+            ViewData["Players"] = players.Select(p => p.Player);
+
+            return PartialView(sub);
+        }
+
+        [HttpPut("[controller]/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/substitutions/{substitutionGuid}")]
+        public async Task<IActionResult> UpdateMatchSubstitution(string leagueName, Guid matchGuid, string teamName, Guid substitutionGuid, UpdateTeamLeagueMatchSubstitutionDto dto)
+        {
+            var sub = await competitionApi.UpdateTeamLeagueMatchSubstitution(
+                leagueName,
+                matchGuid,
+                teamName,
+                substitutionGuid,
+                dto
+            );
+
+            return PartialView("ViewSubstitutionMatchEvent", sub);
+        }
+
+        [HttpGet("[controller]/{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/substitutions/{substitutionGuid}")]
+        public async Task<IActionResult> ViewSubstitutionMatchEvent(string leagueName, Guid matchGuid, string teamName, Guid substitutionGuid)
+        {
+            var sub = await competitionApi.GetTeamLeagueMatchSubstitution(
+                new GetTeamLeagueMatchSubstitutionQuery
+                {
+                    LeagueName = leagueName,
+                    MatchGuid = matchGuid,
+                    TeamName = teamName,
+                    SubstitutionGuid = substitutionGuid
+                }
+            );
+
+            return PartialView(sub);
         }
     }
 }

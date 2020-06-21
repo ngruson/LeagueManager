@@ -1,0 +1,19 @@
+﻿@model LeagueManager.Application.Interfaces.Dto.ISubstitutionDto
+
+<div class="row">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="col-1">
+            <button type="button" data-guid="@Model.Guid" data-team-name="@Model.TeamMatchEntryTeamName" class="btn btn-default btn-sm fa fa-edit js-edit-sub"></button>
+        </div>
+    }
+    <div class="col-1">
+        <i class="fa fa-random"></i>
+    </div>
+    <div class="col-1">
+        <b>@($"{Model.Minute}'")</b>
+    </div>
+    <div class="col">
+        @Model.PlayerIn.FullName
+    </div>
+</div>

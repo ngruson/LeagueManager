@@ -5,15 +5,18 @@ using LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetito
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
 using LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchGoal;
+using LeagueManager.Application.TeamLeagueMatches.Commands.AddTeamLeagueMatchSubstitution;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchGoal;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchLineupEntry;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
+using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchEvents;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchGoal;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchLineupEntry;
+using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchSubstitution;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeague;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueCompetitors;
 using LeagueManager.Application.TeamLeagues.Queries.GetTeamLeagueRounds;
@@ -408,7 +411,7 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
         [ProducesDefaultResponseType]
         public async Task<IActionResult> UpdateTeamLeagueMatchLineupEntry(string leagueName, Guid matchGuid, string teamName, Guid lineupEntryGuid, [FromBody]UpdateTeamLeagueMatchLineupEntryCommand command)
         {
-            string methodName = "UpdateTeamLeagueMatchLineupEntry";
+            string methodName = nameof(UpdateTeamLeagueMatchLineupEntry);
             logger.LogInformation($"{methodName}: Request received");
 
             try
@@ -539,6 +542,95 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
                 var events = await mediator.Send(query);
                 logger.LogInformation($"{methodName}: Returning events");
                 return Ok(events);
+            }
+            catch (LeagueManagerException ex)
+            {
+                return LogException(methodName, ex);
+            }
+            catch (Exception ex)
+            {
+                return LogException(methodName, ex, "Something went wrong!");
+            }
+        }
+
+        [HttpPost("{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/substitutions")]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> AddTeamLeagueMatchSubstitution(string leagueName, Guid matchGuid, string teamName, [FromBody] AddTeamLeagueMatchSubstitutionCommand command)
+        {
+            string methodName = nameof(AddTeamLeagueMatchSubstitution);
+            logger.LogInformation($"{methodName}: Request received");
+
+            command.LeagueName = leagueName;
+            command.MatchGuid = matchGuid;
+            command.TeamName = teamName;
+
+            try
+            {
+                logger.LogInformation("{methodName}: Sending command {command}", methodName, command);
+                var sub = await mediator.Send(command);
+                logger.LogInformation("{methodName}: Returning substitution {goal}", methodName, sub);
+                return Ok(sub);
+            }
+            catch (LeagueManagerException ex)
+            {
+                return LogException(methodName, ex);
+            }
+            catch (Exception ex)
+            {
+                return LogException(methodName, ex, "Something went wrong!");
+            }
+        }
+
+        [HttpPut("{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/substitutions/{substitutionGuid}")]
+        [ProducesDefaultResponseType]
+        public async Task<IActionResult> UpdateTeamLeagueMatchSubstitution(string leagueName, Guid matchGuid, string teamName, Guid substitutionGuid, [FromBody] UpdateTeamLeagueMatchSubstitutionDto dto)
+        {
+            string methodName = nameof(UpdateTeamLeagueMatchSubstitution);
+            logger.LogInformation($"{methodName}: Request received");
+
+            try
+            {
+                var command = mapper.Map<UpdateTeamLeagueMatchSubstitutionCommand>(dto);
+                command.LeagueName = leagueName;
+                command.MatchGuid = matchGuid;
+                command.TeamName = teamName;
+                command.SubstitutionGuid = substitutionGuid;
+
+                logger.LogInformation($"{methodName}: Sending command {command}");
+                var sub = await mediator.Send(command);
+                logger.LogInformation($"{methodName}: Returning substitution {sub}");
+                return Ok(sub);
+            }
+            catch (LeagueManagerException ex)
+            {
+                return LogException(methodName, ex);
+            }
+            catch (Exception ex)
+            {
+                return LogException(methodName, ex, "Something went wrong!");
+            }
+        }
+
+        [HttpGet("{leagueName}/matches/{matchGuid}/matchEntries/{teamName}/substitutions/{substitutionGuid}")]
+        public async Task<IActionResult> GetTeamLeagueMatchSubstitution(string leagueName, Guid matchGuid, string teamName, Guid substitutionGuid)
+        {
+            string methodName = nameof(GetTeamLeagueMatchSubstitution);
+            logger.LogInformation($"{methodName}: Request received");
+
+            try
+            {
+                var query = new GetTeamLeagueMatchSubstitutionQuery
+                {
+                    LeagueName = leagueName,
+                    MatchGuid = matchGuid,
+                    TeamName = teamName,
+                    SubstitutionGuid = substitutionGuid
+                };
+
+                logger.LogInformation("{methodName}: Sending query {query}", methodName, query);
+                var sub = await mediator.Send(query);
+                logger.LogInformation("{methodName}: Returning substitution {sub}", methodName, sub);
+                return Ok(sub);
             }
             catch (LeagueManagerException ex)
             {

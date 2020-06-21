@@ -55,6 +55,7 @@
 
 <partial name="Modal/PlayerModal.cshtml" />
 <partial name="Modal/GoalModal.cshtml" />
+<partial name="Modal/SubstitutionModal.cshtml" />
 
 @section scripts
 {
@@ -207,6 +208,77 @@
                     }
                 });
             });
+
+            $(".js-edit-sub").click(async function (e) {
+                var guid = $(e.target).attr("data-guid");
+                var teamName = $(e.target).attr("data-team-name");
+
+                var url = "@Url.Action("EditMatchSubstitution",
+                          new { leagueName = Model.TeamLeagueName, matchGuid = Model.Guid, teamName = "js-team-name", substitutionGuid = "js-guid" })"
+                    .replace("js-team-name", teamName)
+                    .replace("js-guid", guid);
+
+                await $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (result) {
+                        $('#match-event-' + guid).html(result);
+                        bindClickEvents();
+                    }
+                });
+            });
+
+            $(".js-edit-save-sub").click(async function (e) {
+                var guid = $(e.target).attr("data-guid");
+                var teamName = $(e.target).attr("data-team-name");
+                var minute = $('#minute-' + guid).val();
+                var playerOut = $('#player-out-' + guid).val();
+                var playerIn = $('#player-in-' + guid).val();
+                var url = "@Url.Action("UpdateMatchSubstitution",
+                    new
+                    {
+                        leagueName = "js-leaguename",
+                        matchGuid = "js-match-guid",
+                        teamName = "js-team-name",
+                        substitutionGuid = "js-substitution-guid"
+                    })"
+                    .replace("js-leaguename", "@Model.TeamLeagueName")
+                    .replace("js-match-guid", "@Model.Guid")
+                    .replace("js-team-name", teamName)
+                    .replace("js-substitution-guid", guid);
+
+                var result = await updateTeamLeagueMatchSubstitution(
+                    url,
+                    minute,
+                    playerOut,
+                    playerIn
+                );
+                $('#match-event-' + guid).html(result);
+                bindClickEvents();
+            });
+
+            $(".js-cancel-sub").click(async function (e) {
+                var guid = $(e.target).attr("data-guid");
+                var url = "@Url.Action("ViewSubstitutionMatchEvent",
+                    new
+                    {
+                        leagueName = "js-leaguename",
+                        matchGuid = "js-match-guid",
+                        substitutionGuid = "js-substitution-guid"
+                    })"
+                    .replace("js-leaguename", "@Model.TeamLeagueName")
+                    .replace("js-match-guid", "@Model.Guid")
+                    .replace("js-substitution-guid", guid);
+
+                await $.ajax({
+                    type: 'GET',
+                    url: url,
+                    success: function (result) {
+                        $('#match-event-' + guid).html(result);
+                        bindClickEvents();
+                    }
+                });
+            });
         }
 
         $(document).ready(function () {
@@ -290,6 +362,43 @@
                 }
             });
 
+            $('.js-save-sub').click(async function (e) {
+                var matchGuid = $(e.target).attr("data-match-guid");
+                var teamName = $(e.target).attr("data-team-name");
+
+                var success = await addSubstitution(
+                    $('#sub-minute').val(),
+                    $('#playerOut').val(),
+                    $('#playerIn').val(),
+                    "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeagueName/matches/js-match-guid/matchEntries/js-team-name/substitutions"
+                        .replace("js-match-guid", matchGuid)
+                        .replace("js-team-name", teamName)
+                );
+
+                if (success) {
+                    $('#subModal').modal('toggle');
+                    var url = "@Url.Action("ViewTeamMatchEvents",
+                        new
+                        {
+                            leagueName = "js-leaguename",
+                            matchGuid = "js-match-guid",
+                            teamName = "js-team-name",
+                        })"
+                        .replace("js-leaguename", "@Model.TeamLeagueName")
+                        .replace("js-match-guid", "@Model.Guid")
+                        .replace("js-team-name", teamName);
+
+                    await $.ajax({
+                        type: 'GET',
+                        url: url,
+                        success: function (result) {
+                            $('#match-events-' + teamName.replace(' ', '-')).html(result);
+                            bindClickEvents();
+                        }
+                    });
+                }
+            });
+
             $('#playerModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget);
                 var modal = $(this);
@@ -304,6 +413,17 @@
                 modal.find('.js-save-goal').attr('data-match-guid', matchGuid);
                 var teamName = button.data('team-name');
                 modal.find('.js-save-goal').attr('data-team-name', teamName);
+                getPlayers(modal.find('.js-select-player'),
+                        "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeagueName/competitors/js-team-name/players".replace("js-team-name", teamName));
+            });
+
+            $('#subModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var modal = $(this);
+                var matchGuid = button.data('match-guid');
+                modal.find('.js-save-sub').attr('data-match-guid', matchGuid);
+                var teamName = button.data('team-name');
+                modal.find('.js-save-sub').attr('data-team-name', teamName);
                 getPlayers(modal.find('.js-select-player'),
                         "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeagueName/competitors/js-team-name/players".replace("js-team-name", teamName));
             });

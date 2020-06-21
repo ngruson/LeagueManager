@@ -5,16 +5,9 @@
     @foreach (var entry in Model)
     {
         <div class="col-6">
-            <div class="row">
-                @*<div class="col-2">
-                    <img src="@entry.Team.Logo" style="height:48px; width:48px" />
-                </div>
-                <div class="col">
-                    <h3>@entry.Team.Name</h3>
-                </div>*@
-            </div>
             <div>
                 <button type="button" class="btn btn-default fa fa-futbol add-goal" data-toggle="modal" data-target="#goalModal" data-match-guid="@entry.TeamLeagueMatchGuid" data-team-name="@entry.Team.Name" title="Add scored goal"></button>
+                <button type="button" class="btn btn-default fa fa-random add-sub" data-toggle="modal" data-target="#subModal" data-match-guid="@entry.TeamLeagueMatchGuid" data-team-name="@entry.Team.Name" title="Add substitution"></button>
             </div>
             <div id="match-events-@entry.Team.Name.Replace(" ", "-")" class="py-5">
                 @if (entry.Events().Count == 0)

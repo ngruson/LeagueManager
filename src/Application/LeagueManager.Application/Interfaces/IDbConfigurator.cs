@@ -1,9 +1,10 @@
 ﻿using LeagueManager.Application.Config;
+using System.Threading.Tasks;
 
 namespace LeagueManager.Application.Interfaces
 {
     public interface IDbConfigurator
     {
-        void Configure(DbConfig dbConfig);
+        Task Configure(DbConfig dbConfig);
     }
 }

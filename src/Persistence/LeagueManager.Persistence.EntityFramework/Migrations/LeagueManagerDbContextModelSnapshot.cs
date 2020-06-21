@@ -15,7 +15,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "3.1.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -23,13 +23,17 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Code");
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Flag");
+                    b.Property<byte[]>("Flag")
+                        .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -40,17 +44,23 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CountryId");
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("int");
 
-                    b.Property<byte[]>("Logo");
+                    b.Property<byte[]>("Logo")
+                        .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PointSystemId");
+                    b.Property<int?>("PointSystemId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("SportsId");
+                    b.Property<int?>("SportsId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -67,13 +77,17 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CountryId");
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("int");
 
-                    b.Property<byte[]>("Logo");
+                    b.Property<byte[]>("Logo")
+                        .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -86,11 +100,14 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("TeamId");
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TeamLeagueId");
+                    b.Property<int?>("TeamLeagueId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -105,13 +122,17 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Number");
+                    b.Property<string>("Number")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PlayerId");
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TeamCompetitorId");
+                    b.Property<int?>("TeamCompetitorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -126,13 +147,17 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("Guid");
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("StartTime");
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("TeamLeagueRoundId");
+                    b.Property<int?>("TeamLeagueRoundId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -145,15 +170,20 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("HomeAway");
+                    b.Property<int>("HomeAway")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("ScoreId");
+                    b.Property<int?>("ScoreId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TeamId");
+                    b.Property<int?>("TeamId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TeamLeagueMatchId");
+                    b.Property<int?>("TeamLeagueMatchId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -170,16 +200,21 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("Guid");
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Minute")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PlayerId");
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TeamMatchEntryId");
+                    b.Property<int?>("TeamMatchEntryId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -194,15 +229,20 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid>("Guid");
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Number");
+                    b.Property<string>("Number")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PlayerId");
+                    b.Property<int?>("PlayerId")
+                        .HasColumnType("int");
 
-                    b.Property<int?>("TeamMatchEntryId");
+                    b.Property<int?>("TeamMatchEntryId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -213,19 +253,57 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.ToTable("TeamMatchEntryLineupEntry");
                 });
 
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntrySubstitution", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<Guid>("Guid")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Minute")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PlayerInId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PlayerOutId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TeamMatchEntryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerInId");
+
+                    b.HasIndex("PlayerOutId");
+
+                    b.HasIndex("TeamMatchEntryId");
+
+                    b.ToTable("TeamMatchEntrySubstitution");
+                });
+
             modelBuilder.Entity("LeagueManager.Domain.Player.Player", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime?>("BirthDate");
+                    b.Property<DateTime?>("BirthDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("FirstName");
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("LastName");
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("MiddleName");
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -236,13 +314,17 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("Draw");
+                    b.Property<int>("Draw")
+                        .HasColumnType("int");
 
-                    b.Property<int>("Lost");
+                    b.Property<int>("Lost")
+                        .HasColumnType("int");
 
-                    b.Property<int>("Win");
+                    b.Property<int>("Win")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -253,11 +335,14 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TeamLeagueId");
+                    b.Property<int?>("TeamLeagueId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -270,9 +355,11 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("Value");
+                    b.Property<int?>("Value")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -283,11 +370,14 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OptionsId");
+                    b.Property<int?>("OptionsId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -300,9 +390,11 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AmountOfPlayers");
+                    b.Property<int>("AmountOfPlayers")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -337,7 +429,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .WithMany()
                         .HasForeignKey("TeamId");
 
-                    b.HasOne("LeagueManager.Domain.Competition.TeamLeague")
+                    b.HasOne("LeagueManager.Domain.Competition.TeamLeague", null)
                         .WithMany("Competitors")
                         .HasForeignKey("TeamLeagueId");
                 });
@@ -348,7 +440,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .WithMany()
                         .HasForeignKey("PlayerId");
 
-                    b.HasOne("LeagueManager.Domain.Competitor.TeamCompetitor")
+                    b.HasOne("LeagueManager.Domain.Competitor.TeamCompetitor", null)
                         .WithMany("Players")
                         .HasForeignKey("TeamCompetitorId");
                 });
@@ -370,7 +462,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .WithMany()
                         .HasForeignKey("TeamId");
 
-                    b.HasOne("LeagueManager.Domain.Match.TeamLeagueMatch")
+                    b.HasOne("LeagueManager.Domain.Match.TeamLeagueMatch", "TeamLeagueMatch")
                         .WithMany("MatchEntries")
                         .HasForeignKey("TeamLeagueMatchId");
                 });
@@ -381,7 +473,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .WithMany()
                         .HasForeignKey("PlayerId");
 
-                    b.HasOne("LeagueManager.Domain.Match.TeamMatchEntry")
+                    b.HasOne("LeagueManager.Domain.Match.TeamMatchEntry", "TeamMatchEntry")
                         .WithMany("Goals")
                         .HasForeignKey("TeamMatchEntryId");
                 });
@@ -394,6 +486,21 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
 
                     b.HasOne("LeagueManager.Domain.Match.TeamMatchEntry", "TeamMatchEntry")
                         .WithMany("Lineup")
+                        .HasForeignKey("TeamMatchEntryId");
+                });
+
+            modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntrySubstitution", b =>
+                {
+                    b.HasOne("LeagueManager.Domain.Player.Player", "PlayerIn")
+                        .WithMany()
+                        .HasForeignKey("PlayerInId");
+
+                    b.HasOne("LeagueManager.Domain.Player.Player", "PlayerOut")
+                        .WithMany()
+                        .HasForeignKey("PlayerOutId");
+
+                    b.HasOne("LeagueManager.Domain.Match.TeamMatchEntry", "TeamMatchEntry")
+                        .WithMany("Substitutions")
                         .HasForeignKey("TeamMatchEntryId");
                 });
 

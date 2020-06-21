@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Threading.Tasks;
 
 namespace LeagueManager.Persistence.EntityFramework
 {
@@ -21,17 +22,17 @@ namespace LeagueManager.Persistence.EntityFramework
             this.serviceProvider = serviceProvider;
         }
 
-        public void Configure(DbConfig dbConfig)
+        public async Task Configure(DbConfig dbConfig)
         {
             options.Update(opt =>
             {
                 opt.LeagueManager = $"Server={dbConfig.DatabaseServer};Database={dbConfig.DatabaseName};Trusted_Connection=True;Application Name=LeagueManager";
             });
 
-            InitializeDb();
+            await InitializeDb();
         }
 
-        private void InitializeDb()
+        private async Task InitializeDb()
         {
             using (var scope = serviceProvider.CreateScope())
             {
@@ -41,7 +42,7 @@ namespace LeagueManager.Persistence.EntityFramework
                     var concreteContext = (LeagueManagerDbContext)context;
                     concreteContext.Database.Migrate();
                     var initializer = scope.ServiceProvider.GetService<DbInitializer>();
-                    initializer.Initialize(concreteContext);
+                    await initializer.Initialize(concreteContext);
                 }
                 catch (Exception ex)
                 {

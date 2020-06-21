@@ -3,7 +3,6 @@ using LeagueManager.Application.Player.Commands.CreatePlayer;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Threading.Tasks;
 
 namespace LeagueManager.Api.PlayerApi.Controllers
@@ -33,7 +32,7 @@ namespace LeagueManager.Api.PlayerApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex)
+            catch
             {
                 return BadRequest("Something went wrong!");
             }

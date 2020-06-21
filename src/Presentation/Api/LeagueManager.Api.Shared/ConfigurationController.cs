@@ -2,6 +2,7 @@
 using LeagueManager.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace LeagueManager.Api.Shared
 {
@@ -18,11 +19,11 @@ namespace LeagueManager.Api.Shared
         }
 
         [HttpPut]
-        public IActionResult Configure(DbConfig dbConfig)
+        public async Task<IActionResult> Configure(DbConfig dbConfig)
         {
             try
             {
-                dbConfigurator.Configure(dbConfig);
+                await dbConfigurator.Configure(dbConfig);
             }
             catch
             {
