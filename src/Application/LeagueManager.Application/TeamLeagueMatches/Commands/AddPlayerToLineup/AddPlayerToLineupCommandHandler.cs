@@ -43,7 +43,7 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.AddPlayerToLineup
 
             var getPlayersRequest = config.CreateMapper().Map<GetPlayersForTeamCompetitorQuery>(request);
             var players = await mediator.Send(getPlayersRequest);
-            if ((players == null) || (players.Count() == 0))
+            if (players.Any())
             {
                 logger.LogInformation($"{methodName}: Player '{request.Player.FullName}' is not found in team '{request.TeamName}', " +
                     "adding player");
