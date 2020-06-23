@@ -219,10 +219,14 @@ async function addPlayerToTeamCompetitor(leagueName, teamName, playerNumber, pla
     return result;
 }
 
-async function addPlayerToLineup(number, playerName, url) {
+async function addPlayerToLineup(number, firstName, middleName, lastName, url) {
     var req = {
-        number: $(number).val(),
-        player: playerName
+        number: number,
+        player: {
+            firstName: firstName,
+            middleName: middleName,
+            lastName: lastName
+        }
     };
     var result = false;
 

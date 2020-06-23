@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Exceptions;
-using LeagueManager.Application.Match.Commands.AddPlayerToLineup;
+using LeagueManager.Application.TeamLeagueMatches.Commands.AddPlayerToLineup;
 using LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
@@ -381,16 +381,17 @@ namespace LeagueManager.Api.CompetitionApi.Controllers
 
         [HttpPost("{leagueName}/matches/{guid}/matchEntries/{team}/lineup")]
         [ProducesDefaultResponseType]
-        public async Task<IActionResult> AddPlayerToLineup(string leagueName, Guid guid, string team, [FromBody]AddPlayerToLineupCommand command)
+        public async Task<IActionResult> AddPlayerToLineup(string leagueName, Guid guid, string team, [FromBody] AddPlayerToLineupDto dto)
         {
-            string methodName = "AddPlayerToLineup";
+            string methodName = nameof(AddPlayerToLineup);
             logger.LogInformation($"{methodName}: Request received");
 
             try
             {
+                var command = mapper.Map<AddPlayerToLineupCommand>(dto);
                 command.LeagueName = leagueName;
-                command.Guid = guid;
-                command.Team = team;
+                command.MatchGuid = guid;
+                command.TeamName = team;
 
                 logger.LogInformation("{methodName}: Sending command {command}", methodName, command);
                 var result = await mediator.Send(command);

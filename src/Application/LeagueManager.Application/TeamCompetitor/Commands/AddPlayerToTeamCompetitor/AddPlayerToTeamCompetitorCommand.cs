@@ -2,7 +2,7 @@
 
 namespace LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetitor
 {
-    public class AddPlayerToTeamCompetitorCommand : IRequest
+    public class AddPlayerToTeamCompetitorCommand : IRequest<Unit>
     {
         public string LeagueName { get; set; }
         public string TeamName { get; set; }

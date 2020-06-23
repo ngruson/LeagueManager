@@ -1,4 +1,8 @@
 ﻿using AutoMapper;
+using LeagueManager.Application.Player.Commands.CreatePlayer;
+using LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetitor;
+using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
+using LeagueManager.Application.TeamLeagueMatches.Commands.AddPlayerToLineup;
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchSubstitution;
 using System;
 using System.Linq;
@@ -11,6 +15,12 @@ namespace LeagueManager.Application.Common.Mappings
         public MappingProfile()
         {
             ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+            CreateMap<TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto, CreatePlayerCommand>();
+            CreateMap<AddPlayerToLineupCommand, GetPlayersForTeamCompetitorQuery>();
+            CreateMap<AddPlayerToLineupCommand, AddPlayerToTeamCompetitorCommand>()
+                .ForMember(m => m.PlayerName, opt => opt.MapFrom(src => src.Player.FullName))
+                .ForMember(m => m.PlayerNumber, opt => opt.MapFrom(src => src.Number));
+            CreateMap<AddPlayerToLineupDto, AddPlayerToLineupCommand>();
             CreateMap<UpdateTeamLeagueMatchSubstitutionDto, UpdateTeamLeagueMatchSubstitutionCommand>();
         }
 

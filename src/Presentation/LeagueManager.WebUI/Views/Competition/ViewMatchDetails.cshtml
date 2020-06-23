@@ -285,7 +285,10 @@
             bindClickEvents();
 
             $('.js-save-player').click(async function (e) {
+                var guid = $(e.target).attr("data-guid");
                 var teamName = $(e.target).attr("data-team-name");
+                var fullName = constructFullName($('#player-first-name').val(), $('#player-middle-name').val(), $('#player-last-name').val());
+
                 var success = await createPlayer(
                     $('#player-first-name'),
                     $('#player-middle-name'),
@@ -298,17 +301,8 @@
                         "@Model.TeamLeagueName",
                         teamName,
                         $('#player-number').val(),
-                        constructFullName($('#player-first-name').val(), $('#player-middle-name').val(), $('#player-last-name').val()),
+                        fullName,
                         "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeagueName/competitors/players"
-                    );
-                }
-
-                if (success) {
-                    success = await addPlayerToLineup(
-                        $('#player-number'),
-                        constructFullName($('#player-first-name').val(), $('#player-middle-name').val(), $('#player-last-name').val()),
-                        "@ViewData["MatchBaseUrl"]/matchEntries/js-team-name/lineup"
-                            .replace("js-team-name", teamName)
                     );
                 }
 
@@ -319,10 +313,14 @@
                         "@ViewData["TeamLeagueApiUrl"]/@Model.TeamLeagueName/competitors/js-team-name/players".replace("js-team-name", teamName)
                     );
 
+                    $('#number-' + guid).val($('#player-number').val());
+                    $('#player-' + guid).val(fullName);
+
                     $('#player-number').val('');
                     $('#player-first-name').val('');
                     $('#player-middle-name').val('');
                     $('#player-last-name').val('');
+                    $('.modal .alert-danger').addClass('invisible');
                 }
             });
 
@@ -402,7 +400,9 @@
             $('#playerModal').on('show.bs.modal', function (event) {
                 var button = $(event.relatedTarget);
                 var modal = $(this);
+                var guid = button.data('guid');
                 var teamName = button.data('team-name');
+                modal.find('.js-save-player').attr('data-guid', guid);
                 modal.find('.js-save-player').attr('data-team-name', teamName);
             });
 
