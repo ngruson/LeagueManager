@@ -3,7 +3,7 @@ using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
 using LeagueManager.Application.Player.Commands.CreatePlayer;
 using LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetitor;
-using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
+using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor;
 using LeagueManager.Domain.Match;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -41,9 +41,9 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.AddPlayerToLineup
                 logger.LogInformation($"{methodName}: Created player '{request.Player.FullName}'");
             }
 
-            var getPlayersRequest = config.CreateMapper().Map<GetPlayersForTeamCompetitorQuery>(request);
-            var players = await mediator.Send(getPlayersRequest);
-            if (players.Any())
+            var getPlayerRequest = config.CreateMapper().Map<GetPlayerForTeamCompetitorQuery>(request);
+            var competitorPlayer = await mediator.Send(getPlayerRequest);
+            if (competitorPlayer == null)
             {
                 logger.LogInformation($"{methodName}: Player '{request.Player.FullName}' is not found in team '{request.TeamName}', " +
                     "adding player");
