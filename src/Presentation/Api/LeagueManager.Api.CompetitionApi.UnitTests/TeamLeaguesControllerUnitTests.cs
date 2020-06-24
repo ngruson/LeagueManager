@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using LeagueManager.Api.CompetitionApi.Controllers;
 using LeagueManager.Application.Exceptions;
-using LeagueManager.Application.Match.Commands.AddPlayerToLineup;
+using LeagueManager.Application.TeamLeagueMatches.Commands.AddPlayerToLineup;
 using LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
@@ -1066,17 +1066,21 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     Mapper.CreateMapper()
                 );
 
-                var command = new AddPlayerToLineupCommand
+                var dto = new AddPlayerToLineupDto
                 {
                     Number = "1",
-                    Player = "John Doe"
+                    Player = new Application.TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto
+                    {
+                        FirstName = "John",
+                        LastName = "Doe"
+                    }
                 };
 
                 //Act
                 var result = await controller.AddPlayerToLineup("Premier League",
                     new Guid("00000000-0000-0000-0000-000000000000"),
                     "Tottenham Hotspur",
-                    command);
+                    dto);
 
                 //Assert
                 result.Should().BeOfType<OkObjectResult>();
@@ -1100,17 +1104,22 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     Mapper.CreateMapper()
                 );
 
-                var command = new AddPlayerToLineupCommand
+                var dto = new AddPlayerToLineupDto
                 {
                     Number = "1",
-                    Player = "John Doe"
+                    Player = new Application.TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto
+                    {
+                        FirstName = "John",
+                        LastName = "Doe"
+                    }
                 };
 
                 //Act
                 var result = await controller.AddPlayerToLineup("Premier League",
                     new Guid("00000000-0000-0000-0000-000000000000"),
                     "Tottenham Hotspur",
-                    command);
+                    dto
+                );
 
                 //Assert
                 result.Should().BeOfType<BadRequestObjectResult>();
@@ -1134,17 +1143,21 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     Mapper.CreateMapper()
                 );
 
-                var command = new AddPlayerToLineupCommand
+                var dto = new AddPlayerToLineupDto
                 {
                     Number = "1",
-                    Player = "John Doe"
+                    Player = new Application.TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto
+                    {
+                        FirstName = "John",
+                        LastName = "Doe"
+                    }
                 };
 
                 //Act
                 var result = await controller.AddPlayerToLineup("Premier League",
                     new Guid("00000000-0000-0000-0000-000000000000"),
                     "Tottenham Hotspur",
-                    command);
+                    dto);
 
                 //Assert
                 result.Should().BeOfType<BadRequestObjectResult>();
@@ -1169,17 +1182,22 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     Mapper.CreateMapper()
                 );
 
-                var command = new AddPlayerToLineupCommand
+                var dto = new AddPlayerToLineupDto
                 {
                     Number = "1",
-                    Player = "John Doe"
+                    Player = new Application.TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto
+                    {
+                        FirstName = "John",
+                        LastName = "Doe"
+                    }
                 };
 
                 //Act
                 var result = await controller.AddPlayerToLineup("Premier League",
                     Guid.NewGuid(),
                     teamName,
-                    command);
+                    dto
+                );
 
                 //Assert
                 var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
@@ -1206,17 +1224,22 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     Mapper.CreateMapper()
                 );
 
-                var command = new AddPlayerToLineupCommand
+                var dto = new AddPlayerToLineupDto
                 {
                     Number = "1",
-                    Player = playerName
+                    Player = new Application.TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto
+                    {
+                        FirstName = "John",
+                        LastName = "Doe"
+                    }
                 };
 
                 //Act
                 var result = await controller.AddPlayerToLineup("Premier League",
                     Guid.NewGuid(),
                     playerName,
-                    command);
+                    dto
+                );
 
                 //Assert
                 var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;
@@ -1243,17 +1266,22 @@ namespace LeagueManager.Api.CompetitionApi.UnitTests
                     Mapper.CreateMapper()
                 );
 
-                var command = new AddPlayerToLineupCommand
+                var dto = new AddPlayerToLineupDto
                 {
                     Number = "1",
-                    Player = playerName
+                    Player = new Application.TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto
+                    {
+                        FirstName = "John",
+                        LastName = "Doe"
+                    }
                 };
 
                 //Act
                 var result = await controller.AddPlayerToLineup("Premier League",
                     Guid.NewGuid(),
                     playerName,
-                    command);
+                    dto
+                );
 
                 //Assert
                 var badRequest = result.Should().BeAssignableTo<BadRequestObjectResult>().Subject;

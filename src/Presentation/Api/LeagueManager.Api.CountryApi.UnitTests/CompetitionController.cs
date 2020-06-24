@@ -13,7 +13,7 @@ using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatch
 using LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueMatchScore;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatch;
 using LeagueManager.Application.TeamLeagueMatches.Queries.GetTeamLeagueMatchDetails;
-using LeagueManager.Application.Match.Commands.AddPlayerToLineup;
+using LeagueManager.Application.TeamLeagueMatches.Commands.AddPlayerToLineup;
 using LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
 using LeagueManager.Application.TeamCompetitor.Queries.GetPlayerForTeamCompetitor;

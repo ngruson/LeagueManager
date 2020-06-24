@@ -1,5 +1,5 @@
 ﻿using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.Match.Commands.AddPlayerToLineup;
+using LeagueManager.Application.TeamLeagueMatches.Commands.AddPlayerToLineup;
 using LeagueManager.Domain.Competition;
 using Moq;
 using MockQueryable.Moq;
@@ -14,6 +14,11 @@ using MediatR;
 using FluentAssertions;
 using System.Threading.Tasks;
 using LeagueManager.Application.Exceptions;
+using Castle.Core.Logging;
+using Microsoft.Extensions.Logging;
+using LeagueManager.Application.Player.Commands.CreatePlayer;
+using LeagueManager.Application.TeamCompetitor.Commands.AddPlayerToTeamCompetitor;
+using LeagueManager.Application.TeamCompetitor.Queries.GetPlayersForTeamCompetitor;
 
 namespace LeagueManager.Application.UnitTests
 {
@@ -46,15 +51,27 @@ namespace LeagueManager.Application.UnitTests
                 new List<TeamLeague> { teamLeague }.AsQueryable(), 
                 teamLeague.Competitors.Select(c => c.Team).AsQueryable(),
                 players.AsQueryable());
-            var handler = new AddPlayerToLineupCommandHandler(contextMock.Object);
+            var contextMediator = new Mock<IMediator>();
+            var contextLogger = new Mock<ILogger<AddPlayerToLineupCommandHandler>>();
+
+            var handler = new AddPlayerToLineupCommandHandler(
+                contextMock.Object,
+                contextMediator.Object,
+                Mapper.MapperConfig(),
+                contextLogger.Object
+            );
 
             //Act
             var command = new AddPlayerToLineupCommand {
                 LeagueName = "Premier League",
-                Guid = new Guid("00000000-0000-0000-0000-000000000000"),
-                Team = "Tottenham Hotspur",
+                MatchGuid = new Guid("00000000-0000-0000-0000-000000000000"),
+                TeamName = "Tottenham Hotspur",
                 Number = "1",
-                Player = "John Doe" 
+                Player = new TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto
+                {
+                    FirstName = "John",
+                    LastName = "Doe"
+                }
             };
             var result = await handler.Handle(command, CancellationToken.None);
 
@@ -78,16 +95,28 @@ namespace LeagueManager.Application.UnitTests
                 new List<TeamLeague> { teamLeague }.AsQueryable(),
                 teamLeague.Competitors.Select(c => c.Team).AsQueryable(),
                 players.AsQueryable());
-            var handler = new AddPlayerToLineupCommandHandler(contextMock.Object);
+            var contextMediator = new Mock<IMediator>();
+            var contextLogger = new Mock<ILogger<AddPlayerToLineupCommandHandler>>();
+
+            var handler = new AddPlayerToLineupCommandHandler(
+                contextMock.Object,
+                contextMediator.Object,
+                Mapper.MapperConfig(),
+                contextLogger.Object
+            );
 
             //Act
             var command = new AddPlayerToLineupCommand
             {
                 LeagueName = "Premier League",
-                Guid = new Guid("00000000-0000-0000-0000-000000000000"),
-                Team = "DoesNotExist",
+                MatchGuid = new Guid("00000000-0000-0000-0000-000000000000"),
+                TeamName = "DoesNotExist",
                 Number = "1",
-                Player = "John Doe"
+                Player = new TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto
+                {
+                    FirstName = "John",
+                    LastName = "Doe"
+                }
             };
             Func<Task> func = async () => await handler.Handle(command, CancellationToken.None);
 
@@ -96,7 +125,7 @@ namespace LeagueManager.Application.UnitTests
         }
 
         [Fact]
-        public void Given_PlayerDoesNotExist_When_AddPlayerToLineup_Then_PlayerNotFoundException()
+        public async void Given_PlayerDoesNotExist_When_AddPlayerToLineup_Then_CreatePlayer()
         {
             // Arrange
             var builder = new TeamLeagueBuilder()
@@ -110,21 +139,51 @@ namespace LeagueManager.Application.UnitTests
                 new List<TeamLeague> { teamLeague }.AsQueryable(),
                 teamLeague.Competitors.Select(c => c.Team).AsQueryable(),
                 players.AsQueryable());
-            var handler = new AddPlayerToLineupCommandHandler(contextMock.Object);
+            var contextMediator = new Mock<IMediator>();
+            contextMediator.Setup(x => x.Send(
+                It.IsAny<GetPlayersForTeamCompetitorQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new List<CompetitorPlayerDto>());
+
+            var contextLogger = new Mock<ILogger<AddPlayerToLineupCommandHandler>>();
+
+            var handler = new AddPlayerToLineupCommandHandler(
+                contextMock.Object,
+                contextMediator.Object,
+                Mapper.MapperConfig(),
+                contextLogger.Object
+            );
 
             //Act
             var command = new AddPlayerToLineupCommand
             {
                 LeagueName = "Premier League",
-                Guid = new Guid("00000000-0000-0000-0000-000000000000"),
-                Team = "Tottenham Hotspur",
+                MatchGuid = new Guid("00000000-0000-0000-0000-000000000000"),
+                TeamName = "Tottenham Hotspur",
                 Number = "1",
-                Player = "Jane Doe"
+                Player = new TeamLeagueMatches.Commands.AddPlayerToLineup.PlayerDto
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe"
+                }
             };
-            Func<Task> func = async () => await handler.Handle(command, CancellationToken.None);
+            var result = await handler.Handle(command, CancellationToken.None);
 
             //Assert
-            func.Should().Throw<PlayerNotFoundException>();
+            contextMediator.Verify(x => x.Send(
+                It.IsAny<CreatePlayerCommand>(),
+                It.IsAny<CancellationToken>() 
+            ));
+            contextMediator.Verify(x => x.Send(
+                It.IsAny<AddPlayerToTeamCompetitorCommand>(),
+                It.IsAny<CancellationToken>()
+            ));
+
+            contextMock.Verify(mock => mock.SaveChangesAsync(
+                It.IsAny<CancellationToken>()
+            ));
+
+            result.Should().Be(Unit.Value);
         }
     }
 }

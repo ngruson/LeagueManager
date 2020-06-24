@@ -16,7 +16,7 @@ namespace LeagueManager.Application.TeamLeagueMatches
         public static async Task<TeamMatchEntry> GetMatchEntry(string methodName, ILogger logger, ILeagueManagerDbContext context,
             string leagueName, Guid matchGuid, string teamName, CancellationToken cancellationToken)
         {
-            logger.LogInformation($"{methodName}: Request received");
+            logger.LogInformation($"{methodName}: Retrieving match entry for team '{teamName}'");
 
             var league = await context.TeamLeagues
                 .Include(t => t.Rounds)
