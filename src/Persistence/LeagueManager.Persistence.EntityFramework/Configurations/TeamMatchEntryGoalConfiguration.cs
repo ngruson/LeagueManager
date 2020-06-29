@@ -9,8 +9,13 @@ namespace LeagueManager.Persistence.EntityFramework.Configurations
         public void Configure(EntityTypeBuilder<TeamMatchEntryGoal> builder)
         {
             builder.Property(g => g.Guid).IsRequired();
-            builder.Property(g => g.Minute).IsRequired();
-            builder.HasOne(g => g.Player); //.IsRequired() doesn't work so this relation is optional for now
+            builder.Property(g => g.Minute).HasColumnType("varchar(3)").IsRequired();
+
+            builder.HasOne(g => g.Player);
+
+            builder.HasOne(g => g.TeamMatchEntry)
+                .WithMany(me => me.Goals)
+                .IsRequired();
         }
     }
 }
