@@ -8,8 +8,9 @@ namespace LeagueManager.Persistence.EntityFramework.Configurations
     {
         public void Configure(EntityTypeBuilder<TeamLeagueMatch> builder)
         {
-            //builder.Property(tm => tm.TeamLeagueRound)
-            //    .IsRequired();
+            builder.HasOne(m => m.TeamLeagueRound)
+                .WithMany(r => r.Matches)
+                .IsRequired();
         }
     }
 }
