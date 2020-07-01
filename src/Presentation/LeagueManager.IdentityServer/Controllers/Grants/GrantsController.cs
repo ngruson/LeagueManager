@@ -21,20 +21,20 @@ namespace LeagueManager.IdentityServer
     [Authorize]
     public class GrantsController : Controller
     {
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly IClientStore _clients;
-        private readonly IResourceStore _resources;
-        private readonly IEventService _events;
+        private readonly IIdentityServerInteractionService interaction;
+        private readonly IClientStore clients;
+        private readonly IResourceStore resources;
+        private readonly IEventService events;
 
         public GrantsController(IIdentityServerInteractionService interaction,
             IClientStore clients,
             IResourceStore resources,
             IEventService events)
         {
-            _interaction = interaction;
-            _clients = clients;
-            _resources = resources;
-            _events = events;
+            this.interaction = interaction;
+            this.clients = clients;
+            this.resources = resources;
+            this.events = events;
         }
 
         /// <summary>
@@ -53,23 +53,23 @@ namespace LeagueManager.IdentityServer
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Revoke(string clientId)
         {
-            await _interaction.RevokeUserConsentAsync(clientId);
-            await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId));
+            await interaction.RevokeUserConsentAsync(clientId);
+            await events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), clientId));
 
             return RedirectToAction("Index");
         }
 
         private async Task<GrantsViewModel> BuildViewModelAsync()
         {
-            var grants = await _interaction.GetAllUserConsentsAsync();
+            var grants = await interaction.GetAllUserGrantsAsync();
 
             var list = new List<GrantViewModel>();
             foreach(var grant in grants)
             {
-                var client = await _clients.FindClientByIdAsync(grant.ClientId);
+                var client = await clients.FindClientByIdAsync(grant.ClientId);
                 if (client != null)
                 {
-                    var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
+                    var res = await resources.FindResourcesByScopeAsync(grant.Scopes);
 
                     var item = new GrantViewModel()
                     {
@@ -79,8 +79,8 @@ namespace LeagueManager.IdentityServer
                         ClientUrl = client.ClientUri,
                         Created = grant.CreationTime,
                         Expires = grant.Expiration,
-                        IdentityGrantNames = resources.IdentityResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
-                        ApiGrantNames = resources.ApiResources.Select(x => x.DisplayName ?? x.Name).ToArray()
+                        IdentityGrantNames = res.IdentityResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
+                        ApiGrantNames = res.ApiResources.Select(x => x.DisplayName ?? x.Name).ToArray()
                     };
 
                     list.Add(item);

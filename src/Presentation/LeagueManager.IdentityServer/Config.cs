@@ -15,7 +15,7 @@ namespace LeagueManager.IdentityServer
                     ClientId = "LeagueManager",
                     ClientSecrets = { new Secret("secret".Sha256()) },
                     ClientName = "LeagueManager Web Application",
-                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    AllowedGrantTypes = GrantTypes.Code,
                     RedirectUris = { "https://desktop-3pdt884/LeagueManager.WebUI/signin-oidc" },
                     PostLogoutRedirectUris = { "https://desktop-3pdt884/LeagueManager.WebUI/signout-callback-oidc" },
                     AllowedScopes = new List<string>
@@ -44,15 +44,15 @@ namespace LeagueManager.IdentityServer
             };
         }
 
-        public static IEnumerable<ApiResource> GetApiResources()
+        public static IEnumerable<ApiScope> GetApiScopes()
         {
-            return new ApiResource[]
+            return new ApiScope[]
             {
-                new ApiResource("sportapi", "LeagueManager Sport API"),
-                new ApiResource("competitionapi", "LeagueManager Competition API"),
-                new ApiResource("countryapi", "LeagueManager Country API"),
-                new ApiResource("teamapi", "LeagueManager Team API"),
-                new ApiResource("playerapi", "LeagueManager Player API")
+                new ApiScope("sportapi", "LeagueManager Sport API"),
+                new ApiScope("competitionapi", "LeagueManager Competition API"),
+                new ApiScope("countryapi", "LeagueManager Country API"),
+                new ApiScope("teamapi", "LeagueManager Team API"),
+                new ApiScope("playerapi", "LeagueManager Player API")
             };
         }
     }

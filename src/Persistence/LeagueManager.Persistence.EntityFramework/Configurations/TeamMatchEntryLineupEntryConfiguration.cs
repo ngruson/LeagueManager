@@ -13,8 +13,7 @@ namespace LeagueManager.Persistence.EntityFramework.Configurations
                 .IsRequired();
 
             builder.Property(le => le.Number)
-                .HasColumnType("varchar(3)")
-                .IsRequired();
+                .HasColumnType("varchar(3)");
 
             builder.HasOne(le => le.Player);
         }
