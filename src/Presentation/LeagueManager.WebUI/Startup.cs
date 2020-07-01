@@ -48,7 +48,7 @@ namespace LeagueManager.WebUI
             services.AddMvc(opt => opt.EnableEndpointRouting = false)
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
 
             services.AddAuthentication(options =>
             {
@@ -64,7 +64,8 @@ namespace LeagueManager.WebUI
                     options.SignInScheme = "Cookies";
                     options.ClientId = "LeagueManager";
                     options.ClientSecret = "secret";
-                    options.ResponseType = "code id_token";
+                    options.ResponseType = "code";
+                    //options.UsePkce = true;
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
 

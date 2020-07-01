@@ -235,7 +235,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Guid = table.Column<Guid>(nullable: false),
-                    TeamLeagueRoundId = table.Column<int>(nullable: true),
+                    TeamLeagueRoundId = table.Column<int>(nullable: false),
                     StartTime = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
@@ -246,7 +246,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         column: x => x.TeamLeagueRoundId,
                         principalTable: "TeamLeagueRound",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -319,7 +319,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TeamMatchEntryId = table.Column<int>(nullable: false),
                     Guid = table.Column<Guid>(nullable: false),
-                    Number = table.Column<string>(type: "varchar(3)", nullable: false),
+                    Number = table.Column<string>(type: "varchar(3)", nullable: true),
                     PlayerId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>

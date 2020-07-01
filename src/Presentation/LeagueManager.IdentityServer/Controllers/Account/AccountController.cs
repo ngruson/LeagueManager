@@ -82,86 +82,74 @@ namespace LeagueManager.IdentityServer
             // the user clicked the "cancel" button
             if (button != "login")
             {
-                await UserCanceled(model, context);
+                if (context != null)
+                {
+                    // if the user cancels, send a result back into IdentityServer as if they 
+                    // denied the consent (even if this client does not require consent).
+                    // this will send back an access denied OIDC error response to the client.
+                    await interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
+
+                    // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                    if (context.IsNativeClient())
+                    {
+                        // The client is native, so this change in how to
+                        // return the response is for better UX for the end user.
+                        return this.LoadingPage("Redirect", model.ReturnUrl);
+                    }
+
+                    return Redirect(model.ReturnUrl);
+                }
+                else
+                {
+                    // since we don't have a valid context, then we just go back to the home page
+                    return Redirect("~/");
+                }
             }
 
             if (ModelState.IsValid)
             {
-                await LoginUser(model, context);
+                var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
+                if (result.Succeeded)
+                {
+                    var user = await userManager.FindByNameAsync(model.Username);
+                    await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
 
-                await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
-                ModelState.AddModelError("", AccountOptions.InvalidCredentialsErrorMessage);
-            }            
+                    if (context != null)
+                    {
+                        if (context.IsNativeClient())
+                        {
+                            // The client is native, so this change in how to
+                            // return the response is for better UX for the end user.
+                            return this.LoadingPage("Redirect", model.ReturnUrl);
+                        }
+
+                        // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                        return Redirect(model.ReturnUrl);
+                    }
+
+                    // request for a local page
+                    if (Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+                    else if (string.IsNullOrEmpty(model.ReturnUrl))
+                    {
+                        return Redirect("~/");
+                    }
+                    else
+                    {
+                        // user might have clicked on a malicious link - should be logged
+                        throw new Exception("invalid return URL");
+                    }
+                }
+
+                await events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client.ClientId));
+                ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
+            }
 
             // something went wrong, show form with error
             var vm = await BuildLoginViewModelAsync(model);
             return View(vm);
-        }
-
-        private async Task<IActionResult> UserCanceled(LoginInputModel model, AuthorizationRequest context)
-        {
-            if (context != null)
-            {
-                // if the user cancels, send a result back into IdentityServer as if they 
-                // denied the consent (even if this client does not require consent).
-                // this will send back an access denied OIDC error response to the client.
-                await interaction.GrantConsentAsync(context, ConsentResponse.Denied);
-
-                // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                if (await clientStore.IsPkceClientAsync(context.ClientId))
-                {
-                    // if the client is PKCE then we assume it's native, so this change in how to
-                    // return the response is for better UX for the end user.
-                    return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
-                }
-
-                return Redirect(model.ReturnUrl);
-            }
-            else
-            {
-                // since we don't have a valid context, then we just go back to the home page
-                return Redirect("~/");
-            }
-        }
-
-        private async Task<IActionResult> LoginUser(LoginInputModel model, AuthorizationRequest context)
-        {
-            var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberLogin, lockoutOnFailure: true);
-            if (result.Succeeded)
-            {
-                var user = await userManager.FindByNameAsync(model.Username);
-                await events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
-
-                if (context != null)
-                {
-                    if (await clientStore.IsPkceClientAsync(context.ClientId))
-                    {
-                        // if the client is PKCE then we assume it's native, so this change in how to
-                        // return the response is for better UX for the end user.
-                        return View("Redirect", new RedirectViewModel { RedirectUrl = model.ReturnUrl });
-                    }
-
-                    // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                    return Redirect(model.ReturnUrl);
-                }
-
-                // request for a local page
-                if (Url.IsLocalUrl(model.ReturnUrl))
-                {
-                    return Redirect(model.ReturnUrl);
-                }
-                else if (string.IsNullOrEmpty(model.ReturnUrl))
-                {
-                    return Redirect("~/");
-                }
-                else
-                {
-                    // user might have clicked on a malicious link - should be logged
-                    throw new InvalidReturnURLException();
-                }
-            }
-
-            return null;
         }
         
         /// <summary>
@@ -223,34 +211,40 @@ namespace LeagueManager.IdentityServer
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
             var context = await interaction.GetAuthorizationContextAsync(returnUrl);
-            if (context?.IdP != null)
+            if (context?.IdP != null && await schemeProvider.GetSchemeAsync(context.IdP) != null)
             {
+                var local = context.IdP == IdentityServer4.IdentityServerConstants.LocalIdentityProvider;
+
                 // this is meant to short circuit the UI and only trigger the one external IdP
-                return new LoginViewModel
+                var vm = new LoginViewModel
                 {
-                    EnableLocalLogin = false,
+                    EnableLocalLogin = local,
                     ReturnUrl = returnUrl,
                     Username = context?.LoginHint,
-                    ExternalProviders = new ExternalProvider[] { new ExternalProvider { AuthenticationScheme = context.IdP } }
                 };
+
+                if (!local)
+                {
+                    vm.ExternalProviders = new[] { new ExternalProvider { AuthenticationScheme = context.IdP } };
+                }
+
+                return vm;
             }
 
             var schemes = await schemeProvider.GetAllSchemesAsync();
 
             var providers = schemes
-                .Where(x => x.DisplayName != null ||
-                            (x.Name.Equals(AccountOptions.WindowsAuthenticationSchemeName, StringComparison.OrdinalIgnoreCase))
-                )
+                .Where(x => x.DisplayName != null)
                 .Select(x => new ExternalProvider
                 {
-                    DisplayName = x.DisplayName,
+                    DisplayName = x.DisplayName ?? x.Name,
                     AuthenticationScheme = x.Name
                 }).ToList();
 
             var allowLocal = true;
-            if (context?.ClientId != null)
+            if (context?.Client.ClientId != null)
             {
-                var client = await clientStore.FindEnabledClientByIdAsync(context.ClientId);
+                var client = await clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
                 if (client != null)
                 {
                     allowLocal = client.EnableLocalLogin;

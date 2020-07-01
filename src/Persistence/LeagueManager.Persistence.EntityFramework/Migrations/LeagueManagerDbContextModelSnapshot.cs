@@ -160,7 +160,7 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                     b.Property<DateTime?>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("TeamLeagueRoundId")
+                    b.Property<int>("TeamLeagueRoundId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -240,7 +240,6 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Number")
-                        .IsRequired()
                         .HasColumnType("varchar(3)");
 
                     b.Property<int?>("PlayerId")
@@ -458,7 +457,9 @@ namespace LeagueManager.Persistence.EntityFramework.Migrations
                 {
                     b.HasOne("LeagueManager.Domain.Round.TeamLeagueRound", "TeamLeagueRound")
                         .WithMany("Matches")
-                        .HasForeignKey("TeamLeagueRoundId");
+                        .HasForeignKey("TeamLeagueRoundId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("LeagueManager.Domain.Match.TeamMatchEntry", b =>
