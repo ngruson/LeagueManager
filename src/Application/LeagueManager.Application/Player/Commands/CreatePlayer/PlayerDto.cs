@@ -1,6 +1,6 @@
 ﻿using LeagueManager.Application.Common.Mappings;
 
-namespace LeagueManager.Application.Player.Dto
+namespace LeagueManager.Application.Player.Commands.CreatePlayer
 {
     public class PlayerDto : IMapFrom<Domain.Player.Player>
     {

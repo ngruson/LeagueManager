@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Common.Mappings;
-using LeagueManager.Application.Player.Dto;
 using MediatR;
 
 namespace LeagueManager.Application.Player.Commands.CreatePlayer

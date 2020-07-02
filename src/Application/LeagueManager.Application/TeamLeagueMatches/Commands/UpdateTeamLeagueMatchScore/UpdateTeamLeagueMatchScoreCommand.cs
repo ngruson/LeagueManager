@@ -9,6 +9,6 @@ namespace LeagueManager.Application.TeamLeagueMatches.Commands.UpdateTeamLeagueM
     {
         public string LeagueName { get; set; }
         public Guid Guid { get; set; }
-        public List<TeamMatchEntryRequestDto> MatchEntries { get; set; }
+        public List<TeamMatchEntryRequestDto> MatchEntries { get; set; } = new List<TeamMatchEntryRequestDto>();
     }
 }
