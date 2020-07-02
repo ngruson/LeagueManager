@@ -16,7 +16,7 @@ using Xunit;
 
 namespace LeagueManager.Application.UnitTests
 {
-    public class GetPlayerForTeamCompetitorCommandUnitTests
+    public class GetPlayerForTeamCompetitorQueryUnitTests
     {
         private Mock<ILeagueManagerDbContext> MockDbContext(
             IQueryable<TeamLeague> teamLeagues,

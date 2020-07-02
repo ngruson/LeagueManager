@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
-using LeagueManager.Application.Player.Dto;
 using MediatR;
 using System.Linq;
 using System.Threading;

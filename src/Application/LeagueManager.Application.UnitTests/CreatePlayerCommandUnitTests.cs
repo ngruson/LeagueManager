@@ -1,14 +1,13 @@
 ﻿using FluentAssertions;
 using LeagueManager.Application.Exceptions;
 using LeagueManager.Application.Interfaces;
+using LeagueManager.Application.Player;
 using LeagueManager.Application.Player.Commands.CreatePlayer;
-using LeagueManager.Application.Player.Dto;
 using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
